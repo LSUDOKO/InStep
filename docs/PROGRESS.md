@@ -2,6 +2,47 @@
 
 Newest first. Each entry: what works, what doesn't, what changed from the spec and why.
 
+## 2026-10-21 — Milestone 3 (companion camera node)
+
+**Works**
+
+- `apps/companion` (Vite + React 19 + TS), served by the server at `/c/`. Mobile-first, dark theme from
+  docs/09, Inter bundled locally, Lucide icons bundled.
+- Join flow: room code from the QR link or typed, guest role + name for Together mode, clear privacy explanation.
+- Camera: `getUserMedia` 1280×720, front/back switch, mirrored local-only preview with skeleton, hand and chair
+  overlay, "Hide preview" option (keeps frames decoding at 1 px so tracking continues).
+- MediaPipe in the browser: Pose Landmarker lite, Hand Landmarker (2 hands), EfficientDet-Lite0 (chair / couch /
+  bench, ≤ 3 fps). Only the trackers the TV asks for via `lesson_tracking` are loaded/run. GPU delegate with CPU
+  fallback. Models + WASM are downloaded at build time into `/models/` (no runtime CDN). MediaPipe is lazy-loaded
+  (separate chunk) so the join screen opens fast.
+- Landmarks sent ≤ 30/s, quantised, anatomical left/right (MediaPipe's selfie-convention handedness is swapped
+  because we feed the unmirrored frame), `pose: null` when nobody is in view so the TV can tell "no person" from
+  "camera lost". Pose + chair message ≤ 1.5 KB (tested).
+- **Privacy pill measured:** every WebSocket send goes through a byte meter; the video meter is only incremented by
+  media-upload code, which this page does not have → it reads 0.0 KB/s. Tap → sheet with live rates, totals and the
+  latest message as JSON.
+- Placement helper (front / side / hands), gate status from the TV, pass toast + haptic, companion speech for
+  `speak` messages, reconnect with backoff (0.5 → 5 s), designed screens for: insecure context, no camera support,
+  camera denied / busy / missing, model loading progress, room not found / full, replaced by another phone,
+  reconnecting, not found.
+- `pnpm test-tv`: terminal TV that prints the join QR and reports msgs/s per camera (for the ≥ 15 fps AC).
+- Server now tells a joining phone which peers are already in the room (so "Connected to TV" is real).
+- **Playwright e2e** (Chrome fake camera, real MediaPipe on CPU): join → landmarks reach a fake TV → privacy pill
+  shows video 0.0 KB/s and non-zero body points → only JSON text WebSocket frames, zero HTTP uploads. Plus room-not-
+  found and not-found screens. Runs in CI as a separate job.
+- 189 unit/integration tests + 3 e2e tests pass.
+
+**Still to verify on real devices (needs you):** ≥ 15 fps on a phone over HTTPS and on a laptop (AC). Headless CI
+runs MediaPipe in software at ~2 fps, which is not representative.
+
+**Changes from the spec (and why)**
+
+| Change | Why |
+| --- | --- |
+| React 19 instead of 18 | Current stable; no API we rely on changed. |
+| Placement "side view" check uses shoulder width relative to torso length | Absolute widths depend on distance from the camera. |
+| Server sends existing peers to a joining phone | The phone could not otherwise know the TV is present. |
+
 ## 2026-10-21 — Milestone 2 (server)
 
 **Works**

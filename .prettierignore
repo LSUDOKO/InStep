@@ -5,3 +5,6 @@ docs/*.md
 apps/tv
 data
 packages/istep-format/schema
+apps/companion/public/models
+test-results
+playwright-report

@@ -1,0 +1,486 @@
+import type { Message } from '@instep/protocol';
+import {
+  AlertTriangle,
+  Camera,
+  CheckCircle2,
+  Eye,
+  EyeOff,
+  Loader2,
+  Lock,
+  LogOut,
+  RefreshCw,
+  SwitchCamera,
+  Tv,
+  VideoOff,
+  WifiOff,
+} from 'lucide-react';
+import { useCallback, useEffect, useRef, useState } from 'react';
+import { Brand } from '../components/Brand';
+import { FullMessage } from '../components/FullMessage';
+import { Preview } from '../components/Preview';
+import { PrivacyPill } from '../components/PrivacyPill';
+import { buildLandmarksMessage, RateLimiter, type VisionResult } from '../lib/landmarks';
+import { placementAdvice, type CameraView, type Placement } from '../lib/placement';
+import { RelayClient, relayUrl, type RelayState } from '../lib/relay';
+import type { Tracker, Vision } from '../lib/vision';
+
+type Phase =
+  | { kind: 'join'; error?: string }
+  | { kind: 'camera' }
+  | { kind: 'denied'; reason: 'denied' | 'no-camera' | 'busy' | 'other'; detail?: string }
+  | { kind: 'models'; done: number; total: number }
+  | { kind: 'live' };
+
+type Lesson = { lessonId: string; tracking: Tracker[]; view: CameraView; hint?: string };
+type GateInfo = Extract<Message, { type: 'gate_state' }>;
+
+const MAX_SEND_PER_SEC = 30;
+let vision: Vision | null = null;
+/** MediaPipe is ~400 KB of JS: load it only when the camera starts, so the join screen opens fast. */
+async function getVision(): Promise<Vision> {
+  if (!vision) vision = new (await import('../lib/vision')).Vision();
+  return vision;
+}
+
+/** Compact, readable copy of the last message for the privacy sheet. */
+function sample(m: unknown): string {
+  return JSON.stringify(
+    m,
+    (k, v) =>
+      Array.isArray(v) && v.length > 3 && Array.isArray(v[0])
+        ? [...v.slice(0, 2), `… ${v.length} points`]
+        : v,
+    1,
+  );
+}
+
+export function CameraNode() {
+  const params = new URLSearchParams(location.search);
+  const role: 'host' | 'guest' = params.get('role') === 'guest' ? 'guest' : 'host';
+  const [room, setRoom] = useState((params.get('room') ?? '').replace(/\D/g, '').slice(0, 4));
+  const [name, setName] = useState(params.get('name') ?? '');
+  const [phase, setPhase] = useState<Phase>({ kind: 'join' });
+  const [relayState, setRelayState] = useState<RelayState>({ kind: 'connecting' });
+  const [stream, setStream] = useState<MediaStream | null>(null);
+  const [facing, setFacing] = useState<'user' | 'environment'>('user');
+  const [hidePreview, setHidePreview] = useState(false);
+  const [lesson, setLesson] = useState<Lesson>({ lessonId: '', tracking: ['pose'], view: 'front' });
+  const [loadingTrackers, setLoadingTrackers] = useState(false);
+  const [placement, setPlacement] = useState<Placement | null>(null);
+  const [gate, setGate] = useState<GateInfo | null>(null);
+  const [toast, setToast] = useState<string | null>(null);
+  const [fps, setFps] = useState(0);
+  const [lastMessage, setLastMessage] = useState<string | null>(null);
+
+  const relay = useRef<RelayClient | null>(null);
+  const videoRef = useRef<HTMLVideoElement | null>(null);
+  const drawRef = useRef<((r: VisionResult) => void) | null>(null);
+  const lessonRef = useRef(lesson);
+  lessonRef.current = lesson;
+
+  const secure = window.isSecureContext;
+  const hasCamera = !!navigator.mediaDevices?.getUserMedia;
+
+  // ---- camera ---------------------------------------------------------------
+  const openCamera = useCallback(async (face: 'user' | 'environment') => {
+    setPhase({ kind: 'camera' });
+    try {
+      const s = await navigator.mediaDevices.getUserMedia({
+        audio: false,
+        video: { facingMode: face, width: { ideal: 1280 }, height: { ideal: 720 }, frameRate: { ideal: 30 } },
+      });
+      setStream((old) => {
+        old?.getTracks().forEach((t) => t.stop());
+        return s;
+      });
+      return true;
+    } catch (e) {
+      const n = (e as DOMException).name;
+      setPhase({
+        kind: 'denied',
+        reason:
+          n === 'NotAllowedError' || n === 'SecurityError'
+            ? 'denied'
+            : n === 'NotFoundError' || n === 'OverconstrainedError'
+              ? 'no-camera'
+              : n === 'NotReadableError'
+                ? 'busy'
+                : 'other',
+        detail: (e as Error).message,
+      });
+      return false;
+    }
+  }, []);
+
+  const start = useCallback(async () => {
+    if (!(await openCamera(facing))) return;
+    setPhase({ kind: 'models', done: 0, total: 1 });
+    try {
+      await (
+        await getVision()
+      ).ensure(lessonRef.current.tracking, (done, total) => setPhase({ kind: 'models', done, total }));
+    } catch (e) {
+      setPhase({
+        kind: 'denied',
+        reason: 'other',
+        detail: `Could not load the body-tracking models: ${(e as Error).message}`,
+      });
+      return;
+    }
+    setPhase({ kind: 'live' });
+  }, [facing, openCamera]);
+
+  useEffect(() => () => stream?.getTracks().forEach((t) => t.stop()), [stream]);
+
+  // ---- relay ----------------------------------------------------------------
+  useEffect(() => {
+    if (phase.kind !== 'live' || relay.current) return;
+    relay.current = new RelayClient({
+      url: relayUrl(),
+      room,
+      role,
+      ...(name ? { name } : {}),
+      onState: (s) => {
+        setRelayState(s);
+        if (s.kind === 'failed') {
+          relay.current = null;
+          setPhase({ kind: 'join', error: s.message });
+        }
+      },
+      onMessage: (m) => {
+        if (m.type === 'lesson_tracking') {
+          const next: Lesson = {
+            lessonId: m.lessonId,
+            tracking: m.tracking,
+            view: m.cameraView,
+            ...(m.hint ? { hint: m.hint } : {}),
+          };
+          setLoadingTrackers(true);
+          void getVision()
+            .then((v) => v.ensure(m.tracking))
+            .then(() => setLesson(next))
+            .finally(() => setLoadingTrackers(false));
+        } else if (m.type === 'gate_state') setGate(m);
+        else if (m.type === 'gate_result') {
+          setToast('Nice! Step passed');
+          navigator.vibrate?.(120);
+          setTimeout(() => setToast(null), 1600);
+        } else if (m.type === 'speak' && 'speechSynthesis' in window) {
+          const u = new SpeechSynthesisUtterance(m.text);
+          u.lang = m.language;
+          speechSynthesis.speak(u);
+        } else if (m.type === 'lesson_ended') setGate(null);
+      },
+    });
+    return undefined;
+  }, [phase.kind, room, role, name]);
+
+  useEffect(
+    () => () => {
+      relay.current?.close();
+      relay.current = null;
+    },
+    [],
+  );
+
+  // ---- inference loop: detect every new frame, send ≤ 30/s, never queue -----
+  useEffect(() => {
+    if (phase.kind !== 'live') return;
+    let raf = 0;
+    let lastVideoTime = -1;
+    let seq = 0;
+    let frames = 0;
+    let fpsNow = 0;
+    let lastPlacement = 0;
+    const limiter = new RateLimiter(MAX_SEND_PER_SEC);
+    let last: unknown = null;
+    const fpsTimer = setInterval(() => {
+      fpsNow = frames;
+      setFps(frames);
+      frames = 0;
+    }, 1000);
+    const sampleTimer = setInterval(() => {
+      if (last) setLastMessage(sample(last));
+    }, 1000);
+
+    const tick = () => {
+      raf = requestAnimationFrame(tick);
+      const v = videoRef.current;
+      if (!v || v.readyState < 2 || v.currentTime === lastVideoTime) return;
+      lastVideoTime = v.currentTime;
+      const now = performance.now();
+      const { tracking, view } = lessonRef.current;
+      if (!vision) return;
+      const r = vision.detect(v, tracking, now);
+      frames++;
+      drawRef.current?.(r);
+      if (now - lastPlacement > 250) {
+        lastPlacement = now;
+        setPlacement(placementAdvice(view, r, tracking));
+      }
+      if (limiter.allow(now) && relay.current?.open) {
+        const msg = buildLandmarksMessage(r, { seq: seq++, ts: Date.now(), role, tracking, fps: fpsNow });
+        if (relay.current.send(msg)) last = msg;
+      }
+    };
+    raf = requestAnimationFrame(tick);
+    return () => {
+      cancelAnimationFrame(raf);
+      clearInterval(fpsTimer);
+      clearInterval(sampleTimer);
+    };
+  }, [phase.kind, role]);
+
+  const leave = () => {
+    relay.current?.close();
+    relay.current = null;
+    stream?.getTracks().forEach((t) => t.stop());
+    setStream(null);
+    setPhase({ kind: 'join' });
+  };
+
+  // ---- screens --------------------------------------------------------------
+  if (!secure)
+    return (
+      <FullMessage icon={<Lock size={30} />} title="This page needs a secure connection" tone="warn">
+        <p>
+          Browsers only allow the camera on HTTPS pages. Open the address shown on your TV — it starts with
+          https://.
+        </p>
+        <p className="small">
+          Setting this up? Run <code>pnpm cert</code> on the computer running InStep and install its
+          certificate on this phone (see README).
+        </p>
+      </FullMessage>
+    );
+  if (!hasCamera)
+    return (
+      <FullMessage icon={<VideoOff size={30} />} title="This browser can't use the camera" tone="bad">
+        <p>Try Chrome on Android, Safari on iPhone (iOS 17+), or Chrome on a laptop.</p>
+      </FullMessage>
+    );
+
+  if (phase.kind === 'denied') {
+    const copy = {
+      denied: [
+        'Camera access was blocked',
+        'Tap the camera or lock icon in the address bar, allow the camera for this site, then try again.',
+      ],
+      'no-camera': [
+        'No camera found',
+        'This device does not seem to have a camera we can use. Try another phone or laptop.',
+      ],
+      busy: [
+        'The camera is busy',
+        'Another app is using the camera. Close it (video calls, camera app), then try again.',
+      ],
+      other: ['Something went wrong', phase.detail ?? 'Please try again.'],
+    }[phase.reason];
+    return (
+      <FullMessage
+        icon={<AlertTriangle size={30} />}
+        title={copy[0]!}
+        tone="bad"
+        actions={
+          <button className="btn primary block" onClick={() => void start()}>
+            <RefreshCw size={20} /> Try again
+          </button>
+        }
+      >
+        <p>{copy[1]}</p>
+      </FullMessage>
+    );
+  }
+
+  if (phase.kind === 'camera' || phase.kind === 'models')
+    return (
+      <FullMessage
+        icon={<Loader2 size={30} className="spin" />}
+        title={phase.kind === 'camera' ? 'Opening your camera…' : 'Getting body tracking ready…'}
+      >
+        {phase.kind === 'models' ? (
+          <>
+            <p>This runs on your phone. It can take a few seconds the first time.</p>
+            <div
+              className="progress"
+              role="progressbar"
+              aria-valuemin={0}
+              aria-valuemax={phase.total}
+              aria-valuenow={phase.done}
+            >
+              <div style={{ width: `${Math.max(8, (phase.done / phase.total) * 100)}%` }} />
+            </div>
+          </>
+        ) : (
+          <p>If your browser asks, choose “Allow”.</p>
+        )}
+      </FullMessage>
+    );
+
+  if (phase.kind === 'join')
+    return (
+      <main className="page">
+        <Brand />
+        <h1>{role === 'guest' ? 'Join a practice together' : 'Use this phone as the camera'}</h1>
+        <form
+          className="stack"
+          onSubmit={(e) => {
+            e.preventDefault();
+            if (room.length === 4) void start();
+          }}
+        >
+          {phase.error && (
+            <div className="banner bad" role="alert">
+              <AlertTriangle size={20} /> {phase.error}
+            </div>
+          )}
+          <label htmlFor="room">Room code on your TV</label>
+          <input
+            id="room"
+            className="code-input"
+            inputMode="numeric"
+            autoComplete="off"
+            maxLength={4}
+            value={room}
+            onChange={(e) => setRoom(e.target.value.replace(/\D/g, '').slice(0, 4))}
+            aria-describedby="room-help"
+          />
+          <p id="room-help" className="muted small">
+            The 4 numbers under the QR code on your TV.
+          </p>
+          {role === 'guest' && (
+            <>
+              <label htmlFor="name">Your name (shown on the TV)</label>
+              <input
+                id="name"
+                className="text-input"
+                maxLength={40}
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+              />
+            </>
+          )}
+          <div className="card">
+            <div className="row">
+              <Lock size={22} color="var(--ok)" aria-hidden />
+              <strong>Your camera stays on this device</strong>
+            </div>
+            <p className="muted">
+              We send only body points (numbers) to your TV — never video. You can check it live at any time.
+            </p>
+          </div>
+          <button
+            className="btn primary block"
+            type="submit"
+            disabled={room.length !== 4 || (role === 'guest' && !name.trim())}
+          >
+            <Camera size={20} /> Start camera
+          </button>
+        </form>
+      </main>
+    );
+
+  // ---- live -----------------------------------------------------------------
+  const tvOk = relayState.kind === 'joined' && relayState.tvConnected;
+  const status =
+    relayState.kind === 'joined'
+      ? tvOk
+        ? { cls: 'ok', text: 'Connected to TV' }
+        : { cls: 'warn', text: 'Waiting for TV' }
+      : relayState.kind === 'reconnecting'
+        ? { cls: 'bad', text: 'Reconnecting…' }
+        : { cls: 'info', text: 'Connecting…' };
+
+  return (
+    <main className="page">
+      <div className="topbar">
+        <Brand />
+        <span className={`chip ${status.cls}`} role="status" data-testid="connection">
+          <span className="dot" /> {status.text}
+        </span>
+      </div>
+
+      {relayState.kind === 'reconnecting' && (
+        <div className="banner" role="alert">
+          <WifiOff size={20} /> Lost the connection to your TV. Reconnecting… (room {room})
+        </div>
+      )}
+
+      <div className="live-grid">
+        {stream && (
+          <Preview
+            stream={stream}
+            mirrored={facing === 'user'}
+            hidden={hidePreview}
+            videoRef={videoRef}
+            drawRef={drawRef}
+          />
+        )}
+        <div className="stack">
+          {placement && (
+            <div className={`card ${placement.ok ? 'ok' : 'warn'}`} aria-live="polite">
+              <div className="row">
+                {placement.ok ? <CheckCircle2 color="var(--ok)" /> : <AlertTriangle color="var(--near)" />}
+                <strong data-testid="placement">{placement.message}</strong>
+              </div>
+              {lesson.hint && <p className="muted small">{lesson.hint}</p>}
+            </div>
+          )}
+          {loadingTrackers && (
+            <div className="card">
+              <div className="row">
+                <Loader2 className="spin" size={20} /> Getting ready for this lesson…
+              </div>
+            </div>
+          )}
+          {gate && (
+            <div
+              className={`card ${gate.status === 'blocked_safety' ? 'bad' : gate.status === 'passed' ? 'ok' : ''}`}
+            >
+              <div className="row">
+                <Tv size={20} color="var(--brand)" />
+                <strong>{gate.label}</strong>
+              </div>
+              {gate.worst && <p className="muted">{gate.worst.hint}</p>}
+            </div>
+          )}
+          <div className="row">
+            <button
+              className="btn ghost grow"
+              onClick={() => setHidePreview((h) => !h)}
+              aria-pressed={hidePreview}
+            >
+              {hidePreview ? <Eye size={20} /> : <EyeOff size={20} />}{' '}
+              {hidePreview ? 'Show preview' : 'Hide preview'}
+            </button>
+            <button
+              className="btn ghost icon"
+              aria-label="Switch camera"
+              onClick={() => {
+                const f = facing === 'user' ? 'environment' : 'user';
+                setFacing(f);
+                void openCamera(f).then((ok) => ok && setPhase({ kind: 'live' }));
+              }}
+            >
+              <SwitchCamera size={22} />
+            </button>
+            <button className="btn ghost icon" aria-label="Leave" onClick={leave}>
+              <LogOut size={22} />
+            </button>
+          </div>
+          <p className="muted small">
+            Room {room} · {role === 'guest' ? `Together mode as ${name}` : 'Camera'} · {fps} fps ·{' '}
+            {vision?.delegate ?? ''}
+          </p>
+        </div>
+      </div>
+
+      {toast && (
+        <div className="toast" role="status">
+          {toast}
+        </div>
+      )}
+      <PrivacyPill lastMessage={lastMessage} />
+    </main>
+  );
+}

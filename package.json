@@ -2,7 +2,7 @@
   "name": "instep",
   "private": true,
   "version": "0.1.0",
-  "description": "InStep — the video that waits for you. Body-aware video lessons for Fire TV (Vega OS).",
+  "description": "InStep \u2014 the video that waits for you. Body-aware video lessons for Fire TV (Vega OS).",
   "license": "MIT",
   "type": "module",
   "packageManager": "pnpm@11.11.0",
@@ -19,18 +19,24 @@
     "format:check": "prettier --check .",
     "server": "pnpm --filter @instep/server start",
     "server:dev": "pnpm --filter @instep/server dev",
-    "cert": "./scripts/dev-cert.sh"
+    "cert": "./scripts/dev-cert.sh",
+    "test-tv": "tsx scripts/test-tv.ts",
+    "companion:build": "pnpm --filter @instep/companion build",
+    "e2e": "pnpm --filter @instep/companion e2e"
   },
   "devDependencies": {
     "@types/node": "^22.10.0",
+    "@types/qrcode": "^1.5.6",
     "@types/ws": "^8.18.2",
     "@vitest/coverage-v8": "^5.0.5",
     "eslint": "^10.13.0",
     "prettier": "^3.9.10",
+    "qrcode": "^1.5.4",
     "tsx": "^4.23.15",
     "typescript": "~5.9.3",
     "typescript-eslint": "^8.72.0",
     "vitest": "^5.0.5",
-    "ws": "^8.22.0"
+    "ws": "^8.22.0",
+    "@instep/protocol": "workspace:*"
   }
 }

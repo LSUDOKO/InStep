@@ -81,6 +81,13 @@ export function createRelay(opts: { publicUrl: string; now?: () => number }) {
       c.peer = res.peer;
       send(c.ws, { type: 'joined', room: res.room.code, peerId: res.peer.peerId, role: m.role });
       for (const p of others(res.room, res.peer.peerId))
+        send(c.ws, {
+          type: 'peer_joined',
+          role: p.role,
+          peerId: p.peerId,
+          ...(p.name ? { name: p.name } : {}),
+        });
+      for (const p of others(res.room, res.peer.peerId))
         send(p.socket, {
           type: 'peer_joined',
           role: m.role,

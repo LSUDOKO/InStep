@@ -1,0 +1,432 @@
+/* InStep design tokens (docs/09-design-system.md) */
+:root {
+  --bg: #0e1116;
+  --surface: #171b22;
+  --surface-2: #212733;
+  --text: #f2f4f7;
+  --text-muted: #a7b0be;
+  --brand: #4fd1c5;
+  --focus: #ffffff;
+  --ok: #3ddc97;
+  --near: #ffb547;
+  --far: #ff6b6b;
+  --info: #7aa7ff;
+  --radius: 16px;
+  --radius-sm: 10px;
+  --space: 16px;
+  --font: 'Inter Variable', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  color-scheme: dark;
+}
+
+* {
+  box-sizing: border-box;
+}
+html,
+body,
+#root {
+  margin: 0;
+  min-height: 100%;
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font);
+  font-size: 17px;
+  line-height: 1.45;
+  -webkit-font-smoothing: antialiased;
+  -webkit-text-size-adjust: 100%;
+}
+body {
+  min-height: 100dvh;
+}
+button,
+input {
+  font: inherit;
+  color: inherit;
+}
+:focus-visible {
+  outline: 3px solid var(--focus);
+  outline-offset: 3px;
+  border-radius: var(--radius-sm);
+}
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}
+
+/* ---------- layout ---------- */
+.page {
+  min-height: 100dvh;
+  max-width: 560px;
+  margin: 0 auto;
+  padding: max(env(safe-area-inset-top), 20px) 20px max(env(safe-area-inset-bottom), 20px);
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+.topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-weight: 700;
+  font-size: 20px;
+  letter-spacing: -0.01em;
+}
+.brand img {
+  width: 32px;
+  height: 32px;
+}
+h1 {
+  font-size: 28px;
+  line-height: 1.2;
+  margin: 0;
+  letter-spacing: -0.02em;
+}
+p {
+  margin: 0;
+}
+.muted {
+  color: var(--text-muted);
+}
+.small {
+  font-size: 14px;
+}
+.stack {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.grow {
+  flex: 1;
+}
+
+/* ---------- cards & buttons ---------- */
+.card {
+  background: var(--surface);
+  border-radius: var(--radius);
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.card.ok {
+  box-shadow: inset 0 0 0 2px color-mix(in srgb, var(--ok) 70%, transparent);
+}
+.card.warn {
+  box-shadow: inset 0 0 0 2px color-mix(in srgb, var(--near) 70%, transparent);
+}
+.card.bad {
+  box-shadow: inset 0 0 0 2px color-mix(in srgb, var(--far) 70%, transparent);
+}
+.btn {
+  min-height: 52px;
+  border: 0;
+  border-radius: 14px;
+  padding: 0 22px;
+  font-weight: 650;
+  font-size: 17px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  cursor: pointer;
+  transition:
+    transform 150ms ease-out,
+    background 150ms ease-out;
+}
+.btn:active {
+  transform: scale(0.98);
+}
+.btn.primary {
+  background: var(--brand);
+  color: #04201d;
+}
+.btn.primary:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+.btn.ghost {
+  background: var(--surface-2);
+}
+.btn.icon {
+  min-width: 52px;
+  padding: 0;
+}
+.btn.block {
+  width: 100%;
+}
+.chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px;
+  border-radius: 999px;
+  background: var(--surface-2);
+  font-size: 14px;
+  font-weight: 600;
+  white-space: nowrap;
+}
+.chip .dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: currentColor;
+}
+.chip.ok {
+  color: var(--ok);
+}
+.chip.warn {
+  color: var(--near);
+}
+.chip.bad {
+  color: var(--far);
+}
+.chip.info {
+  color: var(--info);
+}
+
+/* ---------- inputs ---------- */
+.code-input {
+  width: 100%;
+  min-height: 72px;
+  text-align: center;
+  font-size: 40px;
+  font-weight: 700;
+  letter-spacing: 0.4em;
+  padding-left: 0.4em;
+  border-radius: var(--radius);
+  border: 2px solid var(--surface-2);
+  background: var(--surface);
+  font-variant-numeric: tabular-nums;
+}
+.code-input:focus {
+  border-color: var(--brand);
+  outline: none;
+}
+.text-input {
+  width: 100%;
+  min-height: 52px;
+  border-radius: 14px;
+  border: 2px solid var(--surface-2);
+  background: var(--surface);
+  padding: 0 16px;
+}
+.text-input:focus {
+  border-color: var(--brand);
+  outline: none;
+}
+label {
+  font-weight: 600;
+  font-size: 15px;
+}
+
+/* ---------- camera preview ---------- */
+.preview {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  border-radius: var(--radius);
+  overflow: hidden;
+  background: #000;
+}
+.preview.portrait {
+  aspect-ratio: 3 / 4;
+}
+.preview video,
+.preview canvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.preview .mirror {
+  transform: scaleX(-1);
+}
+.preview .badge {
+  position: absolute;
+  left: 12px;
+  top: 12px;
+  background: rgba(0, 0, 0, 0.55);
+}
+.preview-hidden {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  color: var(--text-muted);
+  aspect-ratio: 16 / 9;
+  border-radius: var(--radius);
+  background: var(--surface);
+}
+
+/* ---------- privacy pill ---------- */
+.privacy {
+  position: sticky;
+  bottom: max(env(safe-area-inset-bottom), 12px);
+  align-self: center;
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 18px;
+  min-height: 48px;
+  border-radius: 999px;
+  border: 0;
+  background: color-mix(in srgb, var(--ok) 14%, var(--surface));
+  color: var(--text);
+  font-size: 15px;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  cursor: pointer;
+  box-shadow: 0 6px 24px rgba(0, 0, 0, 0.35);
+}
+.privacy svg {
+  color: var(--ok);
+}
+.sheet-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.6);
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  z-index: 10;
+}
+.sheet {
+  width: 100%;
+  max-width: 560px;
+  max-height: 85dvh;
+  overflow: auto;
+  background: var(--surface);
+  border-radius: 24px 24px 0 0;
+  padding: 24px 20px max(env(safe-area-inset-bottom), 24px);
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+.sheet pre {
+  margin: 0;
+  background: var(--bg);
+  border-radius: var(--radius-sm);
+  padding: 12px;
+  font-size: 12px;
+  line-height: 1.5;
+  overflow: auto;
+  max-height: 220px;
+}
+.stat-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+.stat {
+  background: var(--bg);
+  border-radius: var(--radius-sm);
+  padding: 12px;
+}
+.stat b {
+  display: block;
+  font-size: 22px;
+  font-variant-numeric: tabular-nums;
+}
+
+/* ---------- status / full-screen messages ---------- */
+.full {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 16px;
+  text-align: left;
+}
+.full .icon-wrap {
+  width: 64px;
+  height: 64px;
+  border-radius: 20px;
+  display: grid;
+  place-items: center;
+  background: var(--surface-2);
+}
+.banner {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  padding: 12px 14px;
+  border-radius: var(--radius-sm);
+  background: color-mix(in srgb, var(--near) 16%, var(--surface));
+  color: var(--text);
+  font-weight: 600;
+}
+.banner.bad {
+  background: color-mix(in srgb, var(--far) 18%, var(--surface));
+}
+.progress {
+  height: 8px;
+  border-radius: 999px;
+  background: var(--surface-2);
+  overflow: hidden;
+}
+.progress > div {
+  height: 100%;
+  background: var(--brand);
+  transition: width 300ms ease-out;
+}
+.spin {
+  animation: spin 1s linear infinite;
+}
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+.toast {
+  position: fixed;
+  left: 50%;
+  top: max(env(safe-area-inset-top), 16px);
+  transform: translateX(-50%);
+  background: var(--ok);
+  color: #032015;
+  font-weight: 700;
+  padding: 12px 20px;
+  border-radius: 999px;
+  z-index: 20;
+  animation: pop 400ms ease-out;
+}
+@keyframes pop {
+  from {
+    transform: translate(-50%, -10px) scale(0.9);
+    opacity: 0;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation: none !important;
+    transition: none !important;
+  }
+}
+@media (orientation: landscape) and (max-height: 500px) {
+  .page {
+    max-width: 960px;
+  }
+  .live-grid {
+    display: grid;
+    grid-template-columns: 1.3fr 1fr;
+    gap: 16px;
+    align-items: start;
+  }
+}

@@ -167,6 +167,15 @@ The server listens twice: **HTTPS on `PORT`** for phones and laptops (camera acc
 **plain HTTP/WS on `TV_HTTP_PORT`** for the Vega TV app, so the TV never has to trust a self-signed certificate.
 Lessons in `content/lessons/` are seeded on start; a lesson appears in the catalog only once its video is recorded.
 
+### Companion (phone camera)
+
+```bash
+pnpm companion:build     # downloads MediaPipe models into /models and builds /c/
+pnpm server              # then open https://<LAN-IP>:8787/c/ on your phone
+pnpm test-tv             # terminal "TV": prints a join QR and reports landmarks per second
+pnpm e2e                 # Playwright with Chrome's fake camera
+```
+
 ### AI and cost safety
 
 `MOCK_AI=true` is the default: coach tips come from templates and voice uses browser speech — no AWS calls.

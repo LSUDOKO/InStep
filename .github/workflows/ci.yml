@@ -39,3 +39,29 @@ jobs:
           pnpm --filter @instep/istep-format build
           node packages/istep-format/bin/istep.mjs validate packages/istep-format/examples/*.istep
           ! node packages/istep-format/bin/istep.mjs validate packages/istep-format/invalid/*.istep
+
+  e2e:
+    name: Companion e2e (Playwright, fake camera)
+    runs-on: ubuntu-latest
+    needs: check
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - name: Cache MediaPipe models
+        uses: actions/cache@v4
+        with:
+          path: apps/companion/public/models
+          key: mediapipe-models-${{ hashFiles('apps/companion/scripts/fetch-models.mjs') }}
+      - run: pnpm companion:build
+      - run: pnpm --filter @instep/companion exec playwright install --with-deps chromium
+      - run: pnpm e2e
+      - uses: actions/upload-artifact@v4
+        if: failure()
+        with:
+          name: playwright-traces
+          path: apps/companion/test-results

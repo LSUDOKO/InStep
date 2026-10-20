@@ -67,6 +67,7 @@ async function room() {
   const host = await client();
   host.send({ type: 'hello', v: 1, role: 'host', room: created.room, deviceId: 'phone' });
   await host.next('joined');
+  expect(await host.next('peer_joined')).toMatchObject({ role: 'tv' });
   await tv.next('peer_joined');
   return { tv, host, code: created.room, joinUrl: created.joinUrl };
 }
@@ -78,6 +79,7 @@ describe('relay', () => {
     const guest = await client();
     guest.send({ type: 'hello', v: 1, role: 'guest', room: code, name: 'Tom', deviceId: 'g' });
     expect(await tv.next('peer_joined')).toMatchObject({ role: 'guest', name: 'Tom' });
+    expect(await guest.next('peer_joined')).toMatchObject({ role: 'tv' }); // joiner learns who is there
     expect(await host.next('peer_joined')).toMatchObject({ role: 'guest' });
     guest.close();
     expect(await tv.next('peer_left')).toMatchObject({ role: 'guest', name: 'Tom' });
