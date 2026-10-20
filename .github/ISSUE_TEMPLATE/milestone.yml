@@ -1,0 +1,15 @@
+name: Milestone task
+description: Work item from docs/10-build-plan.md
+labels: [milestone]
+body:
+  - type: textarea
+    id: scope
+    attributes:
+      label: Scope
+    validations: { required: true }
+  - type: textarea
+    id: ac
+    attributes:
+      label: Acceptance criteria
+      description: Copied from docs/10-build-plan.md
+    validations: { required: true }
