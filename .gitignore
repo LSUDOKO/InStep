@@ -14,3 +14,4 @@ playwright-report/
 test-results/
 apps/companion/public/models/
 *.tsbuildinfo
+spike/media/*.mp4
