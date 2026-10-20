@@ -1,0 +1,29 @@
+{
+  "name": "@instep/istep-format",
+  "version": "1.0.0",
+  "description": "The .istep open format: body-aware gates for any video (zod schema, JSON Schema, validator CLI).",
+  "license": "MIT",
+  "type": "module",
+  "main": "./src/index.ts",
+  "types": "./src/index.ts",
+  "bin": {
+    "istep": "./bin/istep.mjs"
+  },
+  "files": [
+    "bin",
+    "src",
+    "dist",
+    "schema",
+    "examples"
+  ],
+  "scripts": {
+    "build": "esbuild src/cli.ts --bundle --platform=node --format=esm --packages=external --outfile=dist/cli.js && tsx scripts/export-schema.ts",
+    "typecheck": "tsc --noEmit -p ."
+  },
+  "dependencies": {
+    "zod": "^4.6.7"
+  },
+  "devDependencies": {
+    "esbuild": "^0.28.2"
+  }
+}
