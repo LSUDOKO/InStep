@@ -155,6 +155,18 @@ pnpm test          # vitest across all packages
 pnpm lint && pnpm typecheck
 ```
 
+### Run the server
+
+```bash
+cp .env.example .env
+pnpm cert                # optional: mkcert HTTPS cert for your LAN IP (phones need HTTPS for the camera)
+pnpm server              # https://<LAN-IP>:8787 (companion) · http://<LAN-IP>:8788 (TV)
+```
+
+The server listens twice: **HTTPS on `PORT`** for phones and laptops (camera access needs a secure context) and
+**plain HTTP/WS on `TV_HTTP_PORT`** for the Vega TV app, so the TV never has to trust a self-signed certificate.
+Lessons in `content/lessons/` are seeded on start; a lesson appears in the catalog only once its video is recorded.
+
 ### AI and cost safety
 
 `MOCK_AI=true` is the default: coach tips come from templates and voice uses browser speech — no AWS calls.

@@ -2,6 +2,38 @@
 
 Newest first. Each entry: what works, what doesn't, what changed from the spec and why.
 
+## 2026-10-21 — Milestone 2 (server)
+
+**Works**
+
+- `apps/server`: Fastify + `ws` relay + SQLite + static hosting. Two listeners on shared state: HTTPS (`PORT`,
+  companion) and plain HTTP/WS (`TV_HTTP_PORT`, Vega TV). `scripts/dev-cert.sh` makes an mkcert cert for the LAN IP.
+- Relay: rooms (1 TV, 1 host, ≤ 3 guests), 4-digit codes not reused for 24 h, 2 h idle expiry, heartbeat, TV
+  rejoin, reconnecting phone replaces the old host (old socket closed), zod-validated messages, landmarks only to the
+  TV tagged with the sender, per-sender cap of 40 landmark msgs/s (dropped, never queued). Payloads are never logged.
+- **AC soak test:** fake TV + fake host, 30 msgs/s for 60 s → **1800/1800 received, p50 0.77 ms, p95 1.22 ms**
+  (target < 20 ms). CI runs a 10 s version; `RELAY_SOAK_SEC=60 pnpm test` runs the full one.
+- REST: health, catalog (hero channels first), lesson detail/track/media (range requests; only listed assets
+  served), creator create/assets/track/publish (PIN-protected) with WebM→H.264 MP4 transcode + poster via ffmpeg,
+  `catalog_updated` broadcast; profiles (max 6), sessions + gate attempts, 14-day progress with streak, recent passes
+  per gate type (for adaptive tolerance), share reports (128-bit tokens, 30-day expiry, adherence, sway stops,
+  gates that needed coaching).
+- Coach in mock mode: cache by `lessonId|gateId|errorBucket|language`, 1 call / learner / 8 s, daily AI cap, banned
+  medical terms / numbers / > 25 words filtered. `/api/voice` returns 204 while Polly is off.
+- `GET /api/lessons` returns the 7 seeded lessons with `?all=1`; without it, only lessons whose video exists.
+- 178 tests pass across the repo.
+
+**Changes from the spec (and why)**
+
+| Change | Why |
+| --- | --- |
+| `node:sqlite` (Node ≥ 22.13) instead of `better-sqlite3` | Built into Node: no native build step on any machine. |
+| Seed lessons without a recorded video are `draft` (hidden from the TV catalog) | AGENTS.md: no catalog entries for content that doesn't exist yet. |
+| Cached coach tips are served before the rate-limit check | A cache hit costs nothing; rate limits protect AI calls. |
+| `REPORT_TOKEN_SECRET` removed | Report tokens are random 128-bit values stored server-side; nothing needs signing. |
+| Uploaded videos are always re-encoded to H.264/AAC MP4 (not only WebM) | iPhones may upload HEVC; one known-good format for the Vega player. |
+| Added `GET /api/profiles/:id/recent-passes`, `DELETE /api/profiles/:id` | Adaptive tolerance needs recent passes; profile picker needs removal. |
+
 ## 2026-10-21 — Repo setup + Milestone 1 (packages)
 
 **Works**

@@ -7,7 +7,7 @@
   "type": "module",
   "packageManager": "pnpm@11.11.0",
   "engines": {
-    "node": ">=20"
+    "node": ">=22.13"
   },
   "scripts": {
     "build": "pnpm -r --filter ./packages/** run build",
@@ -16,7 +16,10 @@
     "typecheck": "pnpm -r run typecheck",
     "lint": "eslint .",
     "format": "prettier --write .",
-    "format:check": "prettier --check ."
+    "format:check": "prettier --check .",
+    "server": "pnpm --filter @instep/server start",
+    "server:dev": "pnpm --filter @instep/server dev",
+    "cert": "./scripts/dev-cert.sh"
   },
   "devDependencies": {
     "@types/node": "^22.10.0",
