@@ -3,7 +3,7 @@
  * is waiting on (after a short delay so the "waiting" state is visible), neutral standing pose otherwise.
  * No camera, no person — for device testing, screenshots and a demo-video fallback.
  *
- *   pnpm demo-learner --room 1234 [--server http://localhost:8788] [--delay 4] [--fps 15]
+ *   pnpm demo-learner --room 1234 [--server http://localhost:8788] [--delay 4] [--fps 15] [--role guest --name Mia]
  */
 import WebSocket from 'ws';
 import { parseArgs } from 'node:util';
@@ -16,13 +16,18 @@ const { values } = parseArgs({
     server: { type: 'string', default: process.env.TV_SERVER ?? 'http://localhost:8788' },
     delay: { type: 'string', default: '4' },
     fps: { type: 'string', default: '15' },
+    role: { type: 'string', default: 'host' },
+    name: { type: 'string', default: 'Demo' },
   },
 });
 if (!values.room) {
-  console.error('Usage: pnpm demo-learner --room 1234 [--server http://host:8788] [--delay 4] [--fps 15]');
+  console.error(
+    'Usage: pnpm demo-learner --room 1234 [--server http://host:8788] [--delay 4] [--fps 15] [--role guest --name Mia]',
+  );
   process.exit(1);
 }
 const delayMs = Number(values.delay) * 1000;
+const role = values.role === 'guest' ? 'guest' : 'host';
 const fps = Number(values.fps);
 
 let gate: { id: string; type: string; since: number; status: string } | null = null;
@@ -81,7 +86,7 @@ function tick() {
     type: 'landmarks',
     seq: seq++,
     ts: now,
-    role: 'host',
+    role,
     mirrored: false,
     pose: (f.pose ?? []).map((p) => [p.x, p.y, p.z, p.v ?? 0.95] as [number, number, number, number]),
     ...(f.objects ? { objects: f.objects } : {}),
