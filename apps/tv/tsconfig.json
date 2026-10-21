@@ -20,10 +20,13 @@
       "@instep/gate-engine/fixtures": ["../../packages/gate-engine/src/fixtures"],
       "@instep/protocol": ["../../packages/protocol/src"],
       "@instep/gated-player": ["../../packages/gated-player/src"],
-      "react-native-svg": ["./node_modules/@amazon-devices/react-native-svg"]
+      "react-native-svg": ["./node_modules/@amazon-devices/react-native-svg"],
+      "react": ["./node_modules/@types/react"],
+      "react-native": ["./node_modules/react-native"],
+      "@amazon-devices/react-native-w3cmedia": ["./node_modules/@amazon-devices/react-native-w3cmedia"]
     }
   },
-  "include": ["src", "index.js"],
+  "include": ["src", "index.js", "../../packages/gated-player/react-native"],
   "exclude": ["src/**/*.test.ts"],
   "//": "Self-contained (no extends) so tests can run without apps/tv/node_modules; mirrors @tsconfig/react-native."
 }

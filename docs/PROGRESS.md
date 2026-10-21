@@ -2,6 +2,16 @@
 
 Newest first. Each entry: what works, what doesn't, what changed from the spec and why.
 
+## 2026-10-21 — Milestones 11 and 12 (prepared)
+
+- **M11:** `<GatedPlayer>` React Native component for Vega (`packages/gated-player/react-native/GatedPlayer.tsx`,
+  type-checked against the real `@amazon-devices/*` typings) + `createFrameStream()`. `node scripts/export-oss.mjs`
+  assembles the standalone `vega-gated-video-player` repo (format + engine + player, README with 5-line usage,
+  demo `example/App.tsx` driven by a synthetic landmark stream, CI, MIT). The exported repo type-checks and its
+  125 tests pass on their own. **Not yet published** — creating the public GitHub repo waits for the owner's OK.
+- **M12:** `docs/SUBMISSION.md` — Devpost text, demo checklist, product-feedback skeleton (device parts marked to
+  fill after testing), friction logs, feature requests, mini-challenge fields, compliance checklist.
+
 ## 2026-10-21 — Milestones 7, 9, 10 + parts of 5 and 8
 
 **Milestone 7 — Creator Studio (works, browser e2e test green):** `/c/creator` PIN gate → lesson list (yours +

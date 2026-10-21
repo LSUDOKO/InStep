@@ -9,3 +9,4 @@ packages/istep-format/schema
 apps/companion/public/models
 test-results
 playwright-report
+dist-oss

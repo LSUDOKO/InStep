@@ -15,3 +15,4 @@ test-results/
 apps/companion/public/models/
 *.tsbuildinfo
 spike/media/*.mp4
+dist-oss/
