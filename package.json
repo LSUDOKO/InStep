@@ -22,7 +22,8 @@
     "cert": "./scripts/dev-cert.sh",
     "test-tv": "tsx scripts/test-tv.ts",
     "companion:build": "pnpm --filter @instep/companion build",
-    "e2e": "pnpm --filter @instep/companion e2e"
+    "e2e": "pnpm --filter @instep/companion e2e",
+    "replay": "tsx scripts/replay.ts"
   },
   "devDependencies": {
     "@types/node": "^22.10.0",

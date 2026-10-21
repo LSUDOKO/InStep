@@ -44,6 +44,17 @@ type Lesson = { lessonId: string; tracking: Tracker[]; view: CameraView; hint?: 
 type GateInfo = Extract<Message, { type: 'gate_state' }>;
 
 const MAX_SEND_PER_SEC = 30;
+/** ?record=1 keeps the landmarks messages sent (numbers only) so they can be saved on this device for replay tests. */
+const RECORD = new URLSearchParams(location.search).get('record') === '1';
+const recording: string[] = [];
+function downloadRecording() {
+  const blob = new Blob([recording.join('\n') + '\n'], { type: 'application/x-ndjson' });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = `instep-landmarks-${new Date().toISOString().replace(/[:.]/g, '-')}.jsonl`;
+  a.click();
+  URL.revokeObjectURL(a.href);
+}
 const metronome = new Metronome();
 
 /** Compact, readable copy of the last message for the privacy sheet. */
@@ -248,7 +259,10 @@ export function CameraNode() {
       }
       if (limiter.allow(now) && relay.current?.open) {
         const msg = buildLandmarksMessage(r, { seq: seq++, ts: Date.now(), role, tracking, fps: fpsNow });
-        if (relay.current.send(msg)) last = msg;
+        if (relay.current.send(msg)) {
+          last = msg;
+          if (RECORD) recording.push(JSON.stringify(msg));
+        }
       }
     };
     raf = requestAnimationFrame(tick);
@@ -493,6 +507,11 @@ export function CameraNode() {
               </div>
               {gate.worst && <p className="muted">{gate.worst.hint}</p>}
             </div>
+          )}
+          {RECORD && (
+            <button className="btn ghost block" onClick={downloadRecording}>
+              Save landmarks recording (numbers only, stays on this device)
+            </button>
           )}
           {speechRecognitionAvailable() && (
             <button className="btn ghost block" onClick={() => void voice()} disabled={listening}>

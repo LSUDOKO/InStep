@@ -182,6 +182,10 @@ pnpm test-tv             # terminal "TV": prints a join QR and reports landmarks
 pnpm e2e                 # Playwright with Chrome's fake camera
 ```
 
+**Landmark replay** (testing without standing in front of a camera, and a demo backup): open the companion with
+`?room=1234&record=1`, do the movement, tap "Save landmarks recording" (a JSONL of numbers, saved on your device), then
+`pnpm replay recording.jsonl --room <TV room> [--loop]`.
+
 ### TV app (Vega Virtual Device)
 
 The TV app lives in `apps/tv` and is installed with **npm** (outside the pnpm workspace, like the official Vega
