@@ -73,6 +73,11 @@ export function Player({ lessonId }: { lessonId: string }) {
 
   // ---- metronome pulse (visual; never the only cue) -------------------------
   const gate = view?.gate ?? null;
+  // step rail: the active gate, or the step after the last one we were on (the next step while video plays)
+  const lastGateIdx = useRef(-1);
+  const activeIdx = gate ? (lesson?.track.gates.findIndex((g) => g.id === gate.id) ?? -1) : -1;
+  if (activeIdx >= 0) lastGateIdx.current = activeIdx;
+  const railIndex = activeIdx >= 0 ? activeIdx : lastGateIdx.current + 1;
   const metronome = gate?.type === 'rhythm_bpm' ? gate.metronomeBpm : undefined;
   useEffect(() => {
     if (!metronome || !motion) return;
@@ -276,15 +281,9 @@ export function Player({ lessonId }: { lessonId: string }) {
         </View>
       </View>
 
-      {gate && (
+      {view && view.phase !== 'ended' && (
         <View style={{ marginTop: px(20) }}>
-          <StepRail
-            labels={track.gates.map((g) => g.label)}
-            current={Math.max(
-              0,
-              track.gates.findIndex((g) => g.id === gate.id),
-            )}
-          />
+          <StepRail labels={track.gates.map((g) => g.label)} current={railIndex} />
         </View>
       )}
 
