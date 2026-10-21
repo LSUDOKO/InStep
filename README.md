@@ -231,29 +231,58 @@ pnpm replay recording.jsonl --room <TV room> [--loop]
 pnpm e2e                                 # Playwright: camera node, Creator Studio, report (fake camera)
 ```
 
-## AI, AWS and cost safety
+## AI on AWS — how it is used, and what was verified
 
-`MOCK_AI=true` is the default: coach tips and step labels come from templates and voice uses the phone's browser
-speech — no AWS calls. To use AWS (billed to your account):
+InStep uses two AWS services, both behind a single switch. `MOCK_AI=true` (the default, and what the hosted
+instance runs) means **no AWS call is ever made**: tips come from templates built from the gate engine's own hint,
+labels from templates, voice from the phone's browser.
+
+| Service                                                                               | Used for                                                       | Guard rails in code                                                                                                                                                                                                                                                                                                                    |
+| ------------------------------------------------------------------------------------- | -------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Amazon Bedrock — Converse API** (`apps/server/src/ai/bedrock.ts`, `coach/coach.ts`) | One short, kind coaching tip when a learner is stuck on a step | model id only from `BEDROCK_MODEL_ID`; system prompt forbids diagnosis, injury, medication and numbers; `maxTokens 80`, `temperature 0.4`, 4 s abort; output filtered (≤ 25 words, banned medical terms, no digits) or the lesson's `fallbackTip` is used; cached by `lesson\|gate\|errorBucket\|language`; 1 call per learner per 8 s |
+| **Amazon Bedrock — Converse API** (`ai/labeler.ts`)                                   | Short labels and tips for the steps Creator Studio proposes    | strict JSON reply validated with zod; any failure keeps the deterministic template labels; each label passes the same safety filter                                                                                                                                                                                                    |
+| **Amazon Polly — neural** (`ai/voice.ts`)                                             | Spoken version of a tip in en-US / es-ES / hi-IN / fr-FR       | voice map per language, MP3 cached on disk by text hash, falls back to browser speech on the phone                                                                                                                                                                                                                                     |
+| **Shared daily budget** (`ai/budget.ts`)                                              | Every real call above                                          | `COACH_MAX_CALLS_PER_DAY` (default 300) across tips, labels and voice; counter in the logs                                                                                                                                                                                                                                             |
+
+What leaves the server: for a tip, a JSON object of numbers and short strings (lesson, gate, which joint is off and
+by roughly how much, attempt count, audience). Never video, images, landmark streams or names.
 
 ```bash
 MOCK_AI=false
-BEDROCK_MODEL_ID=<a text model enabled in your account/region>   # never hard-coded
+BEDROCK_MODEL_ID=amazon.nova-micro-v1:0     # any on-demand text model your account can call
 AWS_REGION=us-east-1
-POLLY_ENABLED=true                                              # optional neural voice
+POLLY_ENABLED=true
+pnpm aws:check                              # free calls only: identity, model list, Polly voices
+pnpm aws:check --probe --tts                # + one 5-token tip and one short synthesis
 ```
 
-Credentials come from the standard AWS chain (`aws configure`). How InStep uses AWS:
+### Verified against a real AWS account (Oct 21, 2026)
 
-- **Amazon Bedrock (Converse API)** — one short, kind coaching tip when a learner is stuck (≤ 80 output tokens,
-  4 s timeout, banned-medical-term and number filter, cache by lesson/gate/error/language), and short step labels for
-  Creator Studio's auto-gates (strict JSON validated with zod; templates on any failure).
-- **Amazon Polly** — neural voice for tips in en-US / es-ES / hi-IN / fr-FR, cached on disk by text hash.
-- **Cost guards** — one daily cap for all AI calls (`COACH_MAX_CALLS_PER_DAY`, default 300), 1 tip per learner per
-  8 s, a daily counter in the logs. Only numbers are sent — never video, images or landmark streams.
+`pnpm aws:check` (free control-plane calls only) against the developer's account: credentials valid, 49 on-demand
+text models listed in us-east-1 including `amazon.nova-micro-v1:0`, and all four neural Polly voices available.
 
-**Set an AWS Budgets alert before turning AI on:** AWS console → Billing and Cost Management → Budgets → Create
-budget → _Use a template: Monthly cost budget_ → amount `$5` → your email → Create.
+<p align="center"><img src="docs/screenshots/aws/aws-check.png" width="760" alt="pnpm aws:check output: credentials ok, 49 Bedrock models listed, nova-micro listed, Joanna/Lucia/Kajal/Lea neural voices available" /></p>
+
+The first real Converse call hit the account's **daily Bedrock token allowance** (a small per-day cap on new
+accounts, reset daily) — `ThrottlingException: Too many tokens per day`. That is exactly the case the coach is
+built for: the server logs it and answers with the lesson's own fallback tip, and nothing is charged.
+
+<p align="center"><img src="docs/screenshots/aws/bedrock-daily-quota.png" width="760" alt="aws bedrock-runtime converse returning ThrottlingException: Too many tokens per day" /></p>
+
+The hosted instance runs in mock mode. A real request to its coach endpoint answers in well under a second with the
+template tip (first call `source: "mock"`, repeats `source: "cache"`), and `/api/health` reports `mockAi: true`:
+
+<p align="center"><img src="docs/screenshots/aws/coach-hosted-mock.png" width="760" alt="curl to the hosted /api/coach returning a template tip with source cache, and /api/health with mockAi true" /></p>
+
+The coach, labeler and safety filter have 18 unit tests (model errors, malformed JSON, the daily cap, banned
+terms), plus 5 for the MCP server:
+
+<p align="center"><img src="docs/screenshots/aws/ai-tests.png" width="760" alt="vitest output: 23 passing tests for the coach, labeler, safety filter and MCP server" /></p>
+
+**Not yet shown:** a successful AI-written tip end to end. The account's daily quota was exhausted on the test day
+and the project rule is to spend only existing credits; the probe will be re-run with `pnpm aws:check --probe`
+once the quota resets. A budget alert should be set before switching `MOCK_AI` off: AWS console → Billing and Cost
+Management → Budgets → Create budget → _Monthly cost budget_ → `$5` → your email.
 
 ### Hosting (Render)
 

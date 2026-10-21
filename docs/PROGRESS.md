@@ -2,6 +2,17 @@
 
 Newest first. Each entry: what works, what doesn't, what changed from the spec and why.
 
+## 2026-10-21 — AWS verification (credits only, no card spend)
+
+- `pnpm aws:check`: free control-plane checks (STS identity, Bedrock model list, Polly voices) with optional
+  `--probe` (one 5-token Converse call) and `--tts` (one short synthesis). Against the developer's account:
+  credentials ok, 49 on-demand text models in us-east-1, all four neural Polly voices available.
+- The first real Converse call returned `ThrottlingException: Too many tokens per day` (new-account daily cap);
+  Claude 3 Haiku in ap-northeast-2 is retired for this account. No successful paid call was made; no budget was
+  created (owner declined). The coach's fallback path handled it as designed.
+- Real terminal captures (charmbracelet `freeze`) added to README: aws:check, the quota error, the hosted mock
+  coach call, and the AI/MCP unit tests. README's AWS section rewritten around what was actually verified.
+
 ## 2026-10-21 — Companion redesign, hosting, hardened MCP
 
 - **Companion redesign** (docs/09 tokens kept): the camera preview is a full-bleed hero with the connection badge

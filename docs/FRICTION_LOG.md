@@ -40,3 +40,13 @@ Only real experiences, recorded as they happen. Format from `docs/12-submission-
   request. Verified by an e2e test on every push.
 - Suggestion: for Fire TV devices with a camera, an on-device pose API would remove the need for a third-party
   web SDK entirely (see feature requests).
+
+### F-04: Bedrock daily token cap on a new account surfaces as a generic throttle
+
+- Task attempted: run one real coaching tip through Amazon Bedrock (Converse API) with `MOCK_AI=false`.
+- Steps taken: `aws bedrock-runtime converse --region us-east-1 --model-id amazon.nova-micro-v1:0 … --inference-config '{"maxTokens":5}'` with valid AdministratorAccess credentials; `amazon.nova-micro-v1:0` and `amazon.nova-lite-v1:0` were listed by `list-foundation-models`.
+- Expected: a reply, or a clear "model access not granted" message.
+- Actual: `ThrottlingException … Too many tokens per day, please wait before trying again` on the very first call of the day, for both Nova models; the Seoul Claude 3 Haiku model returned "marked by provider as Legacy".
+- Severity: Medium
+- Workaround: the coach already falls back to the lesson's template tip on any model error, so the product keeps working; `pnpm aws:check` reports which models the account can list and probes with a 5-token call.
+- Suggestion: return a distinct error code (and the reset time) for per-account daily allowances, and show the allowance in the Bedrock console next to model access.
