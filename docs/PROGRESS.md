@@ -2,6 +2,15 @@
 
 Newest first. Each entry: what works, what doesn't, what changed from the spec and why.
 
+## 2026-10-21 — Privacy finding: MediaPipe telemetry blocked
+
+The camera e2e test on CI caught `POST https://odml.pa.googleapis.com/v1/log` from the camera page: MediaPipe
+`tasks-vision` 1.1.1 always creates a usage logger that sends protobuf usage stats (not images) to Google every 60 s,
+with no option to turn it off. That contradicts "only body points leave the device", so the server now sends a strict
+**Content-Security-Policy** on `/c/*` (`connect-src 'self'`, `wasm-unsafe-eval` for MediaPipe): the browser blocks
+every request to any host other than the InStep server. The e2e test now asserts the CSP header, that no third-party
+response is ever received, and that a deliberate fetch to that endpoint is blocked. MediaPipe works unchanged.
+
 ## 2026-10-21 — Milestones 11 and 12 (prepared)
 
 - **M11:** `<GatedPlayer>` React Native component for Vega (`packages/gated-player/react-native/GatedPlayer.tsx`,

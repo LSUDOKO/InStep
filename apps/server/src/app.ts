@@ -8,6 +8,20 @@ import { aiRoutes } from './routes/ai';
 import { learnerRoutes } from './routes/learners';
 import { lessonRoutes } from './routes/lessons';
 
+export const COMPANION_CSP = [
+  "default-src 'self'",
+  "script-src 'self' 'wasm-unsafe-eval'",
+  "connect-src 'self'",
+  "img-src 'self' data: blob:",
+  "media-src 'self' blob: mediastream:",
+  "style-src 'self' 'unsafe-inline'",
+  "font-src 'self'",
+  "worker-src 'self' blob:",
+  "object-src 'none'",
+  "base-uri 'self'",
+  "frame-ancestors 'none'",
+].join('; ');
+
 const pkg = JSON.parse(readFileSync(new URL('../package.json', import.meta.url), 'utf8')) as {
   version: string;
 };
@@ -33,6 +47,15 @@ export async function buildApp(deps: Deps, tls?: { cert: Buffer; key: Buffer } |
       prefix: '/models/',
       decorateReply: false,
     });
+
+  // Privacy firewall for the companion (/c/): the browser may only talk to this InStep server.
+  // MediaPipe tasks-vision 1.1.1 always posts usage logs to a Google endpoint; connect-src 'self' blocks that
+  // (and anything else) at the browser level. 'wasm-unsafe-eval' is required to run MediaPipe's WASM.
+  app.addHook('onSend', async (req, reply, payload) => {
+    if (req.url.startsWith('/c/') || req.url === '/c')
+      reply.header('content-security-policy', COMPANION_CSP).header('referrer-policy', 'no-referrer');
+    return payload;
+  });
 
   app.get('/api/health', async () => ({ ok: true, version: pkg.version, mockAi: deps.config.MOCK_AI }));
   await app.register(lessonRoutes, deps);

@@ -176,6 +176,11 @@ export async function lessonRoutes(app: FastifyInstance, { lessons, relay, confi
           durationSec = Math.round(Number(stdout.trim()) * 10) / 10 || undefined;
         } catch (e) {
           log.error('transcode failed', { id: l.id, error: (e as Error).message });
+          if ((e as NodeJS.ErrnoException).code === 'ENOENT')
+            return reply.code(500).send({
+              error: 'FFMPEG_MISSING',
+              message: 'Video conversion is not available: ffmpeg is not installed on the InStep server.',
+            });
           return reply
             .code(422)
             .send({ error: 'TRANSCODE_FAILED', message: 'Could not convert this video. Try MP4 or WebM.' });

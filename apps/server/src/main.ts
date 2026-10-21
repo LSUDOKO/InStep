@@ -1,3 +1,4 @@
+import { execFileSync } from 'node:child_process';
 import { existsSync, readFileSync } from 'node:fs';
 import { join, resolve } from 'node:path';
 import { buildApp } from './app';
@@ -21,6 +22,11 @@ const dataDir = resolve(config.DATA_DIR);
 const db = openDb(join(dataDir, 'instep.sqlite'));
 const lessons = createLessonStore(db, join(dataDir, 'media'));
 lessons.seed(config.CONTENT_DIR);
+try {
+  execFileSync('ffmpeg', ['-version'], { stdio: 'ignore' });
+} catch {
+  log.warn('ffmpeg not found: Creator Studio uploads cannot be converted (install ffmpeg)');
+}
 const relay = createRelay({ publicUrl: config.PUBLIC_URL });
 const budget = createAiBudget(config.COACH_MAX_CALLS_PER_DAY);
 // Real AWS only when MOCK_AI=false (AWS usage is billed to you). The model id comes from BEDROCK_MODEL_ID.

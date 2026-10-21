@@ -33,11 +33,18 @@ test('joins by room code, streams landmarks to the TV, and measures 0 video byte
   const framesSent: (string | Buffer)[] = [];
   const uploads: string[] = [];
   page.on('websocket', (s) => s.on('framesent', (f) => framesSent.push(f.payload)));
+  const thirdParty: string[] = [];
   page.on('request', (r) => {
-    if (['POST', 'PUT', 'PATCH'].includes(r.method())) uploads.push(`${r.method()} ${r.url()}`);
+    if (['POST', 'PUT', 'PATCH'].includes(r.method()) && new URL(r.url()).hostname === 'localhost')
+      uploads.push(`${r.method()} ${r.url()}`);
+  });
+  page.on('response', (r) => {
+    if (new URL(r.url()).hostname !== 'localhost') thirdParty.push(r.url());
   });
 
-  await page.goto(`/c/?room=${tv.room}`);
+  const res = await page.goto(`/c/?room=${tv.room}`);
+  // Privacy firewall: the page may only talk to this InStep server.
+  expect(res?.headers()['content-security-policy']).toContain("connect-src 'self'");
   await expect(page.getByRole('heading', { name: 'Use this phone as the camera' })).toBeVisible();
   await expect(page.getByText('Your camera stays on this device')).toBeVisible();
   await expect(page.getByLabel('Room code on your TV')).toHaveValue(tv.room);
@@ -55,8 +62,16 @@ test('joins by room code, streams landmarks to the TV, and measures 0 video byte
   await expect(page.getByTestId('privacy-sample')).toContainText('"type": "landmarks"');
   await page.getByRole('button', { name: 'Close' }).click();
 
-  // Network: only JSON text frames over the WebSocket, no HTTP uploads.
+  // Network: only JSON text frames over the WebSocket, no HTTP uploads, nothing reaches a third party.
   expect(uploads).toEqual([]);
+  expect(thirdParty).toEqual([]);
+  const external = await page.evaluate(() =>
+    fetch('https://odml.pa.googleapis.com/v1/log', { method: 'POST' }).then(
+      () => 'sent',
+      () => 'blocked',
+    ),
+  );
+  expect(external).toBe('blocked');
   expect(framesSent.length).toBeGreaterThan(0);
   for (const p of framesSent) {
     expect(typeof p).toBe('string');
