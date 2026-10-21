@@ -176,6 +176,21 @@ pnpm test-tv             # terminal "TV": prints a join QR and reports landmarks
 pnpm e2e                 # Playwright with Chrome's fake camera
 ```
 
+### TV app (Vega Virtual Device)
+
+The TV app lives in `apps/tv` and is installed with **npm** (outside the pnpm workspace, like the official Vega
+samples); it consumes the shared packages from source through Metro.
+
+```bash
+cd apps/tv
+npm install
+npm run typecheck
+npm run build:debug                       # react-native build-kepler (needs the Vega SDK)
+vega run-app build/<arch>-debug/*.vpkg com.instep.tv.main -d VirtualDevice
+```
+
+On first launch open **Settings → Server address** if the VVD can't reach `http://10.0.2.2:8788`.
+
 ### AI and cost safety
 
 `MOCK_AI=true` is the default: coach tips come from templates and voice uses browser speech — no AWS calls.

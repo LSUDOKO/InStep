@@ -16,3 +16,13 @@ Only real experiences, recorded as they happen. Format from `docs/12-submission-
 - Workaround: _pending — result will be recorded after the Milestone 0 spike._
 - Suggestion: publish a container image (or documented distrobox/toolbox recipe) for the SDK + VVD, or list the
   exact host requirements (glibc, KVM, GPU) so other distributions can be supported.
+
+### F-02: Shared TypeScript packages need extra Babel plugins for the RN 0.72 Vega toolchain
+
+- Task attempted: bundle the Vega TV app with Metro, consuming the monorepo's shared TypeScript packages (gate engine, protocol, zod) from source.
+- Steps taken: `npx react-native bundle --entry-file index.js --platform kepler --dev false …` in `apps/tv` (RN 0.72.0, `metro-react-native-babel-preset` 0.76, as in `react-native-multi-tv-app-sample`).
+- Expected: modern TypeScript/ES2021 that runs in current browsers and Node also bundles for Vega.
+- Actual: `SyntaxError: Export namespace should be first transformed by @babel/plugin-transform-export-namespace-from` for `export * as rest from './rest'`; and `??=` / `||=` (from zod 4 and our code) passed through untransformed.
+- Severity: Medium
+- Workaround: rewrote the re-export as `import * as rest; export { rest }` and added `@babel/plugin-transform-logical-assignment-operators` + `@babel/plugin-transform-class-static-block` to `babel.config.js`. A CI job now bundles the TV app on every push.
+- Suggestion: document the JS syntax level supported by the Vega runtime (Hermes version) and ship a Babel preset for Vega that includes these transforms, or update the RN 0.72 template's preset.

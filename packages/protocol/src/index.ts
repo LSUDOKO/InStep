@@ -1,6 +1,8 @@
 export * from './ws';
 export * from './wire';
-export * as rest from './rest';
+// Plain re-export: RN 0.72's Babel preset (Vega) cannot parse `export * as rest`.
+import * as rest from './rest';
+export { rest };
 export type {
   Catalog,
   CoachRequest,

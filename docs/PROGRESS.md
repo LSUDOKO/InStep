@@ -2,6 +2,42 @@
 
 Newest first. Each entry: what works, what doesn't, what changed from the spec and why.
 
+## 2026-10-21 — Milestone 4 (part 2): TV app (Vega) — built, not yet run on the VVD
+
+**Built** (`apps/tv`, React Native 0.72 for Vega, wiring copied from `react-native-multi-tv-app-sample`: W3C media
+`VideoPlayer` + `KeplerVideoSurfaceView`, `TVEventHandler` remote keys, `react-tv-space-navigation` focus,
+`@amazon-devices/react-native-svg`, Vega async-storage):
+
+- Splash + server health check → designed retry screen with the server address and a Settings shortcut.
+- Profile picker (max 6) and Add profile (D-pad keyboard, colour, affected hand).
+- Home: header (relay status, My progress, Settings, profile), rotating hero for the two hero channels, one row per
+  channel with lesson cards (poster, duration, steps, difficulty, "New"). Empty channels are hidden; live refresh on
+  `catalog_updated`.
+- Lesson detail: poster, creator, what you need, camera placement, required disclaimer, steps list, Start /
+  Practice together.
+- Pair: QR + room code + URL, privacy line, peers as they join, auto-advance; Together mode shows a second QR for the
+  family member (guest role).
+- Camera check: live skeleton (or hand) with per-view checklist; "Looks good! 3-2-1" then the player.
+- Player: video 1280×720 + learner panel 560×720 (or skeleton over the video, from Settings); dashed teal instructor
+  ghost aligned to the learner's hips and torso; limbs coloured by joint error with a ring on the worst joint;
+  Delta Glow hand for sign gates; gate HUD (hold ring, rep counter with partials and pace chip, BPM meter with target
+  band and visual metronome, sequence breadcrumbs, safety checklist); coach caption (scaled by caption size) + voice
+  via companion speech; pass glow (+ stars for kids); sway-stop rest screen (OK + 2 s steady); camera-lost screen with
+  room code and countdown; pause overlay; Back → "Leave this lesson?"; CPR disclaimer always on screen; remote: Play/
+  Pause, Left = repeat, Right = skip (only when allowed), Menu = easier, OK = resume after rest.
+- Session summary (time, steps, reps, best hold, rhythm, rest breaks, easier mode, disclaimer, share-report QR),
+  My progress (14-day bars, totals, streak), Settings (server URL, coach language, caption size, voice, skeleton view,
+  high contrast, reduce motion, about) persisted with Vega async-storage.
+
+**Verified here (no Vega SDK on this machine):** `tsc` passes against the real `@amazon-devices/*` typings; Metro
+bundles the app for `--platform kepler` (now a CI job); 9 Node tests for the TV logic (store, API client, relay
+client with reconnect/room rejoin/stale-frame drop, lesson session: lesson_tracking, ≤ 5 gate_state/s, coach caption +
+companion speech, gate_result, session saved once, companion controls).
+
+**Not verified yet — needs the Vega Virtual Device (Milestone 0):** that the video surface, seek/pause precision,
+WebSocket to the host, SVG overlay frame rate and the 10.0.2.2 host address work as assumed. The TV app has not been
+launched yet. Fonts: system font for now (bundling Inter on Vega not yet tried).
+
 ## 2026-10-21 — Milestone 4 (part 1): gated-player controller
 
 **Works (platform-independent, tested in Node):** `@instep/gated-player` `createGatedPlayer()` — the timing core of

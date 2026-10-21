@@ -1,0 +1,47 @@
+{
+  "name": "@instep/tv",
+  "version": "0.1.0",
+  "private": true,
+  "description": "InStep TV app for Fire TV (Vega OS).",
+  "license": "MIT",
+  "scripts": {
+    "start": "react-native start",
+    "build:debug": "react-native build-kepler --build-type Debug",
+    "build:release": "react-native build-kepler --build-type Release",
+    "typecheck": "tsc --noEmit -p ."
+  },
+  "dependencies": {
+    "@amazon-devices/kepler-media-controls": "^1.0.0",
+    "@amazon-devices/kepler-media-types": "^1.0.0",
+    "@amazon-devices/react-native-async-storage__async-storage": "^2.0.1758683737",
+    "@amazon-devices/react-native-kepler": "^2.0.0",
+    "@amazon-devices/react-native-svg": "~2.0.0",
+    "@amazon-devices/react-native-w3cmedia": "~2.1.0",
+    "@bam.tech/lrud": "8.0.2",
+    "qrcode": "1.5.4",
+    "react": "18.2.0",
+    "react-native": "0.72.0",
+    "react-tv-space-navigation": "5.2.0",
+    "zod": "^4.6.7"
+  },
+  "devDependencies": {
+    "@amazon-devices/kepler-cli-platform": "^0",
+    "@babel/core": "^7.29.6",
+    "@babel/plugin-transform-class-static-block": "^7.28.0",
+    "@babel/plugin-transform-logical-assignment-operators": "^7.27.1",
+    "@react-native-community/cli": "17.0.1",
+    "@react-native/metro-config": "^0.72.6",
+    "@tsconfig/react-native": "^3.0.2",
+    "@types/qrcode": "1.5.6",
+    "@types/react": "^18.0.24",
+    "metro-react-native-babel-preset": "^0.76.5",
+    "typescript": "~5.9.3"
+  },
+  "kepler": {
+    "projectType": "application",
+    "appName": "InStep",
+    "targets": [
+      "tv"
+    ]
+  }
+}

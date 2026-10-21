@@ -1,0 +1,22 @@
+{
+  "extends": "@tsconfig/react-native/tsconfig.json",
+  "compilerOptions": {
+    "strict": true,
+    "noUncheckedIndexedAccess": true,
+    "skipLibCheck": true,
+    "moduleResolution": "bundler",
+    "module": "esnext",
+    "allowImportingTsExtensions": false,
+    "types": ["@amazon-devices/react-native-kepler"],
+    "paths": {
+      "@instep/istep-format": ["../../packages/istep-format/src"],
+      "@instep/gate-engine": ["../../packages/gate-engine/src"],
+      "@instep/gate-engine/fixtures": ["../../packages/gate-engine/src/fixtures"],
+      "@instep/protocol": ["../../packages/protocol/src"],
+      "@instep/gated-player": ["../../packages/gated-player/src"],
+      "react-native-svg": ["./node_modules/@amazon-devices/react-native-svg"]
+    }
+  },
+  "include": ["src", "index.js"],
+  "exclude": ["src/**/*.test.ts"]
+}

@@ -2,7 +2,8 @@ dist
 coverage
 pnpm-lock.yaml
 docs/*.md
-apps/tv
+apps/tv/node_modules
+apps/tv/package-lock.json
 data
 packages/istep-format/schema
 apps/companion/public/models
