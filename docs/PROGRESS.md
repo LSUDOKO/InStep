@@ -2,6 +2,49 @@
 
 Newest first. Each entry: what works, what doesn't, what changed from the spec and why.
 
+## 2026-10-21 — Milestones 7, 9, 10 + parts of 5 and 8
+
+**Milestone 7 — Creator Studio (works, browser e2e test green):** `/c/creator` PIN gate → lesson list (yours +
+built-in read-only) → new lesson (channel presets incl. required safety notes) → record demonstration (MediaRecorder
+MP4/WebM + MediaPipe landmarks at 15 fps, visible REC + timer, 60 s cap) or upload a video (landmarks extracted in the
+browser) → upload with progress (counted by the video meter) → server re-encodes to H.264, makes a poster and reads
+the duration with ffprobe → **auto-gates** (deterministic still-moment detection in `gate-engine/autogates.ts`;
+fall lessons always start with the chair safety check; rehab detects the repetition period by autocorrelation) →
+timeline editor (markers, dashed reference skeleton over the video, per-step fields, add/delete, "use current
+time") → live "try this step with my camera" using the same engine → save / publish → `catalog_updated` to TVs.
+Playwright test: record → upload → suggested steps → publish → a TV receives `catalog_updated` (1.2 min on CI CPU).
+
+**Milestone 9 — AWS (code done, not yet run against AWS):** Bedrock Converse client (dynamic import, model from
+`BEDROCK_MODEL_ID`, abort timeout), coach tips, AI step labels (strict JSON + zod + safety filter, templates on
+failure), Polly neural voice with disk cache and `/voice/*.mp3`, one shared daily AI budget with logged counter.
+Default remains `MOCK_AI=true`. **Needs you:** `MOCK_AI=false` test with your AWS account + a $5 budget alert.
+
+**Milestone 10 — reports, hands-free, accessibility:** report page `/c/report/:token` (adherence vs plan, reps per
+day, rest breaks, steps that needed tips, sessions; print-friendly; "No video is ever recorded or stored");
+raise-hand gesture (wrist above nose 1.5 s, 3 s cool-down, only when the lesson's poses don't raise arms) and
+push-to-talk voice commands (pause / play / repeat / easier / next / OK) on the companion; TV accessibility settings
+(high contrast, caption size, reduce motion) were done in M4.
+
+**Milestone 8 (part):** CPR metronome — the TV sends `metronomeBpm` in `gate_state` and the phone plays an original
+synthesized click (Web Audio); the TV shows a visual beat. **Kids lesson video generated** by
+`scripts/make-kids-video.sh`: original illustrated title cards (no people) timed to the four gates — the first lesson
+that is published end to end without recording anyone.
+
+**Milestone 5 (part):** progression level per fall lesson (`lesson.json` → shown on the TV lesson page).
+
+**Changes from the spec**
+
+| Change | Why |
+| --- | --- |
+| Still detection uses the fastest joint's speed, not the mean | Averaging over nine joints hid single-joint movements in tests. |
+| Auto-gates endpoint is `POST /api/lessons/:id/autogates` (uses the uploaded reference) | No need to send the reference twice. |
+| Added `GET /api/creator/check`, `editable` and `level` lesson fields, `metronomeBpm` in `gate_state` | PIN check, Creator Studio and the CPR metronome need them. |
+| Metronome sound plays on the phone, not the TV | Playing short clips on the TV is unverified until the Vega spike. |
+
+**Still needs real content / devices:** fall, sign, rehab and CPR videos (recorded by you / a physio / a Deaf
+signer), the Vega Virtual Device run (M0/M4), gate tuning rehearsals (10× per gate), and the real-phone fps check.
+235 unit/integration tests + 6 Playwright e2e tests pass.
+
 ## 2026-10-21 — Milestone 4 (part 2): TV app (Vega) — built, not yet run on the VVD
 
 **Built** (`apps/tv`, React Native 0.72 for Vega, wiring copied from `react-native-multi-tv-app-sample`: W3C media

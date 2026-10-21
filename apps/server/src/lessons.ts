@@ -17,7 +17,7 @@ export const CHANNEL_TITLES: Record<Channel, string> = {
 /** Hero channels first. */
 export const CHANNEL_ORDER: Channel[] = ['fall_prevention', 'sign_language', 'stroke_rehab', 'cpr', 'kids'];
 
-export type LessonMeta = { needs: string[]; difficulty: number; source: 'seed' | 'studio' };
+export type LessonMeta = { needs: string[]; difficulty: number; source: 'seed' | 'studio'; level?: string };
 export type LessonAssets = { dir: string; video?: string; poster?: string; reference?: string };
 export type LessonRow = {
   id: string;
@@ -96,6 +96,7 @@ export function createLessonStore(db: Db, mediaDir: string, now: () => number = 
         gateCount: l.track.gates.length,
         difficulty: l.meta.difficulty,
         isNew: l.meta.source === 'studio' && now() - Date.parse(l.createdAt) < NEW_FOR_MS,
+        editable: l.meta.source === 'studio',
         posterUrl: l.assets.poster ? `/media/${l.id}/${l.assets.poster}` : null,
       };
     },
@@ -106,6 +107,7 @@ export function createLessonStore(db: Db, mediaDir: string, now: () => number = 
         referenceUrl: l.assets.reference ? `/media/${l.id}/${l.assets.reference}` : null,
         videoUrl: l.assets.video ? `/media/${l.id}/${l.assets.video}` : null,
         needs: l.meta.needs,
+        level: l.meta.level ?? null,
         disclaimer: l.track.disclaimer ?? null,
       };
     },
@@ -163,7 +165,12 @@ export function createLessonStore(db: Db, mediaDir: string, now: () => number = 
             ...(has('poster.jpg') ? { poster: 'poster.jpg' } : {}),
             ...(v.value.reference && has(v.value.reference.src) ? { reference: v.value.reference.src } : {}),
           },
-          meta: { needs: meta.needs ?? [], difficulty: meta.difficulty ?? 1, source: 'seed' },
+          meta: {
+            needs: meta.needs ?? [],
+            difficulty: meta.difficulty ?? 1,
+            source: 'seed',
+            ...(meta.level ? { level: meta.level } : {}),
+          },
         });
         n++;
       }

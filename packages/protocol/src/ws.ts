@@ -81,6 +81,8 @@ export const GateState = z.object({
   label: z.string(),
   /** for Together mode: whose state this is */
   peerId: z.string().optional(),
+  /** rhythm gates: the companion plays a metronome click at this tempo */
+  metronomeBpm: z.number().positive().max(240).optional(),
 });
 export const GateResult = z.object({
   type: z.literal('gate_result'),

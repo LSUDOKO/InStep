@@ -10,3 +10,4 @@ export * from './runner';
 export * from './safetyMonitor';
 export * from './sway';
 export * from './tolerance';
+export * from './autogates';

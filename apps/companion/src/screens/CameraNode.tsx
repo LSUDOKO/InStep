@@ -8,6 +8,7 @@ import {
   Loader2,
   Lock,
   LogOut,
+  Mic,
   RefreshCw,
   SwitchCamera,
   Tv,
@@ -22,7 +23,15 @@ import { PrivacyPill } from '../components/PrivacyPill';
 import { buildLandmarksMessage, RateLimiter, type VisionResult } from '../lib/landmarks';
 import { placementAdvice, type CameraView, type Placement } from '../lib/placement';
 import { RelayClient, relayUrl, type RelayState } from '../lib/relay';
-import type { Tracker, Vision } from '../lib/vision';
+import { getVision, loadedVision } from '../lib/getVision';
+import { Metronome } from '../lib/metronome';
+import {
+  listenOnce,
+  parseVoiceCommand,
+  RaiseHandDetector,
+  speechRecognitionAvailable,
+} from '../lib/handsfree';
+import type { Tracker } from '../lib/vision';
 
 type Phase =
   | { kind: 'join'; error?: string }
@@ -31,16 +40,11 @@ type Phase =
   | { kind: 'models'; done: number; total: number }
   | { kind: 'live' };
 
-type Lesson = { lessonId: string; tracking: Tracker[]; view: CameraView; hint?: string };
+type Lesson = { lessonId: string; tracking: Tracker[]; view: CameraView; hint?: string; gestures: boolean };
 type GateInfo = Extract<Message, { type: 'gate_state' }>;
 
 const MAX_SEND_PER_SEC = 30;
-let vision: Vision | null = null;
-/** MediaPipe is ~400 KB of JS: load it only when the camera starts, so the join screen opens fast. */
-async function getVision(): Promise<Vision> {
-  if (!vision) vision = new (await import('../lib/vision')).Vision();
-  return vision;
-}
+const metronome = new Metronome();
 
 /** Compact, readable copy of the last message for the privacy sheet. */
 function sample(m: unknown): string {
@@ -64,7 +68,12 @@ export function CameraNode() {
   const [stream, setStream] = useState<MediaStream | null>(null);
   const [facing, setFacing] = useState<'user' | 'environment'>('user');
   const [hidePreview, setHidePreview] = useState(false);
-  const [lesson, setLesson] = useState<Lesson>({ lessonId: '', tracking: ['pose'], view: 'front' });
+  const [lesson, setLesson] = useState<Lesson>({
+    lessonId: '',
+    tracking: ['pose'],
+    view: 'front',
+    gestures: false,
+  });
   const [loadingTrackers, setLoadingTrackers] = useState(false);
   const [placement, setPlacement] = useState<Placement | null>(null);
   const [gate, setGate] = useState<GateInfo | null>(null);
@@ -113,6 +122,7 @@ export function CameraNode() {
   }, []);
 
   const start = useCallback(async () => {
+    metronome.unlock(); // a user gesture: allowed to make sound later
     if (!(await openCamera(facing))) return;
     setPhase({ kind: 'models', done: 0, total: 1 });
     try {
@@ -153,6 +163,7 @@ export function CameraNode() {
             lessonId: m.lessonId,
             tracking: m.tracking,
             view: m.cameraView,
+            gestures: m.gesturesEnabled,
             ...(m.hint ? { hint: m.hint } : {}),
           };
           setLoadingTrackers(true);
@@ -160,8 +171,11 @@ export function CameraNode() {
             .then((v) => v.ensure(m.tracking))
             .then(() => setLesson(next))
             .finally(() => setLoadingTrackers(false));
-        } else if (m.type === 'gate_state') setGate(m);
-        else if (m.type === 'gate_result') {
+        } else if (m.type === 'gate_state') {
+          setGate(m);
+          metronome.set(m.status !== 'passed' ? (m.metronomeBpm ?? null) : null);
+        } else if (m.type === 'gate_result') {
+          metronome.stop();
           setToast('Nice! Step passed');
           navigator.vibrate?.(120);
           setTimeout(() => setToast(null), 1600);
@@ -169,7 +183,10 @@ export function CameraNode() {
           const u = new SpeechSynthesisUtterance(m.text);
           u.lang = m.language;
           speechSynthesis.speak(u);
-        } else if (m.type === 'lesson_ended') setGate(null);
+        } else if (m.type === 'lesson_ended') {
+          setGate(null);
+          metronome.stop();
+        }
       },
     });
     return undefined;
@@ -193,6 +210,7 @@ export function CameraNode() {
     let fpsNow = 0;
     let lastPlacement = 0;
     const limiter = new RateLimiter(MAX_SEND_PER_SEC);
+    const raise = new RaiseHandDetector();
     let last: unknown = null;
     const fpsTimer = setInterval(() => {
       fpsNow = frames;
@@ -210,6 +228,7 @@ export function CameraNode() {
       lastVideoTime = v.currentTime;
       const now = performance.now();
       const { tracking, view } = lessonRef.current;
+      const vision = loadedVision();
       if (!vision) return;
       const r = vision.detect(v, tracking, now);
       frames++;
@@ -217,6 +236,15 @@ export function CameraNode() {
       if (now - lastPlacement > 250) {
         lastPlacement = now;
         setPlacement(placementAdvice(view, r, tracking));
+      }
+      // Hands-free: raise a hand for 1.5 s to pause/resume (only when the lesson's poses don't raise arms).
+      if (
+        lessonRef.current.gestures &&
+        lessonRef.current.tracking.includes('pose') &&
+        raise.push(r.pose, now)
+      ) {
+        relay.current?.send({ type: 'control', action: 'toggle_pause', source: 'gesture' });
+        flashRef.current('Hand raised — pause / play');
       }
       if (limiter.allow(now) && relay.current?.open) {
         const msg = buildLandmarksMessage(r, { seq: seq++, ts: Date.now(), role, tracking, fps: fpsNow });
@@ -230,6 +258,28 @@ export function CameraNode() {
       clearInterval(sampleTimer);
     };
   }, [phase.kind, role]);
+
+  const flash = useCallback((text: string) => {
+    setToast(text);
+    setTimeout(() => setToast(null), 1600);
+  }, []);
+  const flashRef = useRef(flash);
+  const [listening, setListening] = useState(false);
+  const voice = async () => {
+    setListening(true);
+    try {
+      const heard = await listenOnce('en-US');
+      const action = parseVoiceCommand(heard);
+      if (action) {
+        relay.current?.send({ type: 'control', action, source: 'voice' });
+        flash(`“${heard}” → ${action}`);
+      } else flash(`Heard “${heard}” — try “pause”, “play”, “repeat” or “easier”`);
+    } catch (e) {
+      flash((e as Error).message);
+    } finally {
+      setListening(false);
+    }
+  };
 
   const leave = () => {
     relay.current?.close();
@@ -444,6 +494,14 @@ export function CameraNode() {
               {gate.worst && <p className="muted">{gate.worst.hint}</p>}
             </div>
           )}
+          {speechRecognitionAvailable() && (
+            <button className="btn ghost block" onClick={() => void voice()} disabled={listening}>
+              <Mic size={20} /> {listening ? 'Listening…' : 'Say a command (pause, play, repeat, easier)'}
+            </button>
+          )}
+          {lesson.gestures && (
+            <p className="muted small">Tip: raise one hand above your head for 2 seconds to pause or play.</p>
+          )}
           <div className="row">
             <button
               className="btn ghost grow"
@@ -470,7 +528,7 @@ export function CameraNode() {
           </div>
           <p className="muted small">
             Room {room} · {role === 'guest' ? `Together mode as ${name}` : 'Camera'} · {fps} fps ·{' '}
-            {vision?.delegate ?? ''}
+            {loadedVision()?.delegate ?? ''}
           </p>
         </div>
       </div>

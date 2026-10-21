@@ -1,19 +1,36 @@
 import type { CoachRequest, CoachResponse } from '@instep/protocol';
+import type { AiBudget } from '../ai/budget';
+import type { TextModel } from '../ai/bedrock';
 import type { Db } from '../db';
 import { logger } from '../log';
 import { filterTip } from './filter';
+import { coachSystemPrompt } from './prompt';
 
 const log = logger('coach');
 
-/** Generates a tip with a real model. Implemented for Bedrock in the AWS milestone. */
+/** Generates a tip with a real model. */
 export type TipGenerator = (req: CoachRequest) => Promise<string>;
+
+/** Coach tips from Amazon Bedrock: ≤ 80 output tokens, temperature 0.4, 4 s timeout (docs/07 §5). */
+export function bedrockTipGenerator(model: TextModel): TipGenerator {
+  return (req) => {
+    const { profileId: _p, ...rest } = req; // no names or ids beyond the lesson context
+    return model({
+      system: coachSystemPrompt(req.language, req.audience),
+      user: JSON.stringify(rest),
+      maxTokens: 80,
+      temperature: 0.4,
+      timeoutMs: 4000,
+    });
+  };
+}
 
 export type CoachOptions = {
   db: Db;
   mock: boolean;
   generate?: TipGenerator;
   minIntervalSec: number;
-  maxCallsPerDay: number;
+  budget: AiBudget;
   now?: () => number;
 };
 
@@ -31,8 +48,6 @@ export function mockTip(req: CoachRequest): string {
 export function createCoach(opts: CoachOptions) {
   const now = opts.now ?? Date.now;
   const lastCall = new Map<string, number>();
-  let day = '';
-  let aiCallsToday = 0;
 
   const getCached = opts.db.prepare('SELECT tip FROM coach_cache WHERE key = ?');
   const putCached = opts.db.prepare(
@@ -41,7 +56,7 @@ export function createCoach(opts: CoachOptions) {
 
   return {
     get aiCallsToday() {
-      return aiCallsToday;
+      return opts.budget.used;
     },
     async tip(req: CoachRequest): Promise<CoachResponse> {
       const key = [req.lessonId, req.gateId, req.errorBucket, req.language].join('|');
@@ -60,17 +75,7 @@ export function createCoach(opts: CoachOptions) {
         return { tip, source: 'mock' };
       }
 
-      const today = new Date(t).toISOString().slice(0, 10);
-      if (today !== day) {
-        day = today;
-        aiCallsToday = 0;
-      }
-      if (aiCallsToday >= opts.maxCallsPerDay) {
-        log.warn('daily AI limit reached', { limit: opts.maxCallsPerDay });
-        return { tip: req.fallbackTip, source: 'fallback' };
-      }
-      aiCallsToday++;
-      log.info('ai call', { aiCallsToday, limit: opts.maxCallsPerDay });
+      if (!opts.budget.take('coach')) return { tip: req.fallbackTip, source: 'fallback' };
       try {
         const tip = filterTip(await opts.generate(req));
         if (!tip) return { tip: req.fallbackTip, source: 'fallback' };

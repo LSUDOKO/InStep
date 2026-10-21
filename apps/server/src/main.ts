@@ -1,7 +1,11 @@
 import { existsSync, readFileSync } from 'node:fs';
 import { join, resolve } from 'node:path';
 import { buildApp } from './app';
-import { createCoach } from './coach/coach';
+import { createAiBudget } from './ai/budget';
+import { createBedrockText } from './ai/bedrock';
+import { createLabeler } from './ai/labeler';
+import { createVoice } from './ai/voice';
+import { bedrockTipGenerator, createCoach } from './coach/coach';
 import { loadConfig } from './config';
 import { openDb } from './db';
 import { createLessonStore } from './lessons';
@@ -18,13 +22,24 @@ const db = openDb(join(dataDir, 'instep.sqlite'));
 const lessons = createLessonStore(db, join(dataDir, 'media'));
 lessons.seed(config.CONTENT_DIR);
 const relay = createRelay({ publicUrl: config.PUBLIC_URL });
+const budget = createAiBudget(config.COACH_MAX_CALLS_PER_DAY);
+// Real AWS only when MOCK_AI=false (AWS usage is billed to you). The model id comes from BEDROCK_MODEL_ID.
+const model = config.MOCK_AI
+  ? undefined
+  : await createBedrockText(config.BEDROCK_MODEL_ID, config.AWS_REGION);
 const coach = createCoach({
   db,
   mock: config.MOCK_AI,
+  ...(model ? { generate: bedrockTipGenerator(model) } : {}),
   minIntervalSec: config.COACH_MIN_INTERVAL_SEC,
-  maxCallsPerDay: config.COACH_MAX_CALLS_PER_DAY,
+  budget,
 });
-const deps = { config, db, lessons, coach, relay, now: Date.now };
+const labeler = createLabeler({ ...(model ? { model } : {}), budget });
+const voice =
+  !config.MOCK_AI && config.POLLY_ENABLED
+    ? await createVoice({ dir: join(dataDir, 'voice'), region: config.AWS_REGION, budget })
+    : null;
+const deps = { config, db, lessons, coach, labeler, voice, relay, now: Date.now };
 
 const tls =
   config.HTTPS_CERT && config.HTTPS_KEY && existsSync(config.HTTPS_CERT) && existsSync(config.HTTPS_KEY)
@@ -48,6 +63,8 @@ log.info('ready', {
   tv: `http://${config.HOST}:${config.TV_HTTP_PORT}`,
   publicUrl: config.PUBLIC_URL,
   mockAi: config.MOCK_AI,
+  polly: !!voice,
+  aiCallsPerDay: config.COACH_MAX_CALLS_PER_DAY,
 });
 
 for (const sig of ['SIGINT', 'SIGTERM'] as const)

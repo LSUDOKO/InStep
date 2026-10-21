@@ -52,9 +52,9 @@ describe('health and catalog', () => {
       'kids',
     ]);
     const ids = c.channels.flatMap((x: { lessons: { id: string }[] }) => x.lessons.map((l) => l.id));
-    expect(ids).toEqual(['fall-heel-raise-v1']);
+    expect(ids).toEqual(['fall-heel-raise-v1', 'kids-forest-walk-v1']); // kids video is generated (scripts/make-kids-video.sh)
   });
-  it('?all=1 includes the 6 drafts waiting for video', async () => {
+  it('?all=1 also includes the drafts waiting for video', async () => {
     const c = (await json('GET', '/api/lessons?all=1')).json();
     expect(c.channels.flatMap((x: { lessons: unknown[] }) => x.lessons)).toHaveLength(7);
   });
@@ -181,6 +181,8 @@ describe('creator flow', () => {
   const pin = { 'x-creator-pin': PIN };
   let id = '';
   it('requires the creator PIN', async () => {
+    expect((await json('GET', '/api/creator/check')).statusCode).toBe(401);
+    expect((await json('GET', '/api/creator/check', undefined, pin)).statusCode).toBe(204);
     expect(
       (await json('POST', '/api/lessons', { title: 'x', channel: 'kids', creator: 'me' })).statusCode,
     ).toBe(401);
@@ -272,6 +274,18 @@ describe('creator flow', () => {
       headers: { ...pin, 'content-type': mp.type },
     });
     expect(r.statusCode).toBe(400);
+  });
+  it('probes the video duration and proposes auto-gates from the reference', async () => {
+    const track = (await json('GET', `/api/lessons/${id}/track`)).json();
+    expect(track.video.durationSec).toBeCloseTo(2, 0);
+    expect((await json('POST', `/api/lessons/fall-heel-raise-v1/autogates`, undefined, pin)).statusCode).toBe(
+      400,
+    );
+    const r = await json('POST', `/api/lessons/${id}/autogates`, undefined, pin);
+    expect(r.statusCode, r.body).toBe(200);
+    expect(r.json().labels).toBe('template');
+    expect(r.json().gates[0]).toMatchObject({ type: 'safety_prerequisite' }); // fall prevention always starts with the chair check
+    expect((await json('GET', `/api/lessons/${id}`)).json().editable).toBe(true);
   });
   it('validates the track, publishes and broadcasts catalog_updated', async () => {
     const track = (await json('GET', `/api/lessons/${id}/track`)).json();

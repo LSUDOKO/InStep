@@ -1,9 +1,10 @@
 import { execFile } from 'node:child_process';
 import { randomBytes } from 'node:crypto';
-import { createWriteStream, existsSync, mkdirSync, rmSync, writeFileSync } from 'node:fs';
+import { createWriteStream, existsSync, mkdirSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { pipeline } from 'node:stream/promises';
 import { promisify } from 'node:util';
+import { autoGates } from '@instep/gate-engine';
 import { Channel, validateReference, validateTrack, type IstepTrack } from '@instep/istep-format';
 import type { FastifyInstance } from 'fastify';
 import { z } from 'zod';
@@ -14,7 +15,7 @@ import { creatorGuard, parse } from './util';
 const run = promisify(execFile);
 const log = logger('lessons');
 
-const DEFAULT_DISCLAIMERS: Partial<Record<z.infer<typeof Channel>, string>> = {
+export const DEFAULT_DISCLAIMERS: Partial<Record<z.infer<typeof Channel>, string>> = {
   fall_prevention:
     'Use exercises prescribed or approved by your physiotherapist. Stop if you feel pain, dizziness or unsteadiness.',
   stroke_rehab:
@@ -48,8 +49,10 @@ const slug = (s: string) =>
     .replace(/^-|-$/g, '')
     .slice(0, 40) || 'lesson';
 
-export async function lessonRoutes(app: FastifyInstance, { lessons, relay, config }: Deps) {
+export async function lessonRoutes(app: FastifyInstance, { lessons, relay, config, labeler }: Deps) {
   const guard = creatorGuard(config.CREATOR_PIN);
+
+  app.get('/api/creator/check', { preHandler: guard }, async (_req, reply) => reply.code(204).send());
 
   app.get('/api/lessons', async (req) => lessons.catalog((req.query as { all?: string }).all === '1'));
 
@@ -117,6 +120,7 @@ export async function lessonRoutes(app: FastifyInstance, { lessons, relay, confi
     const dir = l.assets.dir;
     mkdirSync(dir, { recursive: true });
     const assets = { ...l.assets };
+    let durationSec: number | undefined;
     for await (const part of req.parts()) {
       if (part.type !== 'file') continue;
       if (part.fieldname === 'video') {
@@ -160,6 +164,16 @@ export async function lessonRoutes(app: FastifyInstance, { lessons, relay, confi
           ]);
           assets.video = 'video.mp4';
           assets.poster ??= 'poster.jpg';
+          const { stdout } = await run('ffprobe', [
+            '-v',
+            'error',
+            '-show_entries',
+            'format=duration',
+            '-of',
+            'csv=p=0',
+            join(dir, 'video.mp4'),
+          ]);
+          durationSec = Math.round(Number(stdout.trim()) * 10) / 10 || undefined;
         } catch (e) {
           log.error('transcode failed', { id: l.id, error: (e as Error).message });
           return reply
@@ -182,7 +196,11 @@ export async function lessonRoutes(app: FastifyInstance, { lessons, relay, confi
         assets.poster = 'poster.jpg';
       } else part.file.resume();
     }
-    lessons.save({ ...l, assets });
+    lessons.save({
+      ...l,
+      assets,
+      track: durationSec ? { ...l.track, video: { ...l.track.video, durationSec } } : l.track,
+    });
     return lessons.detail(lessons.get(l.id)!);
   });
 
@@ -199,6 +217,25 @@ export async function lessonRoutes(app: FastifyInstance, { lessons, relay, confi
         .send({ error: 'INVALID_TRACK', errors: [{ path: 'id', message: 'id must match the lesson' }] });
     lessons.save({ ...l, track: v.value });
     return { ok: true };
+  });
+
+  /** Proposes gates from the uploaded reference timeline (deterministic), with optional AI wording. */
+  app.post('/api/lessons/:id/autogates', { preHandler: guard }, async (req, reply) => {
+    const l = lessons.get((req.params as { id: string }).id);
+    if (!l) return reply.code(404).send({ error: 'NOT_FOUND', message: 'No such lesson' });
+    if (!l.assets.reference || !existsSync(join(l.assets.dir, l.assets.reference)))
+      return reply
+        .code(400)
+        .send({ error: 'NO_REFERENCE', message: 'Record or upload a demonstration first.' });
+    const ref = validateReference(JSON.parse(readFileSync(join(l.assets.dir, l.assets.reference), 'utf8')));
+    if (!ref.ok) return reply.code(400).send({ error: 'BAD_REFERENCE', message: ref.errors[0]!.message });
+    const gates = autoGates({
+      reference: ref.value,
+      channel: l.track.channel,
+      durationSec: l.track.video.durationSec,
+    });
+    const labelled = await labeler.label(l.track.channel, l.track.language, gates);
+    return { gates: labelled.gates, labels: labelled.source };
   });
 
   app.post('/api/lessons/:id/publish', { preHandler: guard }, async (req, reply) => {

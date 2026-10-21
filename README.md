@@ -167,6 +167,12 @@ The server listens twice: **HTTPS on `PORT`** for phones and laptops (camera acc
 **plain HTTP/WS on `TV_HTTP_PORT`** for the Vega TV app, so the TV never has to trust a self-signed certificate.
 Lessons in `content/lessons/` are seeded on start; a lesson appears in the catalog only once its video is recorded.
 
+### Creator Studio
+
+Open `https://<LAN-IP>:8787/c/creator` on a phone, enter the `CREATOR_PIN`, create a lesson, record the
+demonstration (video + body points at 15 fps, visible REC indicator, max 60 s) or upload a video, review the
+suggested steps on the timeline, try any step with your own camera, and publish — the lesson appears on every TV.
+
 ### Companion (phone camera)
 
 ```bash
@@ -193,9 +199,24 @@ On first launch open **Settings → Server address** if the VVD can't reach `htt
 
 ### AI and cost safety
 
-`MOCK_AI=true` is the default: coach tips come from templates and voice uses browser speech — no AWS calls.
-Real Amazon Bedrock / Polly are used only with `MOCK_AI=false`; the model is read from `BEDROCK_MODEL_ID`.
-Tips are cached and rate-limited (1 call / learner / 8 s, 300 / day).
+`MOCK_AI=true` is the default: coach tips and step labels come from templates and voice uses the phone's browser
+speech — no AWS calls. To use AWS (billed to your account):
+
+```bash
+MOCK_AI=false
+BEDROCK_MODEL_ID=<a text model enabled in your account/region>   # never hard-coded
+AWS_REGION=us-east-1
+POLLY_ENABLED=true                                              # optional: neural voice for tips
+```
+
+AWS credentials come from the standard chain (`aws configure`). How InStep uses AWS:
+
+- **Amazon Bedrock (Converse API)** — one short, kind coaching tip when a learner is stuck (≤ 80 output tokens,
+  4 s timeout, banned-medical-term and number filter, cache by lesson/gate/error/language), and short step labels
+  for Creator Studio's auto-gates (strict JSON validated with zod; templates on any failure).
+- **Amazon Polly** — neural voice for tips in en-US / es-ES / hi-IN / fr-FR, cached on disk by text hash.
+- **Cost guards** — one daily cap for all AI calls (`COACH_MAX_CALLS_PER_DAY`, default 300), 1 tip / learner / 8 s,
+  daily call counter in the logs. Only numbers are sent — never video, images or landmark streams.
 
 **Set an AWS Budgets alert before turning AI on:** AWS console → Billing and Cost Management → Budgets →
 Create budget → _Use a template: Monthly cost budget_ → amount `$5` → your email → Create.

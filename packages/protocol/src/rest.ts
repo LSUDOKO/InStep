@@ -25,6 +25,8 @@ export const LessonSummary = z.object({
   gateCount: z.number().int(),
   difficulty: z.number().int().min(1).max(3),
   isNew: z.boolean(),
+  /** created in Creator Studio (seed lessons are read-only) */
+  editable: z.boolean(),
   posterUrl: z.string().nullable(),
 });
 export const Catalog = z.object({
@@ -35,6 +37,8 @@ export const LessonDetail = LessonSummary.extend({
   referenceUrl: z.string().nullable(),
   videoUrl: z.string().nullable(),
   needs: z.array(z.string()),
+  /** progression level chosen by the physiotherapist (fall prevention) */
+  level: z.string().nullable(),
   disclaimer: z.string().nullable(),
 });
 

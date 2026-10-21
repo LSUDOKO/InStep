@@ -61,6 +61,11 @@ export function LessonDetail({ lessonId }: { lessonId: string }) {
           <T size="h1">{d.title}</T>
           <T color={c.muted}>By {d.creator}</T>
           {d.needs.length > 0 && <T>You'll need: {d.needs.join(' · ')}</T>}
+          {d.level && (
+            <T color={c.brand} weight="700">
+              {d.level}
+            </T>
+          )}
           <View style={{ gap: px(10) }}>
             {track.gates.map((g, i) => (
               <T key={g.id} color={c.muted}>

@@ -1,4 +1,6 @@
 import { describe, expect, it } from 'vitest';
+import { createAiBudget } from '../src/ai/budget';
+import { createLabeler, LABEL_SYSTEM } from '../src/ai/labeler';
 import { createCoach, mockTip } from '../src/coach/coach';
 import { filterTip } from '../src/coach/filter';
 import { coachSystemPrompt } from '../src/coach/prompt';
@@ -47,7 +49,7 @@ describe('coach service', () => {
       mock: false,
       generate: async () => outputs.shift()!,
       minIntervalSec: 8,
-      maxCallsPerDay: 2,
+      budget: createAiBudget(2, () => t),
       now: () => t,
     });
     expect(await coach.tip(req)).toEqual({ tip: 'Curl your middle finger down gently.', source: 'ai' });
@@ -73,7 +75,7 @@ describe('coach service', () => {
         throw new Error('timeout');
       },
       minIntervalSec: 0,
-      maxCallsPerDay: 5,
+      budget: createAiBudget(5),
     });
     expect(await coach.tip(req)).toMatchObject({ source: 'fallback' });
   });
@@ -86,5 +88,53 @@ describe('coach service', () => {
   it('prompt carries language and audience', () => {
     expect(coachSystemPrompt('hi-IN', 'older_adult')).toContain('in hi-IN');
     expect(coachSystemPrompt('en-US', 'child')).toContain('Audience: child');
+  });
+});
+
+describe('AI labels for auto-gates', () => {
+  const gates = [
+    {
+      id: 'g1',
+      t: 2,
+      type: 'pose_match',
+      label: 'Copy this pose!',
+      target: { source: 'reference', atSec: 2 },
+      joints: ['l_knee'],
+      fallbackTip: 'Copy it.',
+    },
+    {
+      id: 'g2',
+      t: 5,
+      type: 'pose_match',
+      label: 'Copy this pose!',
+      target: { source: 'reference', atSec: 5 },
+      joints: ['l_knee'],
+      fallbackTip: 'Copy it.',
+    },
+  ] as never[];
+  it('keeps templates in mock mode', async () => {
+    const l = createLabeler({ budget: createAiBudget(5) });
+    expect(await l.label('kids', 'en-US', gates)).toEqual({ gates, source: 'template' });
+  });
+  it('applies valid AI labels and filters unsafe ones', async () => {
+    const model = async () =>
+      'Sure! [{"gateIndex":0,"label":"Stretch tall like a tree","fallbackTip":"Reach both arms up high."},{"gateIndex":1,"label":"Heal your injury","fallbackTip":"Bend your knee 90 degrees."}]';
+    const l = createLabeler({ model, budget: createAiBudget(5) });
+    const r = await l.label('kids', 'en-US', gates);
+    expect(r.source).toBe('ai');
+    expect(r.gates[0]).toMatchObject({
+      label: 'Stretch tall like a tree',
+      fallbackTip: 'Reach both arms up high.',
+    });
+    expect(r.gates[1]).toMatchObject({ label: 'Copy this pose!', fallbackTip: 'Copy it.' });
+  });
+  it('falls back to templates on malformed output or when the budget is spent', async () => {
+    const bad = createLabeler({ model: async () => 'no json here', budget: createAiBudget(5) });
+    expect((await bad.label('kids', 'en-US', gates)).source).toBe('template');
+    const spent = createLabeler({ model: async () => '[]', budget: createAiBudget(0) });
+    expect((await spent.label('kids', 'en-US', gates)).source).toBe('template');
+  });
+  it('prompt carries the language and forbids numbers', () => {
+    expect(LABEL_SYSTEM).toContain('STRICT JSON');
   });
 });

@@ -1,4 +1,5 @@
 {
   "needs": ["A sturdy chair", "Room to stand"],
-  "difficulty": 1
+  "difficulty": 1,
+  "level": "Level 1 \u2014 two hands on the chair"
 }

@@ -225,6 +225,9 @@ export function createLessonSession(o: {
             label: s.gate.label,
             peerId,
             ...(ev.worst ? { worst: ev.worst } : {}),
+            ...(s.gate.type === 'rhythm_bpm' && s.gate.metronomeBpm
+              ? { metronomeBpm: s.gate.metronomeBpm }
+              : {}),
           });
       }
     },

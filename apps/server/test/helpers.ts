@@ -3,6 +3,8 @@ import { cpSync, mkdtempSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { buildApp } from '../src/app';
+import { createAiBudget } from '../src/ai/budget';
+import { createLabeler } from '../src/ai/labeler';
 import { createCoach } from '../src/coach/coach';
 import { loadConfig } from '../src/config';
 import { openDb } from '../src/db';
@@ -49,14 +51,15 @@ export async function makeServer(env: Record<string, string> = {}, now: () => nu
   const lessons = createLessonStore(db, join(data, 'media'), now);
   lessons.seed(makeContent());
   const relay = createRelay({ publicUrl: config.PUBLIC_URL });
+  const budget = createAiBudget(config.COACH_MAX_CALLS_PER_DAY, now);
   const coach = createCoach({
     db,
     mock: config.MOCK_AI,
     minIntervalSec: config.COACH_MIN_INTERVAL_SEC,
-    maxCallsPerDay: config.COACH_MAX_CALLS_PER_DAY,
+    budget,
     now,
   });
-  const deps = { config, db, lessons, coach, relay, now };
+  const deps = { config, db, lessons, coach, labeler: createLabeler({ budget }), voice: null, relay, now };
   const app = await buildApp(deps);
   relay.attach(app.server);
   return { app, deps, data };
