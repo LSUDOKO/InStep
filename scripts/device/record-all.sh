@@ -17,8 +17,8 @@ for spec in "$@"; do
   echo "=== $name ($(date +%H:%M:%S))"
   ensure_device; launch_app
   $S/tvkey.sh KEY_ENTER; sleep 3            # Profiles → Home (Dad)
-  keys=(); for ((i=0;i<downs;i++)); do keys+=(KEY_DOWN); done; for ((i=0;i<rights;i++)); do keys+=(KEY_RIGHT); done
-  $S/tvkey.sh "${keys[@]}" KEY_ENTER sleep:2.5 KEY_ENTER
+  keys=(); for ((i=0;i<downs;i++)); do keys+=(KEY_DOWN sleep:1.2); done; for ((i=0;i<rights;i++)); do keys+=(KEY_RIGHT sleep:0.8); done
+  $S/tvkey.sh "${keys[@]}" sleep:1 KEY_ENTER sleep:3 KEY_ENTER
   sleep 6
   $S/tvshot.sh pair-$name >/dev/null
   $S/record-lesson.sh $name $delay $max 2>&1 | tail -3
