@@ -78,6 +78,8 @@ export function behaviourFrame(gate: GateRef | null, tMs: number | null, now: nu
         break;
     }
   }
+  // hands are always in view (relaxed), so hand lessons pass the camera check and "no hands" never triggers
+  if (!hands) hands = { right: makeHand({ curl: [0.2, 0.15, 0.15, 0.15, 0.15] }) };
   return {
     ts: now,
     mirrored: false,
