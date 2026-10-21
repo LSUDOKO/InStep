@@ -4,7 +4,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import { View } from 'react-native';
 import { DefaultFocus, SpatialNavigationNode } from 'react-tv-space-navigation';
 import { DeltaGlow } from '../components/DeltaGlow';
-import { GateWidget } from '../components/Hud';
+import { GateWidget, StepRail } from '../components/Hud';
 import { Skeleton } from '../components/Skeleton';
 import { Button, Card, Chip, Screen, StateScreen, T, useMotion, useTheme } from '../components/ui';
 import { nav, services, store } from '../lib/app';
@@ -275,6 +275,18 @@ export function Player({ lessonId }: { lessonId: string }) {
           {view?.canSkip && <Chip tone="info" label="→ Skip step" />}
         </View>
       </View>
+
+      {gate && (
+        <View style={{ marginTop: px(20) }}>
+          <StepRail
+            labels={track.gates.map((g) => g.label)}
+            current={Math.max(
+              0,
+              track.gates.findIndex((g) => g.id === gate.id),
+            )}
+          />
+        </View>
+      )}
 
       {view?.caption && (
         <Card

@@ -12,6 +12,8 @@ import { existsSync, readdirSync, readFileSync } from 'node:fs';
 import { join } from 'node:path';
 
 const ROOT = new URL('../', import.meta.url).pathname;
+/** Lessons with their own illustrated video (scripts/make-kids-video.sh): never overwritten here. */
+const HANDMADE = new Set(['kids-forest-walk-v1']);
 const FONT = process.env.FONT ?? '/usr/share/fonts/noto/NotoSans-Bold.ttf';
 const FONT_R = process.env.FONT_REGULAR ?? '/usr/share/fonts/noto/NotoSans-Regular.ttf';
 if (!existsSync(FONT)) throw new Error(`font not found: ${FONT} (set FONT=/path/to/bold.ttf)`);
@@ -39,6 +41,7 @@ const bg = (color, from, to) =>
   `drawbox=x=0:y=0:w=iw:h=ih:color=${color}:t=fill:enable='between(t,${from},${to})'`;
 
 function render(id, force) {
+  if (HANDMADE.has(id)) return console.log(`skip ${id}: has its own illustrated video`);
   const dir = join(ROOT, 'content/lessons', id);
   const out = join(dir, 'video.mp4');
   if (existsSync(out) && !force) return console.log(`skip ${id}: video.mp4 exists`);
@@ -47,6 +50,7 @@ function render(id, force) {
   const colors = PALETTE[track.channel] ?? PALETTE.kids;
   const gates = [...track.gates].sort((a, b) => a.t - b.t);
   const filters = [];
+  const startOf = (g) => (typeof g.rewindTo === 'number' ? g.rewindTo : Math.max(0, g.t - 1.5));
   // intro card until the first step
   const firstT = gates[0]?.t ?? dur;
   filters.push(bg(colors[0], 0, Math.max(0.5, firstT - 1.5)));
@@ -55,9 +59,10 @@ function render(id, force) {
     txt(CHANNEL_TITLE[track.channel] ?? track.channel, 64, 460, 0, Math.max(0.5, firstT - 1.5), '0xFFE8A3'),
   );
   // one card per step: from 1.5 s before the gate until the next step
+  // a gate that loops a segment (rewindTo) owns that whole segment, so its card is on screen while it loops
   gates.forEach((g, i) => {
-    const from = Math.max(0, g.t - 1.5);
-    const to = i + 1 < gates.length ? Math.max(from + 0.5, gates[i + 1].t - 1.5) : dur - 2;
+    const from = startOf(g);
+    const to = i + 1 < gates.length ? Math.max(from + 0.5, startOf(gates[i + 1])) : dur - 2;
     filters.push(bg(colors[(i + 1) % colors.length], from, to));
     filters.push(txt(`Step ${i + 1} of ${gates.length}`, 54, 150, from, to, '0xFFE8A3'));
     filters.push(txt(g.label, 108, 300, from, to));

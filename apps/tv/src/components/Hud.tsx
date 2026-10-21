@@ -136,6 +136,59 @@ export function BpmMeter({
   );
 }
 
+/** The lesson's steps as a compact rail: done, current, upcoming. Shown under the HUD during a lesson. */
+export function StepRail({ labels, current }: { labels: string[]; current: number }) {
+  const c = useTheme();
+  return (
+    <View style={{ flexDirection: 'row', gap: px(12), alignItems: 'center' }}>
+      {labels.map((l, i) => {
+        const done = i < current;
+        const now = i === current;
+        return (
+          <View
+            key={i}
+            style={{
+              flexDirection: 'row',
+              alignItems: 'center',
+              gap: px(10),
+              paddingLeft: px(8),
+              paddingRight: px(18),
+              paddingVertical: px(8),
+              borderRadius: px(999),
+              backgroundColor: now ? c.brand : c.surface2,
+              maxWidth: px(420),
+              opacity: done || now ? 1 : 0.7,
+            }}
+          >
+            <View
+              style={{
+                width: px(34),
+                height: px(34),
+                borderRadius: px(17),
+                alignItems: 'center',
+                justifyContent: 'center',
+                backgroundColor: done ? c.ok : now ? '#04201D' : c.surface,
+              }}
+            >
+              <T size="caption" weight="700" color={done ? '#04201D' : now ? c.brand : c.muted}>
+                {done ? '✓' : String(i + 1)}
+              </T>
+            </View>
+            <T
+              size="caption"
+              weight={now ? '700' : '600'}
+              color={now ? '#04201D' : done ? c.text : c.muted}
+              lines={1}
+            >
+              {l}
+            </T>
+          </View>
+        );
+      })}
+    </View>
+  );
+}
+
 export function Steps({ labels, current }: { labels: string[]; current: number }) {
   const c = useTheme();
   return (
