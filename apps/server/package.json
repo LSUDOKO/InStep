@@ -18,6 +18,7 @@
     "@instep/gate-engine": "workspace:*",
     "@instep/istep-format": "workspace:*",
     "@instep/protocol": "workspace:*",
+    "@modelcontextprotocol/sdk": "^1.32.1",
     "fastify": "^5.12.7",
     "ws": "^8.22.0",
     "zod": "^4.6.7"

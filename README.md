@@ -1,37 +1,45 @@
 <div align="center">
 
+<img src="apps/companion/public/logo.svg" width="96" alt="" />
+
 # InStep
 
 **The video that waits for you.**
 
 How-to videos on Fire TV (Vega OS) that pause at each key moment and continue only when your pose,
-hand shape, rhythm or hold is right — using a phone or laptop as the camera.
+hand shape, rhythm or hold is right — using the phone or laptop you already own as the camera.
 
 [![CI](https://github.com/LSUDOKO/InStep/actions/workflows/ci.yml/badge.svg)](https://github.com/LSUDOKO/InStep/actions/workflows/ci.yml)
-[![License: MIT](https://img.shields.io/badge/License-MIT-teal.svg)](LICENSE)
+[![License: MIT](https://img.shields.io/badge/License-MIT-4FD1C5.svg)](LICENSE)
 ![TypeScript strict](https://img.shields.io/badge/TypeScript-strict-3178c6)
+![Tests](https://img.shields.io/badge/tests-239%20unit%20%2B%206%20e2e-3DDC97)
 ![Platform: Vega OS](https://img.shields.io/badge/Fire%20TV-Vega%20OS-ff9900)
+![Privacy](https://img.shields.io/badge/video%20uploaded-0%20bytes-3DDC97)
 
 </div>
 
 > Built for the **Build, Ship, Shape: Amazon Developer Hackathon** — Fire TV track, AWS Builder and Open Source
-> mini challenges. **Status: in active development** — see [`docs/PROGRESS.md`](docs/PROGRESS.md) for what works today.
+> mini challenges. Progress and honest limitations: [`docs/PROGRESS.md`](docs/PROGRESS.md) · friction with the
+> tooling: [`docs/FRICTION_LOG.md`](docs/FRICTION_LOG.md).
 
 ---
 
 ## Why
 
-Every how-to video has the same flaw: it doesn't wait for you. For people doing prescribed home exercises,
-learning sign language for their child, or practising CPR, that means doing it wrong — or giving up.
+Every how-to video has the same flaw: it doesn't wait for you. For people doing prescribed home exercises, parents
+learning sign language for their deaf child, or anyone practising CPR, that means doing it wrong — or giving up.
 
-- Falls are the second leading cause of unintentional injury death worldwide; an estimated 684,000 people die
-  from falls each year ([WHO](https://www.who.int/news-room/fact-sheets/detail/falls)). The home-based Otago
-  Exercise Programme reduced falls and fall injuries by 35% in controlled trials
+- Falls are the second leading cause of unintentional injury death worldwide; an estimated 684,000 people die from
+  falls each year ([WHO](https://www.who.int/news-room/fact-sheets/detail/falls)). The home-based Otago Exercise
+  Programme reduced falls and fall injuries by 35% in controlled trials
   ([Texas A&M summary](https://ebc.tamhsc.edu/program/otago-exercise-program)).
+- In a 2026 survey of 1,006 Americans, 76% did not complete all of their assigned at-home physical therapy
+  exercises ([Medical Economics](https://www.medicaleconomics.com/view/patients-aren-t-doing-their-physical-therapy-homework)).
 - At least 90% of deaf children are born to hearing parents
   ([summary](https://en.wikipedia.org/wiki/Language_acquisition_by_deaf_children)).
 
 InStep is **designed to support** practice. It is not a medical device and has not been clinically tested.
+Every number above is listed with its source in [`docs/SOURCES.md`](docs/SOURCES.md).
 
 ## How it works
 
@@ -39,27 +47,61 @@ InStep is **designed to support** practice. It is not a medical device and has n
 flowchart LR
   subgraph Phone["📱 Companion (browser)"]
     Cam[Camera] --> MP[MediaPipe<br/>pose · hands · chair]
+    MP --> Pill["Privacy pill<br/>video sent: 0 KB/s"]
   end
-  subgraph Server["InStep server (Node)"]
-    Relay[WebSocket relay]
+  subgraph Server["InStep server (Node 22)"]
+    Relay[WebSocket relay<br/>4-digit rooms]
     API[REST · SQLite]
-    Coach[Coach<br/>Bedrock / mock]
+    Coach[Coach<br/>Bedrock or mock]
+    MCP[MCP server<br/>optional]
   end
   subgraph TV["📺 Fire TV (Vega OS)"]
     Player[GatedPlayer] --> Engine[gate-engine]
     Engine --> HUD[HUD · skeletons · Delta Glow]
   end
-  MP -- "landmarks only (≈1 KB JSON)" --> Relay --> Engine
-  Player -- "stuck? error summary" --> Coach
+  MP -- "body points only (≈1 KB JSON, ≤30/s)" --> Relay --> Engine
+  Player -- "stuck? numbers only" --> Coach
 ```
 
 1. The TV opens a lesson: a normal video plus an **`.istep`** sidecar file listing timed **gates**.
-2. Your phone joins by QR code. MediaPipe runs **in the phone's browser**; only normalised body points are sent.
+2. The phone joins by QR code. MediaPipe runs **in the phone's browser**; only normalised body points leave it.
 3. At each gate the TV pauses. The shared **gate engine** checks every frame and resumes when you get it right.
 4. Stuck for a few seconds? A kind coach gives one short tip (Amazon Bedrock, or templates in mock mode).
 
-**Privacy:** camera video never leaves the camera device. The companion shows a live, _measured_ counter:
-`Video sent: 0 KB/s · Body points: x KB/s`.
+## Screenshots
+
+All images below are real captures of the running app (Chrome with a test camera, real MediaPipe inference).
+TV screenshots will be added once the Vega Virtual Device run is complete — the TV app is built and bundles in CI
+but has not been launched on a device yet.
+
+|                      Phone as camera                      |                               Live tracking + TV feedback                               |                          Privacy pill (measured)                          |
+| :-------------------------------------------------------: | :-------------------------------------------------------------------------------------: | :-----------------------------------------------------------------------: |
+| ![Join by room code](docs/screenshots/companion-join.png) | ![Live skeleton, placement help and gate feedback](docs/screenshots/companion-live.png) | ![Measured bytes: video 0.0 KB/s](docs/screenshots/companion-privacy.png) |
+
+|                    Creator Studio                    |                                      New lesson                                       |                       Recording (visible REC)                        |            Step editor with suggested steps             |
+| :--------------------------------------------------: | :-----------------------------------------------------------------------------------: | :------------------------------------------------------------------: | :-----------------------------------------------------: |
+| ![Lesson list](docs/screenshots/creator-lessons.png) | ![New lesson form with required safety note](docs/screenshots/creator-new-lesson.png) | ![Recording a demonstration](docs/screenshots/creator-recording.png) | ![Timeline editor](docs/screenshots/creator-editor.png) |
+
+<details>
+<summary>Caregiver / physio report (share link, print-friendly, numbers only)</summary>
+
+![Progress report](docs/screenshots/report.png)
+
+</details>
+
+## Channels
+
+| Channel                               | What the gates check                                                                                                      |
+| ------------------------------------- | ------------------------------------------------------------------------------------------------------------------------- |
+| **Fall Prevention** (hero)            | Chair safety check before balance work, posture holds, heel-raise reps, automatic sway stop, progression levels           |
+| **Sign Language for Families** (hero) | Static ASL handshapes with finger-level **Delta Glow** feedback (no sound needed), fingerspelling sequence, Together mode |
+| Stroke Hand Rehab                     | Quality reps (full range of motion only), pace-follow slows the video for a slow learner                                  |
+| CPR Practice                          | Compression rhythm (100–120/min) and straight arms, metronome; **does not measure depth, not certification**              |
+| Kids' Active Storytime                | Act out "The Forest Walk" with generous tolerances and a star burst on every pass                                         |
+
+Safety notes shown in the app: exercises should be prescribed or approved by a physiotherapist; the CPR lesson is a
+practice aid for rhythm and straight arms only; sign lessons are a practice aid — learn with Deaf teachers and
+community too. The coach gives movement tips, never diagnoses.
 
 ## The `.istep` format
 
@@ -83,7 +125,7 @@ Like WebVTT for captions, `.istep` is an open JSON sidecar that attaches body-aw
       "fallbackTip": "Fold your middle and ring fingers down; keep thumb, index and little finger up.",
     },
   ],
-  // …camera, disclaimer, credits
+  // …camera placement, disclaimer, safety monitors, credits
 }
 ```
 
@@ -93,115 +135,100 @@ Seven gate types: `pose_match`, `hold_duration`, `rep_count`, `rhythm_bpm`, `han
 
 ```bash
 pnpm --filter @instep/istep-format build
-node packages/istep-format/bin/istep.mjs validate path/to/track.istep
+node packages/istep-format/bin/istep.mjs validate path/to/track.istep   # JSON-path errors on failure
 ```
 
-## Channels
+## Privacy, measured
 
-| Channel                        | What the gates check                                                         |
-| ------------------------------ | ---------------------------------------------------------------------------- |
-| **Fall Prevention**            | Chair safety check, posture holds, heel-raise reps, sway stop                |
-| **Sign Language for Families** | Static ASL handshapes with finger-level "Delta Glow" feedback, Together mode |
-| Stroke Hand Rehab              | Quality reps (full range of motion), pace-follow                             |
-| CPR Practice                   | Compression rhythm (100–120/min) and straight arms                           |
-| Kids' Active Storytime         | Fun poses with generous tolerances                                           |
-
-Safety and honesty notes shown in the app: exercises should be prescribed or approved by a physiotherapist; the
-CPR lesson is a practice aid for rhythm and straight arms only — it does not measure compression depth and is not
-certification; sign lessons are a practice aid — learn with Deaf teachers and community too.
+- Camera frames are processed only in the phone's browser and are never uploaded, recorded or relayed.
+- The privacy pill counts every byte the page actually sends: `Video sent: 0.0 KB/s · Body points: x KB/s`.
+- The server sends a strict Content-Security-Policy (`connect-src 'self'`) on the companion, so the browser blocks
+  every third-party request — including MediaPipe's built-in usage telemetry, which has no opt-out.
+- The relay never logs landmark payloads; rooms expire after 2 h idle. Reports and the MCP server expose aggregates
+  only. The browser test asserts all of this on every push.
 
 ## Related work
 
-InStep is **not** the first system where a video waits for the learner. Related work includes:
+InStep is **not** the first system where a video waits for the learner:
 
-- **Kemtai** — camera-based physiotherapy exercises.
-- **Fingerspelling.xyz** — webcam ASL alphabet feedback.
-- **DRAX Inc. patent EP 4458432** — pausing workout videos until posture matches.
+- [**Kemtai**](https://kemtai.com/) — computer-vision physiotherapy exercises with real-time corrective feedback.
+- [**Fingerspelling.xyz**](https://fingerspelling.xyz/) — webcam ASL alphabet practice with machine learning.
+- [**DRAX Inc., EP 4458432 A1**](https://patents.google.com/patent/EP4458432A1/en) — pausing or re-timing a workout
+  guide video according to the user's posture.
 
-What InStep adds:
-
-- An **open `.istep` format** that turns _any_ video into a gated lesson, plus an **open-source Vega player**.
-- **Creator Studio**: an instructor records once on a phone and gates are placed automatically.
-- **Fire TV / Vega OS** as the learning screen, with a phone as the camera.
-- **One engine for five skill types**: poses, holds, reps, rhythm and hand shapes.
-- **Safety first**: a chair safety check before balance work and an automatic sway stop.
-- **Together mode**: two people must pass the gate, even from different homes.
-- **Measured privacy**: the companion measures and shows 0 bytes of video sent.
+What InStep adds: an **open `.istep` format** for _any_ video plus an **open-source Vega player**; **Creator
+Studio** that turns one phone recording into a gated lesson automatically; **Fire TV / Vega OS** as the screen with
+a phone as the camera; **one engine for five skill types** (poses, holds, reps, rhythm, hand shapes); **safety
+first** (chair check, sway stop, fixed safety thresholds); **Together mode**; and **measured privacy**.
 
 ## Repository layout
 
 ```
 packages/
-  istep-format/   zod schema, JSON Schema, validator CLI, example tracks
-  gate-engine/    pure TypeScript gate engine (runs on TV, browser and Node)
+  istep-format/   zod schema, JSON Schema, validator CLI, 7 example tracks
+  gate-engine/    pure TypeScript gate engine + auto-gates (runs on TV, browser and Node)
   protocol/       WebSocket + REST message schemas
-  gated-player/   <GatedPlayer/> React Native component (open-source package)
+  gated-player/   platform-independent controller + <GatedPlayer/> for Vega (the OSS package)
 apps/
-  server/         Fastify + ws relay + SQLite + coach/voice services
-  companion/      Vite + React: camera node, Creator Studio, reports
-  tv/             Vega OS React Native app
-content/          demo lessons (video, .istep, reference landmarks)
-docs/             specification, progress and friction logs
+  server/         Fastify + ws relay + SQLite + coach/voice/labels (Bedrock, Polly) + optional MCP
+  companion/      Vite + React: camera node, Creator Studio, reports (served at /c/)
+  tv/             Vega OS React Native app (installed with npm, like the official samples)
+content/          demo lessons (track.istep, lesson.json, video.mp4 when recorded)
+scripts/          dev cert, test TV, landmark replay, OSS export, kids video renderer
+docs/             specification, progress and friction logs, submission kit, screenshots
 ```
 
-## Development
+## Quick start (fresh clone → running in under 15 minutes)
 
-Requirements: Node ≥ 20, pnpm 11. The TV app additionally needs the
-[Vega Developer Tools](https://developer.amazon.com/docs/vega/0.24/install-vega-sdk.html) (Ubuntu or macOS).
+Requirements: Node ≥ 22.13, pnpm 11, ffmpeg (Creator Studio transcode), `mkcert` (phone camera needs HTTPS).
 
 ```bash
 pnpm install
-pnpm test          # vitest across all packages
-pnpm lint && pnpm typecheck
-```
-
-### Run the server
-
-```bash
+pnpm test                              # 239 tests across all packages
 cp .env.example .env
-pnpm cert                # optional: mkcert HTTPS cert for your LAN IP (phones need HTTPS for the camera)
-pnpm server              # https://<LAN-IP>:8787 (companion) · http://<LAN-IP>:8788 (TV)
+pnpm cert                              # mkcert cert for your LAN IP; prints the .env lines to paste
+pnpm companion:build                   # downloads MediaPipe models into /models and builds /c/
+pnpm server                            # https://<LAN-IP>:8787 (phones) · http://<LAN-IP>:8788 (TV)
 ```
 
-The server listens twice: **HTTPS on `PORT`** for phones and laptops (camera access needs a secure context) and
-**plain HTTP/WS on `TV_HTTP_PORT`** for the Vega TV app, so the TV never has to trust a self-signed certificate.
-Lessons in `content/lessons/` are seeded on start; a lesson appears in the catalog only once its video is recorded.
+Then on a phone open `https://<LAN-IP>:8787/c/` (install the mkcert root CA first — `pnpm cert` tells you how).
+Without a TV yet, `pnpm test-tv` prints a join QR code in the terminal and reports landmarks per second from each
+connected phone.
 
-### Creator Studio
-
-Open `https://<LAN-IP>:8787/c/creator` on a phone, enter the `CREATOR_PIN`, create a lesson, record the
-demonstration (video + body points at 15 fps, visible REC indicator, max 60 s) or upload a video, review the
-suggested steps on the timeline, try any step with your own camera, and publish — the lesson appears on every TV.
-
-### Companion (phone camera)
-
-```bash
-pnpm companion:build     # downloads MediaPipe models into /models and builds /c/
-pnpm server              # then open https://<LAN-IP>:8787/c/ on your phone
-pnpm test-tv             # terminal "TV": prints a join QR and reports landmarks per second
-pnpm e2e                 # Playwright with Chrome's fake camera
-```
-
-**Landmark replay** (testing without standing in front of a camera, and a demo backup): open the companion with
-`?room=1234&record=1`, do the movement, tap "Save landmarks recording" (a JSONL of numbers, saved on your device), then
-`pnpm replay recording.jsonl --room <TV room> [--loop]`.
+The server listens twice: **HTTPS** for phones and laptops (camera access needs a secure context) and **plain
+HTTP/WS** for the Vega TV app, so the TV never has to trust a self-signed certificate. Lessons in `content/lessons/`
+are seeded on start; a lesson appears in the catalog only once its video exists.
 
 ### TV app (Vega Virtual Device)
 
-The TV app lives in `apps/tv` and is installed with **npm** (outside the pnpm workspace, like the official Vega
-samples); it consumes the shared packages from source through Metro.
-
 ```bash
-cd apps/tv
-npm install
+cd apps/tv && npm install
 npm run typecheck
-npm run build:debug                       # react-native build-kepler (needs the Vega SDK)
-vega run-app build/<arch>-debug/*.vpkg com.instep.tv.main -d VirtualDevice
+npm run build:debug                       # react-native build-kepler (needs the Vega Developer Tools)
+vega run-app build/*/*.vpkg com.instep.tv.main -d VirtualDevice
 ```
 
-On first launch open **Settings → Server address** if the VVD can't reach `http://10.0.2.2:8788`.
+Default server for the VVD is `http://10.0.2.2:8788`; change it in **Settings → Server address** if your device
+reaches the host differently. The TV app type-checks and Metro-bundles in CI; device verification is pending (see
+`docs/PROGRESS.md`).
 
-### AI and cost safety
+### Creator Studio
+
+Open `https://<LAN-IP>:8787/c/creator`, enter the `CREATOR_PIN`, create a lesson, **record the demonstration**
+(video + body points at 15 fps, visible REC indicator, max 60 s) or upload a video, review the suggested steps on the
+timeline, try any step with your own camera, and publish — the lesson appears on every TV within seconds.
+
+### Testing without a camera
+
+Open the companion with `?room=1234&record=1`, do the movement, tap "Save landmarks recording" (a JSONL file of
+numbers, saved on your device), then replay it into any TV room:
+
+```bash
+pnpm replay recording.jsonl --room <TV room> [--loop]
+pnpm e2e                                 # Playwright: camera node, Creator Studio, report (fake camera)
+```
+
+## AI, AWS and cost safety
 
 `MOCK_AI=true` is the default: coach tips and step labels come from templates and voice uses the phone's browser
 speech — no AWS calls. To use AWS (billed to your account):
@@ -210,21 +237,53 @@ speech — no AWS calls. To use AWS (billed to your account):
 MOCK_AI=false
 BEDROCK_MODEL_ID=<a text model enabled in your account/region>   # never hard-coded
 AWS_REGION=us-east-1
-POLLY_ENABLED=true                                              # optional: neural voice for tips
+POLLY_ENABLED=true                                              # optional neural voice
 ```
 
-AWS credentials come from the standard chain (`aws configure`). How InStep uses AWS:
+Credentials come from the standard AWS chain (`aws configure`). How InStep uses AWS:
 
 - **Amazon Bedrock (Converse API)** — one short, kind coaching tip when a learner is stuck (≤ 80 output tokens,
-  4 s timeout, banned-medical-term and number filter, cache by lesson/gate/error/language), and short step labels
-  for Creator Studio's auto-gates (strict JSON validated with zod; templates on any failure).
+  4 s timeout, banned-medical-term and number filter, cache by lesson/gate/error/language), and short step labels for
+  Creator Studio's auto-gates (strict JSON validated with zod; templates on any failure).
 - **Amazon Polly** — neural voice for tips in en-US / es-ES / hi-IN / fr-FR, cached on disk by text hash.
-- **Cost guards** — one daily cap for all AI calls (`COACH_MAX_CALLS_PER_DAY`, default 300), 1 tip / learner / 8 s,
-  daily call counter in the logs. Only numbers are sent — never video, images or landmark streams.
+- **Cost guards** — one daily cap for all AI calls (`COACH_MAX_CALLS_PER_DAY`, default 300), 1 tip per learner per
+  8 s, a daily counter in the logs. Only numbers are sent — never video, images or landmark streams.
 
-**Set an AWS Budgets alert before turning AI on:** AWS console → Billing and Cost Management → Budgets →
-Create budget → _Use a template: Monthly cost budget_ → amount `$5` → your email → Create.
+**Set an AWS Budgets alert before turning AI on:** AWS console → Billing and Cost Management → Budgets → Create
+budget → _Use a template: Monthly cost budget_ → amount `$5` → your email → Create.
+
+### MCP server (optional)
+
+`MCP_ENABLED=true` exposes a read-only [Model Context Protocol](https://modelcontextprotocol.io) endpoint at
+`/mcp` (Streamable HTTP) with two tools — `list_lessons` and `get_progress_report` — so a caregiver can ask their
+AI assistant "Did Dad finish his balance exercises this week?". Aggregates only.
+
+```json
+{ "mcpServers": { "instep": { "url": "http://<LAN-IP>:8788/mcp" } } }
+```
+
+## Open source package
+
+`node scripts/export-oss.mjs` assembles the standalone **vega-gated-video-player** repo (MIT): the `.istep`
+format, the gate engine, the timing controller and `<GatedPlayer>` for Vega, with a demo driven by a synthetic
+landmark stream. The export type-checks and passes its own tests.
+
+## Status
+
+| Area                                                        | State                                                                                          |
+| ----------------------------------------------------------- | ---------------------------------------------------------------------------------------------- |
+| Packages (format, engine, protocol, player controller)      | ✅ built, tested (engine ≈ 98 % line coverage)                                                 |
+| Server (relay, REST, coach, labels, voice, MCP)             | ✅ built, tested (60 s relay soak: 1800/1800 msgs, p95 1.2 ms)                                 |
+| Companion (camera node, Creator Studio, report, hands-free) | ✅ built, Playwright e2e in CI                                                                 |
+| TV app (Vega)                                               | 🟡 built, type-checks and Metro-bundles in CI — **not yet run on the Vega Virtual Device**     |
+| Bedrock / Polly                                             | 🟡 code complete, runs in mock mode — not yet exercised against AWS                            |
+| Lesson videos                                               | 🟡 kids lesson generated (original illustration); fall / sign / rehab / CPR recordings pending |
+
+## Contributing
+
+See [CONTRIBUTING.md](CONTRIBUTING.md), [SECURITY.md](SECURITY.md) and [AGENTS.md](AGENTS.md) (the honesty,
+safety and privacy rules every change must keep).
 
 ## License
 
-[MIT](LICENSE). Demo lesson videos are original recordings; see `content/CREDITS.md`.
+[MIT](LICENSE). Demo lesson content and consent records: [`content/CREDITS.md`](content/CREDITS.md).

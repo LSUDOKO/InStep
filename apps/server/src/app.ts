@@ -4,6 +4,7 @@ import multipart from '@fastify/multipart';
 import fastifyStatic from '@fastify/static';
 import Fastify, { type FastifyInstance } from 'fastify';
 import type { Deps } from './deps';
+import { mountMcp } from './mcp';
 import { aiRoutes } from './routes/ai';
 import { learnerRoutes } from './routes/learners';
 import { lessonRoutes } from './routes/lessons';
@@ -61,6 +62,7 @@ export async function buildApp(deps: Deps, tls?: { cert: Buffer; key: Buffer } |
   await app.register(lessonRoutes, deps);
   await app.register(learnerRoutes, deps);
   await app.register(aiRoutes, deps);
+  if (deps.config.MCP_ENABLED) await mountMcp(app, deps);
 
   // Companion is a single-page app: unknown /c/* paths get index.html.
   app.setNotFoundHandler((req, reply) => {

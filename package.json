@@ -1,7 +1,7 @@
 {
   "name": "instep",
   "private": true,
-  "version": "0.1.0",
+  "version": "0.4.0",
   "description": "InStep \u2014 the video that waits for you. Body-aware video lessons for Fire TV (Vega OS).",
   "license": "MIT",
   "type": "module",
@@ -23,7 +23,8 @@
     "test-tv": "tsx scripts/test-tv.ts",
     "companion:build": "pnpm --filter @instep/companion build",
     "e2e": "pnpm --filter @instep/companion e2e",
-    "replay": "tsx scripts/replay.ts"
+    "replay": "tsx scripts/replay.ts",
+    "screenshots": "pnpm --filter @instep/companion screenshots"
   },
   "devDependencies": {
     "@types/node": "^22.10.0",

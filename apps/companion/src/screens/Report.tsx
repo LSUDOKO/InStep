@@ -140,13 +140,13 @@ export default function Report({ token }: { token: string }) {
         {data.sessions.map((s) => (
           <div
             key={s.startedAt}
-            className="row small"
-            style={{ borderTop: '1px solid var(--surface-2)', paddingTop: 8 }}
+            className="stack"
+            style={{ gap: 2, borderTop: '1px solid var(--surface-2)', paddingTop: 8 }}
           >
-            <span className="grow">
-              {new Date(s.startedAt).toLocaleDateString()} · {s.lessonTitle}
+            <span>
+              <strong>{new Date(s.startedAt).toLocaleDateString()}</strong> · {s.lessonTitle}
             </span>
-            <span className="muted">
+            <span className="muted small">
               {s.gatesPassed}/{s.gatesTotal} steps{s.reps ? ` · ${s.reps} reps` : ''}
               {s.bestHoldSec ? ` · hold ${s.bestHoldSec}s` : ''}
               {s.avgBpm ? ` · ${s.avgBpm}/min` : ''}
