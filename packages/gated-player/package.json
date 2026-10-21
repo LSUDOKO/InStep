@@ -1,0 +1,16 @@
+{
+  "name": "@instep/gated-player",
+  "version": "0.1.0",
+  "description": "Gated video player: pauses a video at .istep gates and resumes when live landmarks pass them.",
+  "license": "MIT",
+  "type": "module",
+  "main": "./src/index.ts",
+  "types": "./src/index.ts",
+  "scripts": {
+    "typecheck": "tsc --noEmit -p ."
+  },
+  "dependencies": {
+    "@instep/gate-engine": "workspace:*",
+    "@instep/istep-format": "workspace:*"
+  }
+}

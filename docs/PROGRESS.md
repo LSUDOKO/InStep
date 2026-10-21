@@ -2,6 +2,19 @@
 
 Newest first. Each entry: what works, what doesn't, what changed from the spec and why.
 
+## 2026-10-21 — Milestone 4 (part 1): gated-player controller
+
+**Works (platform-independent, tested in Node):** `@instep/gated-player` `createGatedPlayer()` — the timing core of
+`<GatedPlayer>`. It pauses and seeks exactly to `gate.t`, feeds frames to per-participant runners, resumes after a
+400 ms pass feedback, loops `[rewindTo, t]` muted after the first loop, applies pace-follow rates (keeps 1× when the
+platform refuses a rate change), pauses on camera loss (> 2 s without host frames) and resumes after a 3-2-1
+countdown, runs the lesson-wide sway stop for every participant (resume needs OK **and** 2 s stability; Play cannot
+resume it), emits `gate_stuck` after `coachAfterSec` and loosens only learning gates deterministically, allows Skip
+only after `timeoutSec` and never on safety gates, supports Repeat, Together mode (all present people must pass
+within 5 s; a guest leaving does not block the host) and produces the session summary. 15 tests; 97% line coverage.
+
+**Next:** the React Native `<GatedPlayer>` wrapper and TV screens — blocked on the Milestone 0 Vega spike results.
+
 ## 2026-10-21 — Milestone 3 (companion camera node)
 
 **Works**

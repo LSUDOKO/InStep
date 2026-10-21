@@ -131,6 +131,15 @@ importers:
         specifier: workspace:*
         version: link:../istep-format
 
+  packages/gated-player:
+    dependencies:
+      '@instep/gate-engine':
+        specifier: workspace:*
+        version: link:../gate-engine
+      '@instep/istep-format':
+        specifier: workspace:*
+        version: link:../istep-format
+
   packages/istep-format:
     dependencies:
       zod:
