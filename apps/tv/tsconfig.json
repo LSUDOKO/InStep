@@ -1,12 +1,18 @@
 {
-  "extends": "@tsconfig/react-native/tsconfig.json",
   "compilerOptions": {
+    "target": "esnext",
+    "lib": ["es2022"],
+    "jsx": "react-native",
+    "module": "esnext",
+    "moduleResolution": "bundler",
+    "allowJs": true,
+    "esModuleInterop": true,
+    "isolatedModules": true,
+    "resolveJsonModule": true,
+    "noEmit": true,
     "strict": true,
     "noUncheckedIndexedAccess": true,
     "skipLibCheck": true,
-    "moduleResolution": "bundler",
-    "module": "esnext",
-    "allowImportingTsExtensions": false,
     "types": ["@amazon-devices/react-native-kepler"],
     "paths": {
       "@instep/istep-format": ["../../packages/istep-format/src"],
@@ -18,5 +24,6 @@
     }
   },
   "include": ["src", "index.js"],
-  "exclude": ["src/**/*.test.ts"]
+  "exclude": ["src/**/*.test.ts"],
+  "//": "Self-contained (no extends) so tests can run without apps/tv/node_modules; mirrors @tsconfig/react-native."
 }
