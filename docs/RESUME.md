@@ -38,3 +38,13 @@ first Select on the Profiles screen opens Home.
    `video.mp4` files, re-run `pnpm dryrun-lessons` and the device recording for those two.
 4. Phone fps check, AWS probe when the daily quota resets (`pnpm aws:check --probe`), demo video, Devpost form
    (`docs/SUBMISSION.md`, `docs/12-submission-kit.md`).
+
+## Known issue in the recording loop (fix first tomorrow)
+
+In the 02:02 run, the two Fall Prevention lessons recorded fully (all gates passed; the loop only logged
+"did not finish" because it waits for the `lesson ended` line and the video tail ran past the time limit).
+The other lessons never started: `KEY_DOWN` from the first Home tile did not reach the next channel row before
+`KEY_ENTER` fired, so the TV opened "Heel raises" again and sat on its lesson page (see
+`~/instep-capture/scratch/pair-asl-fingerspell-abc.png`). Fix: longer pauses between keys in `record-all.sh`
+(`sleep:1` after each `KEY_DOWN`), and check the pair screenshot shows "Pair your camera" before starting the
+learner. Recordings so far: `~/instep-capture/fall-heel-raise.webm`, `fall-single-leg-stand.webm` (usable).
