@@ -75,7 +75,10 @@ const room = await new Promise((resolve) => {
 const browser = await chromium.launch({
   args: ['--use-fake-ui-for-media-stream', '--use-fake-device-for-media-stream'],
 });
+const videoDir = join(out, 'video');
+mkdirSync(videoDir, { recursive: true });
 const ctx = await browser.newContext({
+  recordVideo: { dir: videoDir, size: { width: 412, height: 915 } },
   ...devices['Pixel 7'],
   permissions: ['camera'],
   deviceScaleFactor: 2,
@@ -153,8 +156,28 @@ await page.getByRole('heading', { name: /practice/ }).waitFor();
 await sleep(500);
 await page.screenshot({ path: join(out, 'report.png'), fullPage: true });
 
+await ctx.close();
 await browser.close();
 tv.close();
+// one real recording of the whole run, played 8× faster → a GIF for the README
+const { execFileSync } = await import('node:child_process');
+const { readdirSync, rmSync } = await import('node:fs');
+const webm = readdirSync(videoDir).find((f) => f.endsWith('.webm'));
+if (webm) {
+  const src = join(videoDir, webm);
+  execFileSync('ffmpeg', [
+    '-y',
+    '-loglevel',
+    'error',
+    '-i',
+    src,
+    '-vf',
+    'setpts=PTS/8,fps=8,scale=360:-1:flags=lanczos,split[a][b];[a]palettegen=max_colors=96[p];[b][p]paletteuse=dither=bayer:bayer_scale=3',
+    join(out, 'companion-flow.gif'),
+  ]);
+  rmSync(videoDir, { recursive: true, force: true });
+  console.log('gif written');
+}
 server.kill();
 console.log(`screenshots written to ${out}`);
 process.exit(0);

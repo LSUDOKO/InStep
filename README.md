@@ -18,6 +18,9 @@ hand shape, rhythm or hold is right — using the phone or laptop you already ow
 
 </div>
 
+**Live:** [instep-wfcr.onrender.com/c](https://instep-wfcr.onrender.com/c/) — open it on a phone to use it as a camera
+(free Render instance: the first request after idle takes about a minute to wake).
+
 > Built for the **Build, Ship, Shape: Amazon Developer Hackathon** — Fire TV track, AWS Builder and Open Source
 > mini challenges. Progress and honest limitations: [`docs/PROGRESS.md`](docs/PROGRESS.md) · friction with the
 > tooling: [`docs/FRICTION_LOG.md`](docs/FRICTION_LOG.md).
@@ -254,17 +257,18 @@ budget → _Use a template: Monthly cost budget_ → amount `$5` → your email 
 
 ### Hosting (Render)
 
-The repo ships a `Dockerfile` and a Render Blueprint (`render.yaml`): one web service that serves the companion
-(HTTPS out of the box, so phone cameras work without `mkcert`), the WebSocket relay, the REST API, lesson media and
-the MCP endpoint, with a persistent disk for SQLite and uploaded lessons.
+The project is deployed at **https://instep-wfcr.onrender.com** from this repo's `Dockerfile` (Node 22 + ffmpeg,
+MediaPipe models baked in): one web service serves the companion over HTTPS (so phone cameras work without
+`mkcert`), the WebSocket relay, the REST API, lesson media and the MCP endpoint. Every push to `main` redeploys.
 
-1. Fork or push this repo to your GitHub, then in Render: **New → Blueprint → select the repo**. Render reads
-   `render.yaml`, generates `CREATOR_PIN` and `MCP_TOKEN`, and builds the image (ffmpeg included).
-2. Open `https://<service>.onrender.com/api/health`; the companion is at `/c/`, Creator Studio at `/c/creator`.
-3. Point the TV app at `https://<service>.onrender.com` in **Settings → Server address** (it connects over `wss://`).
+- Companion: `/c/` · Creator Studio: `/c/creator` · health: `/api/health` · MCP: `/mcp` (bearer token).
+- Point the TV app at `https://instep-wfcr.onrender.com` in **Settings → Server address** (it connects over `wss://`).
+- It runs on Render's free plan: no persistent disk (SQLite and uploaded lessons reset on each deploy) and the
+  instance sleeps after 15 minutes idle. `render.yaml` documents the one-line change to a plan with a disk.
+- `MOCK_AI` stays `true` there; no AWS credentials are configured on the hosted instance.
 
-The Blueprint uses the Starter plan because the free plan has no persistent disk (data would reset on every
-deploy). `MOCK_AI` stays `true` unless you add AWS credentials and `BEDROCK_MODEL_ID` as environment variables.
+To host your own copy: Render → **New → Blueprint → this repo** (reads `render.yaml`, generates `CREATOR_PIN` and
+`MCP_TOKEN`).
 
 ### MCP server (optional)
 
@@ -286,9 +290,10 @@ AI assistant "Did Dad finish his balance exercises this week?". Aggregates only.
 
 ## Open source package
 
-`node scripts/export-oss.mjs` assembles the standalone **vega-gated-video-player** repo (MIT): the `.istep`
-format, the gate engine, the timing controller and `<GatedPlayer>` for Vega, with a demo driven by a synthetic
-landmark stream. The export type-checks and passes its own tests.
+**[github.com/LSUDOKO/vega-gated-video-player](https://github.com/LSUDOKO/vega-gated-video-player)** (MIT) is
+the standalone package: the `.istep` format, the gate engine, the timing controller and `<GatedPlayer>` for Vega,
+with a demo driven by a synthetic landmark stream. It is generated from this monorepo by
+`node scripts/export-oss.mjs`, type-checks and passes its own 125 tests.
 
 ## Status
 
