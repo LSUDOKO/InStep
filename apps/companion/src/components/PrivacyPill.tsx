@@ -26,15 +26,23 @@ export function PrivacyPill({ lastMessage }: { lastMessage: string | null }) {
   return (
     <>
       <button
-        className="privacy"
+        className="ledger"
         onClick={() => setOpen(true)}
         aria-haspopup="dialog"
         data-testid="privacy-pill"
       >
-        <ShieldCheck size={20} aria-hidden />
+        <ShieldCheck size={26} aria-hidden />
         <span>
-          Video sent: <span data-testid="video-rate">{formatRate(rates.video)}</span> · Body points:{' '}
-          <span data-testid="body-rate">{formatRate(rates.body)}</span>
+          <span className="k">Video sent</span>
+          <span className={`v ${rates.video === 0 ? 'zero' : ''}`} data-testid="video-rate">
+            {formatRate(rates.video)}
+          </span>
+        </span>
+        <span>
+          <span className="k">Body points</span>
+          <span className="v" data-testid="body-rate">
+            {formatRate(rates.body)}
+          </span>
         </span>
       </button>
       {open && (
@@ -47,15 +55,15 @@ export function PrivacyPill({ lastMessage }: { lastMessage: string | null }) {
             onClick={(e) => e.stopPropagation()}
           >
             <div className="row">
-              <h1 id="privacy-title" className="grow" style={{ fontSize: 22 }}>
+              <h2 id="privacy-title" className="grow">
                 What leaves this phone
-              </h1>
+              </h2>
               <button className="btn ghost icon" onClick={() => setOpen(false)} aria-label="Close">
                 <X size={22} />
               </button>
             </div>
             <p className="muted">
-              Your camera picture is analysed here, in this browser, and is never uploaded or recorded. Only
+              Your camera picture is analysed here, in this browser. It is never uploaded or recorded. Only
               body points — numbers for the position of your joints and fingers — go to your TV.
             </p>
             <div className="stat-grid">

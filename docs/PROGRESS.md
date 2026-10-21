@@ -2,6 +2,21 @@
 
 Newest first. Each entry: what works, what doesn't, what changed from the spec and why.
 
+## 2026-10-21 — Companion redesign, hosting, hardened MCP
+
+- **Companion redesign** (docs/09 tokens kept): the camera preview is a full-bleed hero with the connection badge
+  and the TV's current step on it; status is a quiet list with coloured markers instead of stacked cards; the
+  privacy pill became a bottom **ledger** with the two measured numbers set large; four-digit segmented room code;
+  Creator Studio steps are a numbered sequence over a scrubber; report chart and rows restyled. Screenshots
+  re-captured and reviewed.
+- **Hosting:** `Dockerfile` (node 22 + ffmpeg, models baked in at build) and `render.yaml` Blueprint (web service +
+  1 GB disk). Verified locally: health, companion with CSP, models, MCP auth, ffmpeg, SQLite on `/data`.
+  `PUBLIC_URL` falls back to `RENDER_EXTERNAL_URL`. First local build failed because `pnpm prune --prod` removed
+  `tsx`; fixed by starting Node directly.
+- **MCP:** optional `MCP_TOKEN` bearer auth for hosted deployments (test added).
+- Disk-full incident on the dev machine during the Docker build truncated one source file; restored from git,
+  Docker build cache pruned. Nothing was lost.
+
 ## 2026-10-21 — MCP server, real screenshots, README
 
 - Optional **MCP server** (`MCP_ENABLED=true`, Streamable HTTP at `/mcp`, stateless): `list_lessons` and

@@ -1,0 +1,26 @@
+# Render Blueprint: one web service (server + companion + MCP) with a persistent disk for SQLite and lesson media.
+# Deploy: Render dashboard → New → Blueprint → pick this repo. Phones get HTTPS automatically (camera works).
+services:
+  - type: web
+    name: instep
+    runtime: docker
+    plan: starter # free plan has no persistent disk (data resets on each deploy); starter adds one
+    region: oregon
+    healthCheckPath: /api/health
+    disk:
+      name: instep-data
+      mountPath: /data
+      sizeGB: 1
+    envVars:
+      - key: MOCK_AI
+        value: 'true' # no AWS calls unless you change this
+      - key: MCP_ENABLED
+        value: 'true'
+      - key: MCP_TOKEN
+        generateValue: true # read it in the dashboard; MCP clients send Authorization: Bearer <token>
+      - key: CREATOR_PIN
+        generateValue: true # read it in the dashboard; Creator Studio asks for it
+      - key: COACH_MAX_CALLS_PER_DAY
+        value: '300'
+      - key: TV_HTTP_PORT
+        value: '8788'

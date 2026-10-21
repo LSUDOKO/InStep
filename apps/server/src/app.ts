@@ -62,7 +62,7 @@ export async function buildApp(deps: Deps, tls?: { cert: Buffer; key: Buffer } |
   await app.register(lessonRoutes, deps);
   await app.register(learnerRoutes, deps);
   await app.register(aiRoutes, deps);
-  if (deps.config.MCP_ENABLED) await mountMcp(app, deps);
+  if (deps.config.MCP_ENABLED) await mountMcp(app, { ...deps, token: deps.config.MCP_TOKEN });
 
   // Companion is a single-page app: unknown /c/* paths get index.html.
   app.setNotFoundHandler((req, reply) => {

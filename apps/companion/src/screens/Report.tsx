@@ -98,21 +98,13 @@ export default function Report({ token }: { token: string }) {
 
       <section className="card">
         <strong>Repetitions per day</strong>
-        <div
-          style={{ display: 'flex', alignItems: 'flex-end', gap: 4, height: 140 }}
-          role="img"
-          aria-label="Repetitions per day chart"
-        >
+        <div className="bars" role="img" aria-label="Repetitions per day chart">
           {data.progress.days.map((d) => (
             <div
               key={d.date}
+              className={d.sessions ? 'on' : ''}
               title={`${d.date}: ${d.reps} reps, ${d.sessions} sessions`}
-              style={{
-                flex: 1,
-                height: `${Math.max(3, (d.reps / max) * 100)}%`,
-                background: d.sessions ? 'var(--brand)' : 'var(--surface-2)',
-                borderRadius: 4,
-              }}
+              style={{ height: `${Math.max(3, (d.reps / max) * 100)}%` }}
             />
           ))}
         </div>
@@ -144,13 +136,13 @@ export default function Report({ token }: { token: string }) {
             style={{ gap: 2, borderTop: '1px solid var(--surface-2)', paddingTop: 8 }}
           >
             <span>
-              <strong>{new Date(s.startedAt).toLocaleDateString()}</strong> · {s.lessonTitle}
+              <strong>{new Date(s.startedAt).toLocaleDateString()}</strong> {s.lessonTitle}
             </span>
             <span className="muted small">
-              {s.gatesPassed}/{s.gatesTotal} steps{s.reps ? ` · ${s.reps} reps` : ''}
-              {s.bestHoldSec ? ` · hold ${s.bestHoldSec}s` : ''}
-              {s.avgBpm ? ` · ${s.avgBpm}/min` : ''}
-              {s.easierMode ? ' · easier mode' : ''}
+              {s.gatesPassed} of {s.gatesTotal} steps{s.reps ? `, ${s.reps} reps` : ''}
+              {s.bestHoldSec ? `, best hold ${s.bestHoldSec} s` : ''}
+              {s.avgBpm ? `, ${s.avgBpm} per minute` : ''}
+              {s.easierMode ? ', easier mode' : ''}
             </span>
           </div>
         ))}

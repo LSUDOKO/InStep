@@ -92,8 +92,15 @@ export function createMcpServer({ db, lessons, now }: Pick<Deps, 'db' | 'lessons
 }
 
 /** Mounts the MCP endpoint on a Fastify app (stateless transport, one per request). */
-export async function mountMcp(app: FastifyInstance, deps: Pick<Deps, 'db' | 'lessons' | 'now'>) {
+export async function mountMcp(
+  app: FastifyInstance,
+  deps: Pick<Deps, 'db' | 'lessons' | 'now'> & { token?: string },
+) {
   const handle = async (req: FastifyRequest, reply: FastifyReply) => {
+    if (deps.token && req.headers.authorization !== `Bearer ${deps.token}`)
+      return reply
+        .code(401)
+        .send({ error: 'UNAUTHORIZED', message: 'MCP token required (Authorization: Bearer …)' });
     const server = createMcpServer(deps);
     const transport = new WebStandardStreamableHTTPServerTransport({ sessionIdGenerator: undefined });
     await server.connect(transport);

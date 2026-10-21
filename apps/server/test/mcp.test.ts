@@ -99,6 +99,19 @@ describe('MCP server', () => {
     });
     expect(miss.body.result.isError).toBe(true);
   });
+  it('requires the bearer token when MCP_TOKEN is set', async () => {
+    const locked = await makeServer({ MCP_ENABLED: 'true', MCP_TOKEN: 's3cret' });
+    const body = { jsonrpc: '2.0', id: 1, method: 'tools/list', params: {} };
+    expect((await locked.app.inject({ method: 'POST', url: '/mcp', payload: body })).statusCode).toBe(401);
+    const ok = await locked.app.inject({
+      method: 'POST',
+      url: '/mcp',
+      payload: body,
+      headers: { authorization: 'Bearer s3cret', accept: 'application/json, text/event-stream' },
+    });
+    expect(ok.statusCode).toBe(200);
+    await locked.app.close();
+  });
   it('is absent when MCP_ENABLED is false', async () => {
     const off = await makeServer();
     expect((await off.app.inject({ method: 'POST', url: '/mcp', payload: {} })).statusCode).toBe(404);

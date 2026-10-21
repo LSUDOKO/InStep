@@ -386,6 +386,11 @@ export function CameraNode() {
       <main className="page">
         <Brand />
         <h1>{role === 'guest' ? 'Join a practice together' : 'Use this phone as the camera'}</h1>
+        <p className="lede">
+          {role === 'guest'
+            ? 'Your TV will wait for both of you to get each step right.'
+            : 'The video on your TV pauses at each step and continues when you get it right.'}
+        </p>
         <form
           className="stack"
           onSubmit={(e) => {
@@ -399,18 +404,28 @@ export function CameraNode() {
             </div>
           )}
           <label htmlFor="room">Room code on your TV</label>
-          <input
-            id="room"
-            className="code-input"
-            inputMode="numeric"
-            autoComplete="off"
-            maxLength={4}
-            value={room}
-            onChange={(e) => setRoom(e.target.value.replace(/\D/g, '').slice(0, 4))}
-            aria-describedby="room-help"
-          />
+          <div className="code" aria-describedby="room-help">
+            <input
+              id="room"
+              inputMode="numeric"
+              autoComplete="one-time-code"
+              maxLength={4}
+              value={room}
+              onChange={(e) => setRoom(e.target.value.replace(/\D/g, '').slice(0, 4))}
+              aria-label="Four-digit room code"
+            />
+            {[0, 1, 2, 3].map((i) => (
+              <div
+                key={i}
+                aria-hidden
+                className={`cell ${room[i] ? 'filled' : ''} ${room.length === i ? 'active' : ''}`}
+              >
+                {room[i] ?? ''}
+              </div>
+            ))}
+          </div>
           <p id="room-help" className="muted small">
-            The 4 numbers under the QR code on your TV.
+            The four numbers under the QR code on your TV.
           </p>
           {role === 'guest' && (
             <>
@@ -424,13 +439,11 @@ export function CameraNode() {
               />
             </>
           )}
-          <div className="card">
-            <div className="row">
-              <Lock size={22} color="var(--ok)" aria-hidden />
-              <strong>Your camera stays on this device</strong>
-            </div>
-            <p className="muted">
-              We send only body points (numbers) to your TV — never video. You can check it live at any time.
+          <div className="callout ok">
+            <Lock size={20} color="var(--ok)" aria-hidden />
+            <p>
+              <strong>Your camera stays on this phone.</strong> Only body points — numbers for where your
+              joints are — go to the TV. You can watch the live count at any time.
             </p>
           </div>
           <button
@@ -455,22 +468,17 @@ export function CameraNode() {
         ? { cls: 'bad', text: 'Reconnecting…' }
         : { cls: 'info', text: 'Connecting…' };
 
+  const gateTone = gate
+    ? gate.status === 'blocked_safety'
+      ? 'bad'
+      : gate.status === 'passed'
+        ? 'ok'
+        : 'brand'
+    : '';
   return (
-    <main className="page">
-      <div className="topbar">
-        <Brand />
-        <span className={`chip ${status.cls}`} role="status" data-testid="connection">
-          <span className="dot" /> {status.text}
-        </span>
-      </div>
-
-      {relayState.kind === 'reconnecting' && (
-        <div className="banner" role="alert">
-          <WifiOff size={20} /> Lost the connection to your TV. Reconnecting… (room {room})
-        </div>
-      )}
-
-      <div className="live-grid">
+    <main className="page bleed">
+      {/* hero: the camera preview, with the connection badge and the TV's current instruction on it */}
+      <div className="hero">
         {stream && (
           <Preview
             stream={stream}
@@ -480,75 +488,115 @@ export function CameraNode() {
             drawRef={drawRef}
           />
         )}
-        <div className="stack">
-          {placement && (
-            <div className={`card ${placement.ok ? 'ok' : 'warn'}`} aria-live="polite">
-              <div className="row">
-                {placement.ok ? <CheckCircle2 color="var(--ok)" /> : <AlertTriangle color="var(--near)" />}
-                <strong data-testid="placement">{placement.message}</strong>
-              </div>
-              {lesson.hint && <p className="muted small">{lesson.hint}</p>}
+        <div className="overlay-top">
+          <Brand />
+          <span className={`chip onvideo ${status.cls}`} role="status" data-testid="connection">
+            <span className="dot" /> {status.text}
+          </span>
+        </div>
+        {gate && !hidePreview && (
+          <div className="overlay-bottom">
+            <Tv
+              size={22}
+              color={gate.status === 'blocked_safety' ? 'var(--far)' : 'var(--brand)'}
+              aria-hidden
+            />
+            <div className="grow">
+              <strong>{gate.label}</strong>
+              {gate.worst && <div className="muted small">{gate.worst.hint}</div>}
             </div>
-          )}
-          {loadingTrackers && (
-            <div className="card">
-              <div className="row">
-                <Loader2 className="spin" size={20} /> Getting ready for this lesson…
-              </div>
-            </div>
-          )}
-          {gate && (
-            <div
-              className={`card ${gate.status === 'blocked_safety' ? 'bad' : gate.status === 'passed' ? 'ok' : ''}`}
-            >
-              <div className="row">
-                <Tv size={20} color="var(--brand)" />
-                <strong>{gate.label}</strong>
-              </div>
-              {gate.worst && <p className="muted">{gate.worst.hint}</p>}
-            </div>
-          )}
-          {RECORD && (
-            <button className="btn ghost block" onClick={downloadRecording}>
-              Save landmarks recording (numbers only, stays on this device)
-            </button>
-          )}
-          {speechRecognitionAvailable() && (
-            <button className="btn ghost block" onClick={() => void voice()} disabled={listening}>
-              <Mic size={20} /> {listening ? 'Listening…' : 'Say a command (pause, play, repeat, easier)'}
-            </button>
-          )}
-          {lesson.gestures && (
-            <p className="muted small">Tip: raise one hand above your head for 2 seconds to pause or play.</p>
-          )}
-          <div className="row">
-            <button
-              className="btn ghost grow"
-              onClick={() => setHidePreview((h) => !h)}
-              aria-pressed={hidePreview}
-            >
-              {hidePreview ? <Eye size={20} /> : <EyeOff size={20} />}{' '}
-              {hidePreview ? 'Show preview' : 'Hide preview'}
-            </button>
-            <button
-              className="btn ghost icon"
-              aria-label="Switch camera"
-              onClick={() => {
-                const f = facing === 'user' ? 'environment' : 'user';
-                setFacing(f);
-                void openCamera(f).then((ok) => ok && setPhase({ kind: 'live' }));
-              }}
-            >
-              <SwitchCamera size={22} />
-            </button>
-            <button className="btn ghost icon" aria-label="Leave" onClick={leave}>
-              <LogOut size={22} />
-            </button>
           </div>
+        )}
+      </div>
+
+      {relayState.kind === 'reconnecting' && (
+        <div className="banner" role="alert">
+          <WifiOff size={20} /> Lost the connection to your TV. Reconnecting to room {room}.
+        </div>
+      )}
+
+      <div className="list" aria-live="polite">
+        {placement && (
+          <div className={`item ${placement.ok ? 'ok' : 'warn'}`}>
+            <span className="mark" />
+            <span>
+              <span className="title" data-testid="placement">
+                {placement.message}
+              </span>
+              {lesson.hint && <span className="sub">{lesson.hint}</span>}
+            </span>
+            {placement.ok ? <CheckCircle2 color="var(--ok)" /> : <AlertTriangle color="var(--near)" />}
+          </div>
+        )}
+        {gate && hidePreview && (
+          <div className={`item ${gateTone}`}>
+            <span className="mark" />
+            <span>
+              <span className="title">{gate.label}</span>
+              {gate.worst && <span className="sub">{gate.worst.hint}</span>}
+            </span>
+            <Tv size={20} color="var(--brand)" />
+          </div>
+        )}
+        {loadingTrackers && (
+          <div className="item brand">
+            <span className="mark" />
+            <span className="title">Getting ready for this lesson</span>
+            <Loader2 className="spin" size={20} />
+          </div>
+        )}
+        <div className="item">
+          <span className="mark" />
+          <span>
+            <span className="title">Room {room}</span>
+            <span className="sub num">
+              {role === 'guest' ? `Practising together as ${name}` : 'This phone is the camera'}
+              {fps ? ` — ${fps} frames per second` : ''}
+            </span>
+          </span>
+          <span />
+        </div>
+      </div>
+
+      <div className="stack">
+        {lesson.gestures && (
           <p className="muted small">
-            Room {room} · {role === 'guest' ? `Together mode as ${name}` : 'Camera'} · {fps} fps ·{' '}
-            {loadedVision()?.delegate ?? ''}
+            Hands-free: raise one hand above your head for two seconds to pause or play.
           </p>
+        )}
+        {speechRecognitionAvailable() && (
+          <button className="btn ghost block" onClick={() => void voice()} disabled={listening}>
+            <Mic size={20} /> {listening ? 'Listening…' : 'Say a command: pause, play, repeat, easier'}
+          </button>
+        )}
+        {RECORD && (
+          <button className="btn ghost block" onClick={downloadRecording}>
+            Save landmarks recording (numbers only, stays on this device)
+          </button>
+        )}
+        <div className="row">
+          <button
+            className="btn ghost grow"
+            onClick={() => setHidePreview((h) => !h)}
+            aria-pressed={hidePreview}
+          >
+            {hidePreview ? <Eye size={20} /> : <EyeOff size={20} />}{' '}
+            {hidePreview ? 'Show preview' : 'Hide preview'}
+          </button>
+          <button
+            className="btn ghost icon"
+            aria-label="Switch camera"
+            onClick={() => {
+              const f = facing === 'user' ? 'environment' : 'user';
+              setFacing(f);
+              void openCamera(f).then((ok) => ok && setPhase({ kind: 'live' }));
+            }}
+          >
+            <SwitchCamera size={22} />
+          </button>
+          <button className="btn ghost icon" aria-label="Leave" onClick={leave}>
+            <LogOut size={22} />
+          </button>
         </div>
       </div>
 

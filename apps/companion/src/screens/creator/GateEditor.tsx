@@ -163,43 +163,50 @@ export function GateEditor(props: {
         />
       </div>
 
-      {/* timeline with gate markers */}
-      <div
-        aria-label="Steps on the timeline"
-        style={{ position: 'relative', height: 44, background: 'var(--surface)', borderRadius: 12 }}
-      >
-        <div
-          style={{
-            position: 'absolute',
-            left: `${(now / duration) * 100}%`,
-            top: 0,
-            bottom: 0,
-            width: 2,
-            background: 'var(--text-muted)',
-          }}
-        />
+      {/* scrubber with a marker per step */}
+      <div className="scrubber" aria-label="Steps on the timeline">
+        <div className="playhead" style={{ left: `${(now / duration) * 100}%` }} />
         {gates.map((x, i) => (
           <button
             key={x.id}
+            className={`marker ${x.type === 'safety_prerequisite' ? 'safety' : ''} ${i === sel ? 'selected' : ''}`}
             aria-label={`${x.label} at ${x.t} seconds`}
+            style={{ left: `${(x.t / duration) * 100}%` }}
             onClick={() => {
               setSel(i);
               seek(x.t);
             }}
-            style={{
-              position: 'absolute',
-              left: `calc(${(x.t / duration) * 100}% - 12px)`,
-              top: 8,
-              width: 24,
-              height: 28,
-              borderRadius: 8,
-              border: i === sel ? '3px solid #fff' : 0,
-              background: x.type === 'safety_prerequisite' ? 'var(--far)' : 'var(--brand)',
-              cursor: 'pointer',
-            }}
           />
         ))}
       </div>
+
+      {/* the steps are a real sequence, so they are numbered */}
+      {gates.length > 0 && (
+        <div className="steps">
+          {gates.map((x, i) => (
+            <button
+              key={x.id}
+              className={`step ${x.type === 'safety_prerequisite' ? 'safety' : ''} ${i === sel ? 'selected' : ''}`}
+              onClick={() => {
+                setSel(i);
+                seek(x.t);
+              }}
+            >
+              <span className="n">{i + 1}</span>
+              <span>
+                <span className="title">{x.label}</span>
+                <span className="sub">
+                  {TYPE_LABEL[x.type]} at {x.t.toFixed(1)} s{props.errors[x.id] ? ' — needs attention' : ''}
+                </span>
+              </span>
+              <span className="muted small">{i === sel ? 'Editing' : ''}</span>
+            </button>
+          ))}
+        </div>
+      )}
+      {gates.length === 0 && (
+        <p className="muted">No steps yet. Add one at the current video time, or let InStep suggest steps.</p>
+      )}
 
       <div className="row" style={{ flexWrap: 'wrap' }}>
         {ADDABLE[track.channel].map((type) => (
@@ -211,7 +218,7 @@ export function GateEditor(props: {
               sortAndSelect([...gates, ng], ng);
             }}
           >
-            <Plus size={18} /> {TYPE_LABEL[type]} here
+            <Plus size={18} /> {TYPE_LABEL[type]} at {now.toFixed(1)} s
           </button>
         ))}
         <button className="btn ghost" onClick={props.onAutogates}>
@@ -219,15 +226,11 @@ export function GateEditor(props: {
         </button>
       </div>
 
-      {gates.length === 0 && (
-        <p className="muted">No steps yet. Add one at the current video time, or let InStep suggest steps.</p>
-      )}
-
       {g && sel !== null && (
         <div className={`card ${props.errors[g.id] ? 'bad' : ''}`}>
           <div className="row">
             <strong className="grow">
-              Step {sel + 1}: {TYPE_LABEL[g.type]}
+              Step {sel + 1} of {gates.length}: {TYPE_LABEL[g.type]}
             </strong>
             <button
               className="btn ghost icon"

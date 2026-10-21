@@ -1,0 +1,12 @@
+**/node_modules
+**/dist
+!apps/companion/dist
+apps/tv
+dist-oss
+data
+certs
+spike
+docs
+.git
+**/test-results
+**/playwright-report

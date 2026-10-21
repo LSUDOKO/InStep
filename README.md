@@ -252,14 +252,36 @@ Credentials come from the standard AWS chain (`aws configure`). How InStep uses 
 **Set an AWS Budgets alert before turning AI on:** AWS console → Billing and Cost Management → Budgets → Create
 budget → _Use a template: Monthly cost budget_ → amount `$5` → your email → Create.
 
+### Hosting (Render)
+
+The repo ships a `Dockerfile` and a Render Blueprint (`render.yaml`): one web service that serves the companion
+(HTTPS out of the box, so phone cameras work without `mkcert`), the WebSocket relay, the REST API, lesson media and
+the MCP endpoint, with a persistent disk for SQLite and uploaded lessons.
+
+1. Fork or push this repo to your GitHub, then in Render: **New → Blueprint → select the repo**. Render reads
+   `render.yaml`, generates `CREATOR_PIN` and `MCP_TOKEN`, and builds the image (ffmpeg included).
+2. Open `https://<service>.onrender.com/api/health`; the companion is at `/c/`, Creator Studio at `/c/creator`.
+3. Point the TV app at `https://<service>.onrender.com` in **Settings → Server address** (it connects over `wss://`).
+
+The Blueprint uses the Starter plan because the free plan has no persistent disk (data would reset on every
+deploy). `MOCK_AI` stays `true` unless you add AWS credentials and `BEDROCK_MODEL_ID` as environment variables.
+
 ### MCP server (optional)
 
 `MCP_ENABLED=true` exposes a read-only [Model Context Protocol](https://modelcontextprotocol.io) endpoint at
 `/mcp` (Streamable HTTP) with two tools — `list_lessons` and `get_progress_report` — so a caregiver can ask their
-AI assistant "Did Dad finish his balance exercises this week?". Aggregates only.
+AI assistant "Did Dad finish his balance exercises this week?". Aggregates only. On a hosted server set
+`MCP_TOKEN`; clients must then send `Authorization: Bearer <token>`.
 
 ```json
-{ "mcpServers": { "instep": { "url": "http://<LAN-IP>:8788/mcp" } } }
+{
+  "mcpServers": {
+    "instep": {
+      "url": "https://<service>.onrender.com/mcp",
+      "headers": { "Authorization": "Bearer <MCP_TOKEN>" }
+    }
+  }
+}
 ```
 
 ## Open source package

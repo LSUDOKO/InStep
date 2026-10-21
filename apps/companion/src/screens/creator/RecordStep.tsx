@@ -150,7 +150,7 @@ export function RecordStep({
 
   return (
     <div className="stack">
-      <h1 style={{ fontSize: 22 }}>Record the demonstration</h1>
+      <h2>Record the demonstration</h2>
       <p className="muted">
         Do each movement, then <strong>pause still for about a second</strong> at the key position — InStep
         turns those still moments into steps. Up to {MAX_RECORD_SEC} seconds. Only you, the instructor, are

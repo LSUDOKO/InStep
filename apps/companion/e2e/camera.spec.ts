@@ -46,8 +46,8 @@ test('joins by room code, streams landmarks to the TV, and measures 0 video byte
   // Privacy firewall: the page may only talk to this InStep server.
   expect(res?.headers()['content-security-policy']).toContain("connect-src 'self'");
   await expect(page.getByRole('heading', { name: 'Use this phone as the camera' })).toBeVisible();
-  await expect(page.getByText('Your camera stays on this device')).toBeVisible();
-  await expect(page.getByLabel('Room code on your TV')).toHaveValue(tv.room);
+  await expect(page.getByText('Your camera stays on this phone.')).toBeVisible();
+  await expect(page.getByLabel('Four-digit room code')).toHaveValue(tv.room);
   await page.getByRole('button', { name: 'Start camera' }).click();
 
   await expect(page.getByTestId('connection')).toHaveText(/Connected to TV/, { timeout: 90_000 });

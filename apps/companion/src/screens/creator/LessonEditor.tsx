@@ -149,7 +149,7 @@ function Editor({ id }: { id: string }) {
 
       {note && (
         <div
-          className={`banner ${note.tone === 'bad' ? 'bad' : ''}`}
+          className={`banner ${note.tone === 'bad' ? 'bad' : note.tone === 'ok' ? 'ok' : 'info'}`}
           role="status"
           style={
             note.tone === 'ok'

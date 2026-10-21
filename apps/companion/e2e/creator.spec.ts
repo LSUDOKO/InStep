@@ -37,7 +37,7 @@ test('creator records a demonstration, gets suggested steps, publishes, and TVs 
 
   // uploaded + transcoded → editor with suggested steps (fall prevention always starts with the chair check)
   await expect(page.getByText(/InStep suggested \d+ steps?/)).toBeVisible({ timeout: 90_000 });
-  await expect(page.getByText('Step 1: Safety check')).toBeVisible();
+  await expect(page.getByText('Step 1 of 1: Safety check')).toBeVisible();
   await page.getByRole('button', { name: 'Publish to TV' }).click();
   await expect(page.getByText(/Published in [\d.]+ s/)).toBeVisible({ timeout: 30_000 });
   await expect.poll(() => updates.length).toBeGreaterThan(0);

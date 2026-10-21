@@ -94,7 +94,7 @@ export function Preview(props: {
         />
         <canvas ref={canvasRef} aria-hidden />
       </div>
-      {props.hidden && <div className="preview-hidden">Preview hidden — the camera is still working</div>}
+      {props.hidden && <div className="preview-hidden">Preview hidden. The camera is still working.</div>}
     </>
   );
 }

@@ -1,5 +1,5 @@
 import type { Catalog } from '@instep/protocol';
-import { AlertTriangle, KeyRound, Loader2, Lock, Plus, Video } from 'lucide-react';
+import { AlertTriangle, KeyRound, Loader2, Plus } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { Brand } from '../../components/Brand';
 import { FullMessage } from '../../components/FullMessage';
@@ -103,44 +103,47 @@ function LessonList() {
       )}
       {catalog && (
         <>
-          <h1 style={{ fontSize: 22 }}>Your lessons</h1>
-          {mine.length === 0 && (
-            <p className="muted">No lessons yet. Tap “New lesson” to record your first one.</p>
-          )}
-          {mine.map((l) => (
-            <button
-              key={l.id}
-              className="card"
-              style={{ textAlign: 'left', border: 0, cursor: 'pointer' }}
-              onClick={() => navigate(`/c/creator/${l.id}`)}
-            >
-              <div className="row">
-                <Video size={20} color="var(--brand)" />
-                <strong className="grow">{l.title}</strong>
-                <span className={`chip ${l.status === 'published' ? 'ok' : 'warn'}`}>
-                  {l.status === 'published' ? 'Published' : 'Draft'}
+          <h2>Your lessons</h2>
+          <div className="list">
+            {mine.length === 0 && (
+              <p className="muted">No lessons yet. Tap “New lesson” to record your first one.</p>
+            )}
+            {mine.map((l) => (
+              <button
+                key={l.id}
+                className={`item ${l.status === 'published' ? 'ok' : 'warn'}`}
+                onClick={() => navigate(`/c/creator/${l.id}`)}
+              >
+                <span className="mark" />
+                <span>
+                  <span className="title">{l.title}</span>
+                  <span className="sub">
+                    {l.channelTitle}, {l.gateCount} {l.gateCount === 1 ? 'step' : 'steps'}
+                  </span>
                 </span>
-              </div>
-              <span className="muted small">
-                {l.channelTitle} · {l.gateCount} steps
-              </span>
-            </button>
-          ))}
+                <span className={`chip ${l.status === 'published' ? 'ok' : 'warn'}`}>
+                  {l.status === 'published' ? 'On TV' : 'Draft'}
+                </span>
+              </button>
+            ))}
+          </div>
           {builtIn.length > 0 && (
             <>
-              <h1 style={{ fontSize: 22 }}>Built-in demonstration lessons</h1>
-              {builtIn.map((l) => (
-                <div key={l.id} className="card">
-                  <div className="row">
-                    <Lock size={18} color="var(--text-muted)" />
-                    <strong className="grow">{l.title}</strong>
+              <h2>Built-in demonstration lessons</h2>
+              <div className="list">
+                {builtIn.map((l) => (
+                  <div key={l.id} className="item">
+                    <span className="mark" />
+                    <span>
+                      <span className="title">{l.title}</span>
+                      <span className="sub">{l.channelTitle}, read-only</span>
+                    </span>
                     <span className={`chip ${l.status === 'published' ? 'ok' : 'warn'}`}>
-                      {l.status === 'published' ? 'On TV' : 'Video not recorded'}
+                      {l.status === 'published' ? 'On TV' : 'No video yet'}
                     </span>
                   </div>
-                  <span className="muted small">{l.channelTitle} · read-only</span>
-                </div>
-              ))}
+                ))}
+              </div>
             </>
           )}
         </>

@@ -23,7 +23,7 @@ export function FullMessage(props: {
           {props.icon}
         </div>
         <h1>{props.title}</h1>
-        <div className="stack muted">{props.children}</div>
+        <div className="stack lede">{props.children}</div>
         {props.actions && <div className="stack">{props.actions}</div>}
       </section>
     </main>
