@@ -26,7 +26,8 @@
     "replay": "tsx scripts/replay.ts",
     "screenshots": "pnpm --filter @instep/companion screenshots",
     "aws:check": "tsx scripts/aws-check.ts",
-    "demo-learner": "tsx scripts/demo-learner.ts"
+    "demo-learner": "tsx scripts/demo-learner.ts",
+    "dryrun-lessons": "tsx scripts/dryrun-lessons.ts"
   },
   "devDependencies": {
     "@aws-sdk/client-bedrock": "^3.1153.0",
@@ -48,6 +49,7 @@
     "ws": "^8.22.0"
   },
   "dependencies": {
-    "@instep/gate-engine": "workspace:*"
+    "@instep/gate-engine": "workspace:*",
+    "@instep/istep-format": "workspace:*"
   }
 }

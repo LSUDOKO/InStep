@@ -11,6 +11,9 @@ importers:
       '@instep/gate-engine':
         specifier: workspace:*
         version: link:packages/gate-engine
+      '@instep/istep-format':
+        specifier: workspace:*
+        version: link:packages/istep-format
     devDependencies:
       '@aws-sdk/client-bedrock':
         specifier: ^3.1153.0
