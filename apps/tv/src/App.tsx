@@ -1,4 +1,8 @@
 import './remote/configureSpatialNavigation';
+import { LogBox } from 'react-native';
+
+// Debug-build noise from the Vega video surface (an internal event the RN bridge doesn't know); harmless.
+LogBox.ignoreLogs(['Unsupported top level event type topOnKeplerVideoSurfaceViewCreated']);
 import React, { useEffect } from 'react';
 import { ThemeProvider } from './components/ui';
 import { nav, type Route } from './lib/app';

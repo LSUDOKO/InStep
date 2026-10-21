@@ -126,6 +126,14 @@ export class TvRelay {
         return;
       case 'peer_joined':
         if (m.role === 'tv') return;
+        // one camera per room: a new host replaces any earlier host (the relay enforces this too, but a
+        // missed peer_left must never leave the lesson tracking a dead camera — seen on device, M4)
+        if (m.role === 'host')
+          for (const p of [...this.peers.values()])
+            if (p.role === 'host' && p.peerId !== m.peerId) {
+              this.peers.delete(p.peerId);
+              this.lastSeq.delete(p.peerId);
+            }
         this.peers.set(m.peerId, { peerId: m.peerId, role: m.role, ...(m.name ? { name: m.name } : {}) });
         this.emit('onPeers', [...this.peers.values()]);
         return;

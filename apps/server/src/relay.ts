@@ -76,7 +76,17 @@ export function createRelay(opts: { publicUrl: string; now?: () => number }) {
           code: res,
           message: 'This room already has the maximum number of people.',
         });
-      if (res.replaced) res.replaced.socket.close(4001, 'replaced by a new camera');
+      if (res.replaced) {
+        // the old camera is already out of the room, so its socket-close won't announce it: tell the room now
+        for (const p of others(res.room, res.peer.peerId))
+          send(p.socket, {
+            type: 'peer_left',
+            role: res.replaced.role,
+            peerId: res.replaced.peerId,
+            ...(res.replaced.name ? { name: res.replaced.name } : {}),
+          });
+        res.replaced.socket.close(4001, 'replaced by a new camera');
+      }
       c.room = res.room.code;
       c.peer = res.peer;
       send(c.ws, { type: 'joined', room: res.room.code, peerId: res.peer.peerId, role: m.role });

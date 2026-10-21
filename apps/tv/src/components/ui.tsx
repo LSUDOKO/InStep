@@ -1,6 +1,10 @@
 import React, { createContext, useContext, type ReactNode } from 'react';
 import { Pressable, StyleSheet, Text, View, type TextStyle, type ViewStyle } from 'react-native';
-import { SpatialNavigationFocusableView, SpatialNavigationRoot } from 'react-tv-space-navigation';
+import {
+  SpatialNavigationFocusableView,
+  SpatialNavigationNode,
+  SpatialNavigationRoot,
+} from 'react-tv-space-navigation';
 import { useApp } from '../useStore';
 import { palettes, px, SAFE, type, type Palette } from '../theme/tokens';
 
@@ -209,7 +213,11 @@ export function StateScreen({
         </View>
         <T size="h1">{title}</T>
         {typeof body === 'string' ? <T color={c.muted}>{body}</T> : body}
-        {actions && <View style={{ flexDirection: 'row', gap: px(24), marginTop: px(16) }}>{actions}</View>}
+        {actions && (
+          <SpatialNavigationNode orientation="horizontal">
+            <View style={{ flexDirection: 'row', gap: px(24), marginTop: px(16) }}>{actions}</View>
+          </SpatialNavigationNode>
+        )}
       </View>
     </Screen>
   );

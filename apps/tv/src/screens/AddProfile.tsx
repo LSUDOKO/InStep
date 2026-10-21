@@ -43,65 +43,70 @@ export function AddProfile() {
   return (
     <Screen>
       <T size="h1">New profile</T>
-      <View style={{ flexDirection: 'row', gap: px(64), marginTop: px(40) }}>
-        <View style={{ gap: px(24) }}>
-          <Card style={{ flexDirection: 'row', alignItems: 'center', gap: px(24), minWidth: px(900) }}>
-            <Avatar name={name || '?'} avatar={avatar} size={px(96)} />
-            <T size="h1">{name || ' '}</T>
-            <View style={{ width: px(4), height: px(56), backgroundColor: c.brand }} />
-          </Card>
-          <DefaultFocus>
-            <Keyboard value={name} onChange={setName} max={20} />
-          </DefaultFocus>
-        </View>
-        <SpatialNavigationNode orientation="vertical">
-          <View style={{ gap: px(28) }}>
-            <T size="h2">Colour</T>
-            <SpatialNavigationNode orientation="horizontal">
-              <View style={{ flexDirection: 'row', gap: px(14) }}>
-                {Object.keys(AVATARS).map((a) => (
-                  <Focusable
-                    key={a}
-                    onSelect={() => setAvatar(a)}
-                    style={{ padding: px(6), borderColor: a === avatar ? c.brand : 'transparent' }}
-                  >
-                    {() => <Avatar name={name || '?'} avatar={a} size={px(72)} />}
-                  </Focusable>
-                ))}
-              </View>
-            </SpatialNavigationNode>
-            <T size="h2">Hand for rehab exercises</T>
-            <SpatialNavigationNode orientation="horizontal">
-              <View style={{ flexDirection: 'row', gap: px(14) }}>
-                {HANDS.map((h) => (
-                  <Focusable
-                    key={h.id}
-                    onSelect={() => setHand(h.id)}
-                    style={{
-                      paddingHorizontal: px(24),
-                      height: px(72),
-                      justifyContent: 'center',
-                      backgroundColor: h.id === hand ? c.brand : c.surface2,
-                    }}
-                  >
-                    {() => <T color={h.id === hand ? '#04201D' : c.text}>{h.label}</T>}
-                  </Focusable>
-                ))}
-              </View>
-            </SpatialNavigationNode>
-            {error && <T color={c.far}>{error}</T>}
-            <View style={{ flexDirection: 'row', gap: px(20) }}>
-              <Button
-                primary
-                label={saving ? 'Saving…' : 'Save profile'}
-                disabled={saving}
-                onSelect={() => void save()}
-              />
-              <Button label="Cancel" onSelect={nav.back} />
-            </View>
+      {/* horizontal node so Left/Right crosses between the keyboard and the right-hand column */}
+      <SpatialNavigationNode orientation="horizontal">
+        <View style={{ flexDirection: 'row', gap: px(64), marginTop: px(40) }}>
+          <View style={{ gap: px(24) }}>
+            <Card style={{ flexDirection: 'row', alignItems: 'center', gap: px(24), minWidth: px(900) }}>
+              <Avatar name={name || '?'} avatar={avatar} size={px(96)} />
+              <T size="h1">{name || ' '}</T>
+              <View style={{ width: px(4), height: px(56), backgroundColor: c.brand }} />
+            </Card>
+            <DefaultFocus>
+              <Keyboard value={name} onChange={setName} max={20} />
+            </DefaultFocus>
           </View>
-        </SpatialNavigationNode>
-      </View>
+          <SpatialNavigationNode orientation="vertical">
+            <View style={{ gap: px(28) }}>
+              <T size="h2">Colour</T>
+              <SpatialNavigationNode orientation="horizontal">
+                <View style={{ flexDirection: 'row', gap: px(14) }}>
+                  {Object.keys(AVATARS).map((a) => (
+                    <Focusable
+                      key={a}
+                      onSelect={() => setAvatar(a)}
+                      style={{ padding: px(6), borderColor: a === avatar ? c.brand : 'transparent' }}
+                    >
+                      {() => <Avatar name={name || '?'} avatar={a} size={px(72)} />}
+                    </Focusable>
+                  ))}
+                </View>
+              </SpatialNavigationNode>
+              <T size="h2">Hand for rehab exercises</T>
+              <SpatialNavigationNode orientation="horizontal">
+                <View style={{ flexDirection: 'row', gap: px(14) }}>
+                  {HANDS.map((h) => (
+                    <Focusable
+                      key={h.id}
+                      onSelect={() => setHand(h.id)}
+                      style={{
+                        paddingHorizontal: px(24),
+                        height: px(72),
+                        justifyContent: 'center',
+                        backgroundColor: h.id === hand ? c.brand : c.surface2,
+                      }}
+                    >
+                      {() => <T color={h.id === hand ? '#04201D' : c.text}>{h.label}</T>}
+                    </Focusable>
+                  ))}
+                </View>
+              </SpatialNavigationNode>
+              {error && <T color={c.far}>{error}</T>}
+              <SpatialNavigationNode orientation="horizontal">
+                <View style={{ flexDirection: 'row', gap: px(20) }}>
+                  <Button
+                    primary
+                    label={saving ? 'Saving…' : 'Save profile'}
+                    disabled={saving}
+                    onSelect={() => void save()}
+                  />
+                  <Button label="Cancel" onSelect={nav.back} />
+                </View>
+              </SpatialNavigationNode>
+            </View>
+          </SpatialNavigationNode>
+        </View>
+      </SpatialNavigationNode>
     </Screen>
   );
 }

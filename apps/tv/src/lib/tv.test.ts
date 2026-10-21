@@ -112,8 +112,13 @@ describe('tv relay client', () => {
     s.receive(lm(3, 300));
     s.receive({ ...lm(4, 400), from: 'stranger' } as Message);
     expect(frames).toEqual([200, 300]);
+    // a second camera replaces the first even if the relay's peer_left was missed (seen on device)
+    s.receive({ type: 'peer_joined', role: 'host', peerId: 'p2' });
+    expect([...relay.peers.keys()]).toEqual(['p2']);
+    s.receive({ type: 'peer_left', role: 'host', peerId: 'p2' });
+    s.receive({ type: 'peer_joined', role: 'host', peerId: 'p1' });
     s.receive({ type: 'peer_left', role: 'host', peerId: 'p1' });
-    expect(peers).toEqual([1, 0]);
+    expect(peers).toEqual([1, 1, 0, 1, 0]);
   });
   it('reconnects with backoff and rejoins its room', () => {
     vi.useFakeTimers();

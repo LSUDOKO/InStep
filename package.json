@@ -25,7 +25,8 @@
     "e2e": "pnpm --filter @instep/companion e2e",
     "replay": "tsx scripts/replay.ts",
     "screenshots": "pnpm --filter @instep/companion screenshots",
-    "aws:check": "tsx scripts/aws-check.ts"
+    "aws:check": "tsx scripts/aws-check.ts",
+    "demo-learner": "tsx scripts/demo-learner.ts"
   },
   "devDependencies": {
     "@aws-sdk/client-bedrock": "^3.1153.0",
@@ -45,5 +46,8 @@
     "typescript-eslint": "^8.72.0",
     "vitest": "^5.0.5",
     "ws": "^8.22.0"
+  },
+  "dependencies": {
+    "@instep/gate-engine": "workspace:*"
   }
 }

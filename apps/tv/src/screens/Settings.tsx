@@ -77,19 +77,21 @@ export function Settings() {
         <DefaultFocus>
           <Keyboard value={url} onChange={setUrl} layout="url" max={60} />
         </DefaultFocus>
-        <View style={{ flexDirection: 'row', gap: px(20), marginTop: px(28) }}>
-          <Button
-            primary
-            label="Save and reconnect"
-            onSelect={() => {
-              save({ serverUrl: url.trim() });
-              setEditing(false);
-              nav.reset({ name: 'splash' });
-              void connectAndCheck();
-            }}
-          />
-          <Button label="Cancel" onSelect={() => setEditing(false)} />
-        </View>
+        <SpatialNavigationNode orientation="horizontal">
+          <View style={{ flexDirection: 'row', gap: px(20), marginTop: px(28) }}>
+            <Button
+              primary
+              label="Save and reconnect"
+              onSelect={() => {
+                save({ serverUrl: url.trim() });
+                setEditing(false);
+                nav.reset({ name: 'splash' });
+                void connectAndCheck();
+              }}
+            />
+            <Button label="Cancel" onSelect={() => setEditing(false)} />
+          </View>
+        </SpatialNavigationNode>
       </Screen>
     );
 

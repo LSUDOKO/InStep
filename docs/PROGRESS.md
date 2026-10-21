@@ -2,6 +2,34 @@
 
 Newest first. Each entry: what works, what doesn't, what changed from the spec and why.
 
+## 2026-10-22 — Milestone 0 and Milestone 4 verified on the Vega Virtual Device
+
+First run of the real TV app on Vega OS (SDK 0.24.12112, Virtual Device, Ubuntu 24.04 distrobox on Arch).
+Everything below was observed on the device, with screenshots in `docs/screenshots/tv/`.
+
+- **M0 risk 1 — network:** the Virtual Device reaches the host at `10.0.2.2:8788` (REST and the WebSocket relay),
+  and reaches the public internet (`https://instep-wfcr.onrender.com`, TLS 1.3, certificate verified). The built-in
+  WebSocket client (`WebSocketCurlManager`) connects over both `ws://` and `wss://`.
+- **M0 risk 2 — video:** the W3C media element refuses `http://` sources outright
+  (`isUriSchemeSecure … insecure protocol/scheme http`), before any codec check — friction F-06. Over HTTPS the
+  H.264/AAC faststart MP4 plays, pauses and seeks as the gate engine asks. The TV app now defaults to the hosted
+  server; a local http server still works for everything except video.
+- **M0 — overlays and focus:** `react-native-svg` draws the skeleton panel and the worst-joint rings over the
+  playing video at the engine's tick rate; `react-tv-space-navigation` works with the Vega remote (D-pad, Select,
+  Back). One real focus bug found on device: the New-profile keyboard and its right-hand column were siblings in a
+  vertical node, so Left/Right never crossed and a remote user could not reach "Save profile". Fixed by wrapping
+  the row (and the Save/Cancel rows, and the shared `actions` row) in horizontal nodes; verified on device.
+- **M4 — end to end:** profile → Home → lesson → pairing (QR + 4-digit code, hosted join URL) → camera check →
+  Player → four gates (pose match ×2, hold with foot lift, pose match) → Summary (4/4, best hold 2.1 s) → Home,
+  with the hosted relay in between. Driven by `pnpm demo-learner`, a new script that joins a room as the camera
+  and streams a synthetic 33-point pose matching the active gate (also the no-camera fallback for the demo video).
+- **Tooling for the device** (recorded in the friction log): `NODE_OPTIONS` must be unset for the SDK's bundled
+  Node; the installer's `vvd/bin/virtualdevice` symlink was broken; the emulator needs `libpulse0` and X11/Mesa
+  libraries the docs don't list; the only working screenshot path is the emulator console
+  (`screenrecord screenshot`); key presses reach the app only through the emulator window (Hyprland `sendshortcut`).
+- Debug-build LogBox warning `Unsupported top level event type topOnKeplerVideoSurfaceViewCreated` (an internal
+  Vega video-surface event the RN bridge doesn't know) is ignored in `App.tsx`; it does not occur in release builds.
+
 ## 2026-10-21 — AWS verification (credits only, no card spend)
 
 - `pnpm aws:check`: free control-plane checks (STS identity, Bedrock model list, Polly voices) with optional

@@ -124,8 +124,13 @@ describe('relay', () => {
     const closed = new Promise<number>((r) => host.ws.once('close', (c) => r(c)));
     const host2 = await client();
     host2.send({ type: 'hello', v: 1, role: 'host', room: code, deviceId: 'phone2' });
-    await host2.next('joined');
+    const joined2 = await host2.next('joined');
     expect(await closed).toBe(4001);
+    // the TV must hear that the old camera left before the new one joins, or it keeps tracking a dead peer
+    const left = await tv.next('peer_left');
+    expect(left.peerId).not.toBe(joined2.peerId);
+    const joinedTv = await tv.next('peer_joined');
+    expect(joinedTv.peerId).toBe(joined2.peerId);
     tv.close();
     host2.close();
   });

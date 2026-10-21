@@ -50,3 +50,29 @@ Only real experiences, recorded as they happen. Format from `docs/12-submission-
 - Severity: Medium
 - Workaround: the coach already falls back to the lesson's template tip on any model error, so the product keeps working; `pnpm aws:check` reports which models the account can list and probes with a 5-token call.
 - Suggestion: return a distinct error code (and the reset time) for per-account daily allowances, and show the allowance in the Bedrock console next to model access.
+
+### F-05: Vega SDK install on Ubuntu 24.04 (distrobox on Arch) needed four manual repairs
+
+- Task attempted: install Vega Developer Tools 0.24.12112 and start the Virtual Device, following the official "Install the Vega Developer Tools" page, inside an Ubuntu 24.04 distrobox (Docker backend, `/dev/kvm` passed through) on an Arch host.
+- Steps taken / what broke:
+  1. `get_vvm.sh` aborts with `jq is required` — `jq` is not in the page's Ubuntu dependency list.
+  2. The deadsnakes PPA returned `503 Service Unavailable` for ~10 minutes, so `libpython3.8-dev` could not be installed; the installer did not need it to proceed.
+  3. Every `vega` command printed `node: --no-experimental-strip-types is not allowed in NODE_OPTIONS`. The SDK bundles an older Node whose CLI rejects a flag the developer's shell exports for Node 22. Fix: `unset NODE_OPTIONS` before running `vega`.
+  4. `vega virtual-device start` returned silently and `run-app` said "Cannot find an instance of Vega Virtual Device". `vvd/bin/virtualdevice` was a symlink to `../../../../../../../../..` (i.e. `/`). Fix: relink it to `packages/KeplerCLIKVDI/KeplerCLIKVDI-2.0.4800.0/AL2_x86_64/DEV.STD.PTHREAD/build/bin/virtualdevice`.
+  5. `vega virtual-device start` reported "Waiting for virtual device to boot" then nothing. The instance's `virtual_device.err` said `vega-virtual-device: error while loading shared libraries: libpulse.so.0`. The emulator (an Android-emulator derivative) needs PulseAudio, X11/XCB and Mesa libraries that a minimal Ubuntu 24.04 lacks. Fix: `apt install libpulse0 libgl1 libegl1 libgbm1 libx11-xcb1 libxkbcommon-x11-0 libxcb-cursor0 libnss3 libasound2t64 libfontconfig1 libxcomposite1 libxi6 libxtst6 libxrandr2 libxcursor1 libxdamage1`. The CLI never surfaced the error; it only timed out.
+  6. No supported way to screenshot the device. With the default host-GPU mode, QEMU's QMP `screendump` returns a black frame; the on-device `screenshooter` / `gwsi-tool-screenshooter` run as `app_user` fail with `creating a buffer file … Permission denied` (and the first bare call takes `com.amazon.dev.shell.service` down with it). Workaround: start the device with `vega virtual-device start --no-gl-accel`, then dump the framebuffer over the QMP socket (`/tmp/qmp-socket-5554.sock`, `screendump`). Slower rendering, but scriptable screenshots.
+  7. (Self-inflicted, but worth noting) running `vega` once as root rewrote `~/vega/sdk/components.json` as `root:root 600`; afterwards every command reported "SDK version main@0.24.12112 is not installed". The CLI could tell the user the file is unreadable rather than "not installed".
+- Expected: a single installer run and `vega virtual-device start` opening the device window.
+- Actual: as above; total ~75 minutes of debugging before the first Hello World.
+- Severity: High (blocks every first-time Ubuntu developer who exports NODE_OPTIONS or whose VVD symlink is mis-generated).
+- Suggestion: add `jq` to the documented dependencies; have the CLI strip or ignore unsupported `NODE_OPTIONS` for its bundled Node; verify the `vvd/bin/virtualdevice` link after install and print the path it resolves to; print the emulator's stderr (or at least `ldd` misses) when boot never starts; add `vega device screenshot`; list the emulator's apt dependencies on the Ubuntu install page; distinguish "not installed" from "config unreadable".
+
+### F-06: The Vega media player refuses `http://` video sources — only HTTPS plays
+
+- Task attempted: play a lesson video (H.264 High 4.0, yuv420p, AAC, faststart MP4, served with byte ranges) in the TV app on the Vega Virtual Device from the local dev server at `http://10.0.2.2:8788/media/...`.
+- Steps taken: `<Video>` (W3C media element) with the http URL; the same URL fetched fine from the device shell (`wget -S --spider` → 200, `accept-ranges: bytes`, `video/mp4`).
+- Expected: playback, or an error naming the codec/container problem.
+- Actual: the app's generic error ("The video couldn't be played"); device log: `MEDIA_PLAYER:MediaPlayerUtils.cpp(113) isUriSchemeSecure Got an insecure protocol/scheme http, return error` → `openMedia Invalid URI` → `set_src_uri: MPB Call failed with code: 50004` → HTMLMediaElement `error` (code 4). No codec was ever consulted.
+- Severity: High for local development (every first `http://` dev server fails with a misleading media error); Low in production (apps serve media over HTTPS anyway).
+- Workaround: serve media over HTTPS from a publicly trusted certificate. InStep's TV app now defaults to the hosted server `https://instep-wfcr.onrender.com` (overridable at build time with `INSTEP_SERVER_URL`), while REST and WebSocket still work over plain http for local debugging.
+- Suggestion: document the HTTPS-only rule on the Video/W3C media pages; surface a distinct `MEDIA_ERR_SRC_NOT_SUPPORTED` reason ("insecure scheme") to JavaScript; allow `http://10.0.2.2` (the Virtual Device's host alias) in debug builds.

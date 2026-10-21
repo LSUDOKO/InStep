@@ -8,9 +8,16 @@ export type Settings = {
   reduceMotion: boolean;
 };
 
-/** Default server for the Vega Virtual Device: 10.0.2.2 is the host as seen from the VVD's NAT (verify in M0). */
+/**
+ * Default server: the hosted instance. Vega's media player refuses plain-http video sources (verified on the
+ * Virtual Device, see docs/FRICTION_LOG.md F-06), so the default must be HTTPS with a public certificate.
+ * For a local server, enter http://10.0.2.2:8788 (the host as seen from the Virtual Device) in Settings —
+ * REST and the relay work over http; only video playback needs HTTPS.
+ */
+export const DEFAULT_SERVER_URL = 'https://instep-wfcr.onrender.com';
+export const LOCAL_SERVER_URL = 'http://10.0.2.2:8788';
 export const DEFAULT_SETTINGS: Settings = {
-  serverUrl: 'http://10.0.2.2:8788',
+  serverUrl: DEFAULT_SERVER_URL,
   language: 'en-US',
   captionScale: 1,
   voice: true,
