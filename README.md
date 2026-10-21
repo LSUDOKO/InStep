@@ -110,6 +110,12 @@ test camera and real MediaPipe inference.
 
 ## Channels
 
+Every channel below runs end to end on the Vega Virtual Device against the hosted server. Each GIF is a real
+screen recording of the TV (emulator screen recorder, played 3× faster) with the synthetic learner performing
+the steps (`pnpm demo-learner`). The lesson videos themselves are illustrated placeholder step cards until a
+person is recorded for them; the gates, safety checks, reps, rhythm and hand shapes are the real engine. Only
+"The Forest Walk" has its own illustrated video.
+
 | Channel                               | What the gates check                                                                                                      |
 | ------------------------------------- | ------------------------------------------------------------------------------------------------------------------------- |
 | **Fall Prevention** (hero)            | Chair safety check before balance work, posture holds, heel-raise reps, automatic sway stop, progression levels           |
@@ -117,6 +123,43 @@ test camera and real MediaPipe inference.
 | Stroke Hand Rehab                     | Quality reps (full range of motion only), pace-follow slows the video for a slow learner                                  |
 | CPR Practice                          | Compression rhythm (100–120/min) and straight arms, metronome; **does not measure depth, not certification**              |
 | Kids' Active Storytime                | Act out "The Forest Walk" with generous tolerances and a star burst on every pass                                         |
+
+### Fall Prevention — heel raises with a chair, and single-leg stand
+
+The lesson refuses to start the balance work until a chair is detected beside the learner (safety gate, never
+loosened), then checks posture, counts five heel raises by heel height, and finishes with a 2 s hold.
+
+<p align="center"><img src="docs/screenshots/tv/gif/fall-heel-raise.gif" width="720" alt="Heel raises on the TV: chair safety check, posture gate, rep counter counting to five, final hold, summary" /></p>
+<p align="center"><img src="docs/screenshots/tv/gif/fall-single-leg-stand.gif" width="720" alt="Single-leg stand: chair check, then a 5 s hold on each leg with a countdown ring" /></p>
+
+### Sign Language for Families — fingerspelling A B C L Y, and "I love you"
+
+Each handshape is matched finger by finger; the Delta Glow panel shows exactly which finger to curl or extend.
+The last step is a sequence: C, A, B in order — out-of-order shapes never advance it.
+
+<p align="center"><img src="docs/screenshots/tv/gif/asl-fingerspell-abc.gif" width="720" alt="Fingerspelling lesson: five handshape gates with finger-level feedback, then the C-A-B sequence" /></p>
+<p align="center"><img src="docs/screenshots/tv/gif/asl-i-love-you.gif" width="720" alt="The I-love-you sign matched by finger curls" /></p>
+
+### Stroke Hand Rehab — open and close your hand, 20 quality reps
+
+Only reps that reach both ends of the range count. Pace-follow slows the video when the learner is slower than the
+teacher.
+
+<p align="center"><img src="docs/screenshots/tv/gif/rehab-hand-open-close.gif" width="720" alt="Hand open/close rep counter climbing to 20 with partial-rep hints" /></p>
+
+### CPR Practice — rhythm and straight arms
+
+A placement check first (shoulders, arms and hands in view), then compressions must land at 100–120 per minute
+with locked elbows; the BPM meter and metronome guide the pace. The disclaimer stays on screen: a practice aid
+for rhythm and straight arms only, it does not measure depth and is not certification.
+
+<p align="center"><img src="docs/screenshots/tv/gif/cpr-rhythm.gif" width="720" alt="CPR rhythm gate: compressions counted, BPM meter in the green band, arms-straight check" /></p>
+
+### Kids' Active Storytime — The Forest Walk
+
+Tree, mouse, flamingo, wave: four poses with generous tolerances and a star burst on every pass.
+
+<p align="center"><img src="docs/screenshots/tv/gif/kids-forest-walk.gif" width="720" alt="The Forest Walk: four kid poses with stars on every pass" /></p>
 
 Safety notes shown in the app: exercises should be prescribed or approved by a physiotherapist; the CPR lesson is a
 practice aid for rhythm and straight arms only; sign lessons are a practice aid — learn with Deaf teachers and

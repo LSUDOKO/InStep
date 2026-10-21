@@ -76,3 +76,13 @@ Only real experiences, recorded as they happen. Format from `docs/12-submission-
 - Severity: High for local development (every first `http://` dev server fails with a misleading media error); Low in production (apps serve media over HTTPS anyway).
 - Workaround: serve media over HTTPS from a publicly trusted certificate. InStep's TV app now defaults to the hosted server `https://instep-wfcr.onrender.com` (overridable at build time with `INSTEP_SERVER_URL`), while REST and WebSocket still work over plain http for local debugging.
 - Suggestion: document the HTTPS-only rule on the Video/W3C media pages; surface a distinct `MEDIA_ERR_SRC_NOT_SUPPORTED` reason ("insecure scheme") to JavaScript; allow `http://10.0.2.2` (the Virtual Device's host alias) in debug builds.
+
+### F-07: The Virtual Device hangs under its own 1080p screen recording
+
+- Task attempted: record each lesson on the Virtual Device with the emulator console (`screenrecord start` at the display's native 1920×1080, 6 Mbps) while the app played video and drew SVG overlays.
+- Steps taken: first lesson recorded fine (105 s). During the second, the emulator stopped answering: `detected a hanging thread 'QEMU2 main loop'. No response for 15909 ms` … `'QEMU2 CPU0 thread'. No response for 28503 ms`, preceded by repeated `Error while writing audio frame: [Success]`. The console port closed; `vega virtual-device status` reported `running:false`.
+- Expected: either a recording or a refusal, not a dead device.
+- Actual: the device had to be stopped, its instance directory cleared and started again (≈1.5 minutes), then the app reinstalled.
+- Severity: Medium (reproducible; blocks automated capture).
+- Workaround: record at `--size 1280x720 --fps 12 --bit-rate 3M`, relaunch the app before each recording, and have the capture script restart the device when its console stops answering.
+- Suggestion: cap the recorder below the host's capability or warn; expose the hang in `vega virtual-device status` (it reported "running" for a while after the hang).

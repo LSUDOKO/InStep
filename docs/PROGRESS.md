@@ -2,6 +2,21 @@
 
 Newest first. Each entry: what works, what doesn't, what changed from the spec and why.
 
+## 2026-10-22 — Every channel playable on the device; recorded walkthroughs
+
+- **Placeholder instruction videos** for the six unrecorded lessons (`scripts/make-lesson-video.mjs`): illustrated
+  step cards timed to each lesson's gates, labelled on screen as placeholders. The catalog now publishes all five
+  channels; the gates, safety checks, reps, rhythm, hand shapes and sequences are the real engine, only the
+  teacher's picture is a stand-in until a person is recorded.
+- **Synthetic learner covers every gate type** (`scripts/lib/learnerBehaviour.ts`): chair for the safety check,
+  heel-raise and hand open/close reps, 110/min compressions with straight arms, ASL handshapes, the C-A-B
+  sequence, foot-lift holds. `pnpm dryrun-lessons` pushes it through the real gate engine offline — all 21 gates
+  of the 7 lessons pass. `pnpm demo-learner --role guest` joins Together mode as a second learner.
+- **Player step rail**: the lesson's steps (done / current / upcoming) under the HUD.
+- **Recorded on the Virtual Device**: each lesson end to end against the hosted server, captured with the emulator's
+  screen recorder and turned into the GIFs in `docs/screenshots/tv/gif/` (played 3× faster). Friction F-07: the
+  emulator hangs under 1080p recording; 720p works.
+
 ## 2026-10-22 — Milestone 0 and Milestone 4 verified on the Vega Virtual Device
 
 First run of the real TV app on Vega OS (SDK 0.24.12112, Virtual Device, Ubuntu 24.04 distrobox on Arch).
