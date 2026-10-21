@@ -27,6 +27,10 @@ Everything below was observed on the device, with screenshots in `docs/screensho
   Node; the installer's `vvd/bin/virtualdevice` symlink was broken; the emulator needs `libpulse0` and X11/Mesa
   libraries the docs don't list; the only working screenshot path is the emulator console
   (`screenrecord screenshot`); key presses reach the app only through the emulator window (Hyprland `sendshortcut`).
+- **Relay bug found on device:** when a second camera joined a room, the relay replaced the first host before its
+  socket closed, so the room never received `peer_left`; the TV kept the dead peer as its host and showed
+  "Camera disconnected" for good. Fixed on the server (announce the replaced peer before closing it; test added)
+  and hardened on the TV (a new host replaces any earlier host in the peer list; test added).
 - Debug-build LogBox warning `Unsupported top level event type topOnKeplerVideoSurfaceViewCreated` (an internal
   Vega video-surface event the RN bridge doesn't know) is ignored in `App.tsx`; it does not occur in release builds.
 

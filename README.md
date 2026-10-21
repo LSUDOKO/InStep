@@ -73,9 +73,25 @@ flowchart LR
 
 ## Screenshots
 
-All images below are real captures of the running app (Chrome with a test camera, real MediaPipe inference).
-TV screenshots will be added once the Vega Virtual Device run is complete — the TV app is built and bundles in CI
-but has not been launched on a device yet.
+All images below are real captures of the running app: the TV frames come from the **Vega Virtual Device**
+(SDK 0.24, emulator console screenshots) running against the hosted server; the phone frames from Chrome with a
+test camera and real MediaPipe inference.
+
+### TV (Vega OS, Virtual Device)
+
+|                                 Profiles                                 |                                      Lesson                                       |                               Pair by QR / room code                                |
+| :----------------------------------------------------------------------: | :-------------------------------------------------------------------------------: | :---------------------------------------------------------------------------------: |
+| ![Who's practising? profile picker](docs/screenshots/tv/00-profiles.png) | ![Lesson page with steps and camera placement](docs/screenshots/tv/04-lesson.png) | ![Pair your camera: QR code and 4-digit room code](docs/screenshots/tv/05-pair.png) |
+
+|                                                                             Player: gate waiting                                                                             |                                                         Player: hold gate                                                          |                                        Summary                                        |
+| :--------------------------------------------------------------------------------------------------------------------------------------------------------------------------: | :--------------------------------------------------------------------------------------------------------------------------------: | :-----------------------------------------------------------------------------------: |
+| ![Video paused at "Crouch small like a mouse"; hint "Bend your left knee more"; the off joints are ringed and the legs drawn red](docs/screenshots/tv/06-player-waiting.png) | ![Flamingo hold: 2 s countdown ring, torso drawn green while it matches, Easier mode chip](docs/screenshots/tv/07-player-hold.png) | ![Summary: Every step done, 4/4, best hold 2.0 s](docs/screenshots/tv/08-summary.png) |
+
+|                                  Camera lost (safety pause)                                  |                          Home                          |                         New profile (on-screen keyboard)                          |
+| :------------------------------------------------------------------------------------------: | :----------------------------------------------------: | :-------------------------------------------------------------------------------: |
+| ![Camera disconnected: the lesson pauses within 2 s](docs/screenshots/tv/09-camera-lost.png) | ![Home with channels](docs/screenshots/tv/03-home.png) | ![New profile keyboard and colour picker](docs/screenshots/tv/02-new-profile.png) |
+
+### Phone
 
 |                      Phone as camera                      |                               Live tracking + TV feedback                               |                          Privacy pill (measured)                          |
 | :-------------------------------------------------------: | :-------------------------------------------------------------------------------------: | :-----------------------------------------------------------------------: |
@@ -211,9 +227,14 @@ npm run build:debug                       # react-native build-kepler (needs the
 vega run-app build/*/*.vpkg com.instep.tv.main -d VirtualDevice
 ```
 
-Default server for the VVD is `http://10.0.2.2:8788`; change it in **Settings → Server address** if your device
-reaches the host differently. The TV app type-checks and Metro-bundles in CI; device verification is pending (see
-`docs/PROGRESS.md`).
+The TV app defaults to the hosted server (`https://instep-wfcr.onrender.com`). For a local server enter
+`http://10.0.2.2:8788` (the host as seen from the Virtual Device) in **Settings → Server address**: REST and the
+relay work over http, but **video needs HTTPS** — Vega's media player refuses `http://` sources (friction F-06).
+`vega run-app` takes one package: use `build/x86_64-debug/tv_x86_64.vpkg` for the Virtual Device.
+
+No camera handy? `pnpm demo-learner --room <code> --server https://instep-wfcr.onrender.com` joins the room as a
+synthetic learner that performs each step after a short delay — the whole lesson, gates and summary run end to end
+on the device. Verified on the Virtual Device (see `docs/PROGRESS.md`, 2026-10-22).
 
 ### Creator Studio
 
@@ -297,7 +318,8 @@ MediaPipe models baked in): one web service serves the companion over HTTPS (so 
 - `MOCK_AI` stays `true` there; no AWS credentials are configured on the hosted instance.
 
 To host your own copy: Render → **New → Blueprint → this repo** (reads `render.yaml`, generates `CREATOR_PIN` and
-`MCP_TOKEN`).
+`MCP_TOKEN`). The hosted instance was created through the Render API, so GitHub pushes don't auto-deploy it; a
+deploy is triggered with `render deploys create srv-<id> --wait` (or the dashboard's "Manual deploy").
 
 ### MCP server (optional)
 
@@ -331,8 +353,8 @@ with a demo driven by a synthetic landmark stream. It is generated from this mon
 | Packages (format, engine, protocol, player controller)      | ✅ built, tested (engine ≈ 98 % line coverage)                                                 |
 | Server (relay, REST, coach, labels, voice, MCP)             | ✅ built, tested (60 s relay soak: 1800/1800 msgs, p95 1.2 ms)                                 |
 | Companion (camera node, Creator Studio, report, hands-free) | ✅ built, Playwright e2e in CI                                                                 |
-| TV app (Vega)                                               | 🟡 built, type-checks and Metro-bundles in CI — **not yet run on the Vega Virtual Device**     |
-| Bedrock / Polly                                             | 🟡 code complete, runs in mock mode — not yet exercised against AWS                            |
+| TV app (Vega)                                               | ✅ runs on the Vega Virtual Device: full lesson end to end against the hosted server           |
+| Bedrock / Polly                                             | 🟡 code complete; account verified (models + voices listed), first tip blocked by daily quota  |
 | Lesson videos                                               | 🟡 kids lesson generated (original illustration); fall / sign / rehab / CPR recordings pending |
 
 ## Contributing

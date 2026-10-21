@@ -49,30 +49,53 @@ Deaf educators, clinician pilot, Fire TV camera support, more languages.
 - [ ] `MOCK_AI=false` tested right before recording; AWS Budgets alert set
 - [ ] No copyrighted music; captions on
 
-## Product feedback (one per tool) — **[after device test]**
+## Product feedback (one per tool)
 
 Template: what I used it for · what worked · what needs work · zero-to-hello-world · would I build with it again.
 
-- **Vega Developer Tools + VVD:** _so far:_ not supported on Arch Linux hosts; Ubuntu 24.04 distrobox used (F-01).
-- **Vega CLI / react-native build-kepler:** _[after device test]_
-- **react-native-multi-tv-app-sample / vega-video-sample:** used as the reference for the W3C media `VideoPlayer` +
-  `KeplerVideoSurfaceView` pattern, `TVEventHandler` key mapping, metro aliasing and the manifest. Clear and current.
-- **Amazon Devices Builder Tools (MCP + Agent Skills):** _[after device test]_
-- **W3C media APIs on Vega:** _[after device test: seek precision, playbackRate, second player for audio]_
-- **react-tv-space-navigation:** _[after device test]_
+- **Vega Developer Tools + Virtual Device (SDK 0.24.12112):** used for every device run. *Worked:* once up, the
+  VVD boots in ~20 s, `run-app` installs in seconds, the emulator console gives scriptable screenshots, and the
+  device reaches both the host (`10.0.2.2`) and the public internet with TLS. *Needs work:* zero-to-hello-world
+  took ~75 minutes on Ubuntu 24.04 because of four undocumented repairs (F-05: `jq` missing from the dependency
+  list, the SDK's bundled Node rejecting the developer's `NODE_OPTIONS`, a broken `vvd/bin/virtualdevice` symlink,
+  and the emulator needing `libpulse0` + X11/Mesa libraries) and the CLI never surfaced the emulator's stderr.
+  No `vega device screenshot`, and the on-device screenshooters fail for `app_user`. *Again:* yes — the runtime
+  itself was solid; the installer and diagnostics are what cost time.
+- **Vega CLI / `react-native build-kepler`:** three-architecture debug build in ~90 s, clear manifest validation,
+  autolinking just worked for `react-native-svg` and async-storage. Would like `run-app` to accept a glob or pick
+  the right arch for the target.
+- **react-native-multi-tv-app-sample / vega-video-sample:** the reference for the W3C media `VideoPlayer` +
+  `KeplerVideoSurfaceView` pattern, `TVEventHandler` key mapping, metro aliasing and the manifest. Clear and current;
+  the one thing it doesn't say is that the media element refuses `http://` sources (F-06).
+- **Amazon Devices Builder Tools (MCP + Agent Skills):** not reachable from this session (the plugin's MCP server
+  failed to connect), so the device facts above come from the official docs pages plus the device itself.
+- **W3C media APIs on Vega:** `play`/`pause`/seek responded within a frame of the gate engine's requests across a
+  40 s lesson with four pauses; `loadstart`/`error` events fire as in a browser. HTTPS-only sources is the one
+  surprise (F-06), and a debug build logs `Unsupported top level event type topOnKeplerVideoSurfaceViewCreated`.
+- **react-tv-space-navigation:** works with the Vega remote out of the box (D-pad, Select, Back). Its vertical
+  root default bit us: two side-by-side columns need an explicit horizontal node or Left/Right never cross — found
+  on device, not in the Metro bundle.
 - **Amazon Bedrock (Converse API):** coach tips (≤ 80 tokens, 4 s timeout, safety filter, cache, rate limits) and
-  strict-JSON step labels. _[latency/cost observed with MOCK_AI=false]_
-- **Amazon Polly:** neural voice per language with disk cache. _[after AWS test]_
+  strict-JSON step labels. Real-account test hit the new-account daily token allowance on the first call (F-04);
+  the fallback path handled it. Model id is configuration, not code.
+- **Amazon Polly:** neural voice per language with disk cache; all four voices (Joanna, Lucia, Kajal, Lea) listed
+  as available on the account; synthesis itself not exercised to keep spend at zero.
 
 ## Friction logs
 
-`docs/FRICTION_LOG.md` — F-01 (Arch host), F-02 (RN 0.72 Babel vs shared TS packages). Add device findings.
+`docs/FRICTION_LOG.md` — F-01 (Arch host), F-02 (RN 0.72 Babel vs shared TS packages), F-03 (Bedrock model
+access), F-04 (daily token cap surfaces as a generic throttle), F-05 (SDK install on Ubuntu 24.04: four manual
+repairs), F-06 (media player refuses `http://` sources).
 
 ## Feature requests
 
-1. Documented, stable way for the Vega Virtual Device to reach the host network (important).
-2. Camera / pose API on Fire TV devices with a camera (important).
-3. A Babel preset for Vega that covers ES2021+ syntax used by common libraries (nice-to-have).
+1. `vega device screenshot` and emulator stderr in `virtual-device start` output (important — every bug above was
+   found by screenshots and logs we had to reverse-engineer).
+2. Document and allow `http://10.0.2.2` media in debug builds, or state the HTTPS-only rule on the Video page
+   (important).
+3. Camera / pose API on Fire TV devices with a camera (important).
+4. `jq` and the emulator's shared-library dependencies in the Ubuntu install page; tolerate unsupported
+   `NODE_OPTIONS` (nice-to-have).
 
 ## Mini challenges
 
@@ -86,7 +109,7 @@ Template: what I used it for · what worked · what needs work · zero-to-hello-
 
 ## Compliance checklist
 
-- [ ] Repo **public**, MIT `LICENSE` at root (currently private — owner decision pending)
+- [x] Repo **public**, MIT `LICENSE` at root
 - [x] README: setup, `.env.example`, mock mode, budget alert
 - [ ] Demo video < 3:00, public, English, shows the app on the Vega Virtual Device
 - [x] No third-party footage/music in the repo; kids video is original illustration (`content/CREDITS.md`)
