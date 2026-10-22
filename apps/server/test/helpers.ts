@@ -1,5 +1,5 @@
 import { execFileSync } from 'node:child_process';
-import { cpSync, mkdtempSync } from 'node:fs';
+import { cpSync, existsSync, mkdtempSync, readdirSync, rmSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { buildApp } from '../src/app';
@@ -13,10 +13,13 @@ import { createRelay } from '../src/relay';
 
 export const PIN = '1357';
 
-/** Temp content dir: all seed lessons, and a real 2 s H.264 video for the heel-raise lesson. */
+/** Temp content dir: all seed lessons without their placeholder videos, plus a real 2 s video for heel raises. */
 export function makeContent() {
   const dir = mkdtempSync(join(tmpdir(), 'instep-content-'));
   cpSync(new URL('../../../content/lessons', import.meta.url), dir, { recursive: true });
+  // placeholder videos (marked by video.placeholder) are dropped so the drafts-vs-published rules stay testable
+  for (const id of readdirSync(dir))
+    if (existsSync(join(dir, id, 'video.placeholder'))) rmSync(join(dir, id, 'video.mp4'), { force: true });
   tinyVideo(join(dir, 'fall-heel-raise-v1', 'video.mp4'));
   return dir;
 }

@@ -1,11 +1,12 @@
 #!/usr/bin/env node
 /**
- * Text-free poster art for lessons that don't have a real video frame yet: a soft two-colour field in the
- * channel's palette with grain and a vignette, so the TV's Top Shelf and product pages have artwork that
- * reads as artwork, not as another title. Replaced automatically when a lesson gets a recorded video
- * (scripts/make-lesson-video.mjs and Creator Studio write a frame from the real footage).
+ * Lesson poster art (the TV's Top Shelf, lesson page and cards).
+ *  - Real recording (video.mp4 without a `video.placeholder` marker): a frame grabbed from the footage just
+ *    after the first step starts, so the poster shows the real teacher.
+ *  - Placeholder video (marker present, written by scripts/make-lesson-video.mjs): text-free channel-coloured
+ *    art, so the TV never shows a title card behind the title.
  *
- *   node scripts/make-posters.mjs            # every lesson whose poster.jpg came from a placeholder video
+ *   node scripts/make-posters.mjs            # every lesson
  *   node scripts/make-posters.mjs <lessonId>
  */
 import { execFileSync } from 'node:child_process';
@@ -13,8 +14,6 @@ import { existsSync, readdirSync, readFileSync } from 'node:fs';
 import { join } from 'node:path';
 
 const ROOT = new URL('../', import.meta.url).pathname;
-/** Lessons with their own illustrated video, whose poster is a real frame: left alone. */
-const HANDMADE = new Set(['kids-forest-walk-v1']);
 // [deep, light] per channel — muted, so white type on the TV reads over them
 const FIELD = {
   fall_prevention: ['0x0B2A3A', '0x2F7F86'],
@@ -25,9 +24,29 @@ const FIELD = {
 };
 
 function poster(id) {
-  if (HANDMADE.has(id)) return console.log(`skip ${id}: has a real frame`);
   const dir = join(ROOT, 'content/lessons', id);
   const track = JSON.parse(readFileSync(join(dir, 'track.istep'), 'utf8'));
+  const video = join(dir, track.video?.src ?? 'video.mp4');
+  if (existsSync(video) && !existsSync(join(dir, 'video.placeholder'))) {
+    const t = Math.max(0.5, (Math.min(...track.gates.map((g) => g.t)) || 2) + 0.5);
+    execFileSync('ffmpeg', [
+      '-loglevel',
+      'error',
+      '-y',
+      '-ss',
+      String(t),
+      '-i',
+      video,
+      '-frames:v',
+      '1',
+      '-vf',
+      'scale=1280:720:force_original_aspect_ratio=increase,crop=1280:720',
+      '-q:v',
+      '3',
+      join(dir, 'poster.jpg'),
+    ]);
+    return console.log(`wrote ${id}/poster.jpg (frame at ${t}s of the real video)`);
+  }
   const [a, b] = FIELD[track.channel] ?? FIELD.kids;
   execFileSync('ffmpeg', [
     '-loglevel',

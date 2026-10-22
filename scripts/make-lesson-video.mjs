@@ -8,7 +8,7 @@
  *   node scripts/make-lesson-video.mjs --all        # every lesson without a video.mp4
  */
 import { execFileSync } from 'node:child_process';
-import { existsSync, readdirSync, readFileSync } from 'node:fs';
+import { existsSync, readdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
 
 const ROOT = new URL('../', import.meta.url).pathname;
@@ -121,7 +121,11 @@ function render(id, force) {
     ],
     { stdio: 'inherit' },
   );
-  // posters: scripts/make-posters.mjs (text-free art) until a real recording provides a frame
+  // mark as placeholder: make-posters.mjs draws text-free art for it instead of grabbing a frame
+  writeFileSync(
+    join(dir, 'video.placeholder'),
+    'Illustrated placeholder from scripts/make-lesson-video.mjs. Delete this file when you add a real recording.\n',
+  );
   console.log(`wrote ${id}/video.mp4 (${dur}s, ${gates.length} steps)`);
 }
 
