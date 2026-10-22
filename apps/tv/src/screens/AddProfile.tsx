@@ -89,10 +89,12 @@ export function AddProfile() {
                         paddingHorizontal: px(24),
                         height: px(72),
                         justifyContent: 'center',
-                        backgroundColor: h.id === hand ? c.brand : c.surface2,
+                        backgroundColor: h.id === hand ? c.surface3 : c.surface,
+                        borderWidth: px(2),
+                        borderColor: h.id === hand ? c.text : 'transparent',
                       }}
                     >
-                      {() => <T color={h.id === hand ? '#04201D' : c.text}>{h.label}</T>}
+                      {() => <T weight={h.id === hand ? '700' : '500'}>{h.label}</T>}
                     </Focusable>
                   ))}
                 </View>
