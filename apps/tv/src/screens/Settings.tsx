@@ -17,7 +17,11 @@ function save(patch: Partial<S>) {
   void AsyncStorage.setItem(SETTINGS_KEY, JSON.stringify(settings)).catch(() => undefined);
 }
 
-function Options<V extends string | number | boolean>({
+/**
+ * tvOS settings row: label on the left, current value on the right. Select steps to the next value, so every
+ * setting is one remote button away (no nested pickers to get lost in).
+ */
+function Row<V extends string | number | boolean>({
   label,
   value,
   options,
@@ -29,30 +33,34 @@ function Options<V extends string | number | boolean>({
   onPick: (v: V) => void;
 }) {
   const c = useTheme();
+  const i = Math.max(
+    0,
+    options.findIndex((o) => o.id === value),
+  );
   return (
-    <View style={{ gap: px(12) }}>
-      <T size="h2">{label}</T>
-      <SpatialNavigationNode orientation="horizontal">
-        <View style={{ flexDirection: 'row', gap: px(14) }}>
-          {options.map((o) => (
-            <Focusable
-              key={String(o.id)}
-              onSelect={() => onPick(o.id)}
-              style={{
-                paddingHorizontal: px(28),
-                height: px(72),
-                justifyContent: 'center',
-                backgroundColor: o.id === value ? c.brand : c.surface2,
-              }}
-            >
-              {() => (
-                <T color={o.id === value ? '#04201D' : c.text}>{o.id === value ? `✓ ${o.label}` : o.label}</T>
-              )}
-            </Focusable>
-          ))}
-        </View>
-      </SpatialNavigationNode>
-    </View>
+    <Focusable
+      onSelect={() => onPick(options[(i + 1) % options.length]!.id)}
+      style={{
+        height: px(84),
+        paddingHorizontal: px(32),
+        flexDirection: 'row',
+        alignItems: 'center',
+        backgroundColor: c.surface,
+      }}
+      scale={1.03}
+    >
+      {() => (
+        <>
+          <T weight="600" style={{ flex: 1 }}>
+            {label}
+          </T>
+          <T color={c.muted}>{options[i]?.label}</T>
+          <T color={c.faint} style={{ marginLeft: px(16) }}>
+            ›
+          </T>
+        </>
+      )}
+    </Focusable>
   );
 }
 
@@ -99,76 +107,106 @@ export function Settings() {
   return (
     <Screen>
       <TabBar current="settings" />
-      <T size="h1" style={{ marginTop: px(40) }}>
-        Settings
-      </T>
-      <SpatialNavigationScrollView offsetFromStart={px(120)}>
-        <View style={{ gap: px(36), marginTop: px(28), paddingBottom: px(80) }}>
-          <View style={{ gap: px(12) }}>
-            <T size="h2">Server</T>
-            <T color={c.muted}>{s.serverUrl}</T>
-            <DefaultFocus>
-              <Button label="Change server address" onSelect={() => setEditing(true)} />
-            </DefaultFocus>
-          </View>
-          <Options
-            label="Coach language"
-            value={s.language}
-            options={LANGUAGES}
-            onPick={(language) => save({ language })}
-          />
-          <Options
-            label="Caption size"
-            value={s.captionScale}
-            options={[
-              { id: 1, label: 'M' },
-              { id: 1.25, label: 'L' },
-              { id: 1.5, label: 'XL' },
-            ]}
-            onPick={(captionScale) => save({ captionScale: captionScale as S['captionScale'] })}
-          />
-          <Options label="Spoken tips" value={s.voice} options={onOff} onPick={(voice) => save({ voice })} />
-          <Options
-            label="Skeleton view"
-            value={s.overlayMode}
-            options={[
-              { id: 'side_by_side', label: 'Next to the video' },
-              { id: 'overlay', label: 'Over the video' },
-            ]}
-            onPick={(overlayMode) => save({ overlayMode })}
-          />
-          <Options
-            label="High contrast"
-            value={s.highContrast}
-            options={onOff}
-            onPick={(highContrast) => save({ highContrast })}
-          />
-          <Options
-            label="Reduce motion"
-            value={s.reduceMotion}
-            options={onOff}
-            onPick={(reduceMotion) => save({ reduceMotion })}
-          />
-          <Card style={{ gap: px(10) }}>
-            <T size="h2">About</T>
-            <T color={c.muted}>InStep — the video that waits for you. Open source under the MIT licence.</T>
-            <T color={c.muted}>
-              Camera: an external phone or laptop. Only body points (numbers) are shared — never video.
-            </T>
-            <T color={c.muted}>
-              Coach tips: {mockAi ? 'built-in templates (AI off)' : 'Amazon Bedrock'}. InStep gives practice
-              tips, not medical advice.
-            </T>
-            <T color={c.muted}>
-              Open-source components: React Native, react-tv-space-navigation, MediaPipe (on the camera
-              device), zod, qrcode.
-            </T>
-          </Card>
-          <View style={{ flexDirection: 'row' }}>
-            <Button label="Back" onSelect={nav.back} />
-          </View>
+      <View style={{ flexDirection: 'row', gap: px(80), marginTop: px(40), flex: 1 }}>
+        <View style={{ width: px(1060) }}>
+          <T size="h1" style={{ marginBottom: px(28) }}>
+            Settings
+          </T>
+          <SpatialNavigationScrollView offsetFromStart={px(120)}>
+            <SpatialNavigationNode orientation="vertical">
+              <View style={{ gap: px(12), paddingBottom: px(60) }}>
+                <DefaultFocus>
+                  <Focusable
+                    onSelect={() => setEditing(true)}
+                    style={{
+                      height: px(84),
+                      paddingHorizontal: px(32),
+                      flexDirection: 'row',
+                      alignItems: 'center',
+                      backgroundColor: c.surface,
+                    }}
+                    scale={1.03}
+                  >
+                    {() => (
+                      <>
+                        <T weight="600" style={{ flex: 1 }}>
+                          Server address
+                        </T>
+                        <T color={c.muted} lines={1} style={{ maxWidth: px(560) }}>
+                          {s.serverUrl.replace(/^https?:\/\//, '')}
+                        </T>
+                        <T color={c.faint} style={{ marginLeft: px(16) }}>
+                          ›
+                        </T>
+                      </>
+                    )}
+                  </Focusable>
+                </DefaultFocus>
+                <Row
+                  label="Coach language"
+                  value={s.language}
+                  options={LANGUAGES}
+                  onPick={(language) => save({ language })}
+                />
+                <Row
+                  label="Caption size"
+                  value={s.captionScale}
+                  options={[
+                    { id: 1, label: 'Medium' },
+                    { id: 1.25, label: 'Large' },
+                    { id: 1.5, label: 'Extra large' },
+                  ]}
+                  onPick={(captionScale) => save({ captionScale: captionScale as S['captionScale'] })}
+                />
+                <Row
+                  label="Spoken tips"
+                  value={s.voice}
+                  options={onOff}
+                  onPick={(voice) => save({ voice })}
+                />
+                <Row
+                  label="Body panel"
+                  value={s.overlayMode}
+                  options={[
+                    { id: 'side_by_side', label: 'Next to the video' },
+                    { id: 'overlay', label: 'Over the video' },
+                  ]}
+                  onPick={(overlayMode) => save({ overlayMode })}
+                />
+                <Row
+                  label="High contrast"
+                  value={s.highContrast}
+                  options={onOff}
+                  onPick={(highContrast) => save({ highContrast })}
+                />
+                <Row
+                  label="Reduce motion"
+                  value={s.reduceMotion}
+                  options={onOff}
+                  onPick={(reduceMotion) => save({ reduceMotion })}
+                />
+              </View>
+            </SpatialNavigationNode>
+          </SpatialNavigationScrollView>
         </View>
-      </SpatialNavigationScrollView>
+
+        {/* about column (tvOS settings show context beside the list) */}
+        <View style={{ flex: 1, gap: px(18), paddingTop: px(96) }}>
+          <T size="headline">About InStep</T>
+          <T color={c.muted}>The video that waits for you. Open source under the MIT licence.</T>
+          <T color={c.muted}>
+            The camera is your phone or laptop. Only body points, as numbers, are shared. Never video.
+          </T>
+          <T color={c.muted}>
+            Coach tips come from {mockAi ? 'built-in templates (AI is off)' : 'Amazon Bedrock'}. They are
+            practice tips, not medical advice.
+          </T>
+          <T size="caption" color={c.faint}>
+            Built with React Native for Vega, react-tv-space-navigation, MediaPipe on the camera device, zod
+            and qrcode.
+          </T>
+        </View>
+      </View>
     </Screen>
   );
 }
