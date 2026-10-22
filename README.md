@@ -83,13 +83,24 @@ test camera and real MediaPipe inference.
 | :----------------------------------------------------------------------: | :-------------------------------------------------------------------------------: | :---------------------------------------------------------------------------------: |
 | ![Who's practising? profile picker](docs/screenshots/tv/00-profiles.png) | ![Lesson page with steps and camera placement](docs/screenshots/tv/04-lesson.png) | ![Pair your camera: QR code and 4-digit room code](docs/screenshots/tv/05-pair.png) |
 
-|                                                                             Player: gate waiting                                                                             |                                                         Player: hold gate                                                          |                                        Summary                                        |
-| :--------------------------------------------------------------------------------------------------------------------------------------------------------------------------: | :--------------------------------------------------------------------------------------------------------------------------------: | :-----------------------------------------------------------------------------------: |
-| ![Video paused at "Crouch small like a mouse"; hint "Bend your left knee more"; the off joints are ringed and the legs drawn red](docs/screenshots/tv/06-player-waiting.png) | ![Flamingo hold: 2 s countdown ring, torso drawn green while it matches, Easier mode chip](docs/screenshots/tv/07-player-hold.png) | ![Summary: Every step done, 4/4, best hold 2.0 s](docs/screenshots/tv/08-summary.png) |
+|                                                                       Player: gate waiting                                                                        |                                                                Player: hold gate                                                                |                                                Summary                                                 |
+| :---------------------------------------------------------------------------------------------------------------------------------------------------------------: | :---------------------------------------------------------------------------------------------------------------------------------------------: | :----------------------------------------------------------------------------------------------------: |
+| ![Heel raises paused at step 3: rep counter 0 of 5, the coach tip shown on the video like a subtitle, step rail below](docs/screenshots/tv/06-player-waiting.png) | ![Rise onto your toes and hold: 2 s countdown ring, legs drawn green while they match, step rail below](docs/screenshots/tv/07-player-hold.png) | ![Summary: Every step done, 4 of 4 steps, 5 reps, best hold 2.1 s](docs/screenshots/tv/08-summary.png) |
 
 |                                  Camera lost (safety pause)                                  |                          Home                          |                         New profile (on-screen keyboard)                          |
 | :------------------------------------------------------------------------------------------: | :----------------------------------------------------: | :-------------------------------------------------------------------------------: |
 | ![Camera disconnected: the lesson pauses within 2 s](docs/screenshots/tv/09-camera-lost.png) | ![Home with channels](docs/screenshots/tv/03-home.png) | ![New profile keyboard and colour picker](docs/screenshots/tv/02-new-profile.png) |
+
+|                                 My progress                                  |                                    Settings                                    |                        Welcome                        |
+| :--------------------------------------------------------------------------: | :----------------------------------------------------------------------------: | :---------------------------------------------------: |
+| ![Last 14 days: sessions, reps, streak](docs/screenshots/tv/11-progress.png) | ![Settings list: label left, value right](docs/screenshots/tv/10-settings.png) | ![Welcome screen](docs/screenshots/tv/01-welcome.png) |
+
+**Design.** The TV app follows Apple's tvOS 18 design templates for metrics and behaviour, not for branding:
+80 × 60 px safe area, 4-up lockups (410 × 231, 40 px gutters), 72 px button platters that turn white with a dark
+label on focus, a pill tab bar holding only the three real destinations, the product-page layout for lessons,
+the QR sign-in layout for pairing and Post Play for the summary. Type is Amazon Ember (Vega's system face) on a
+tvOS-derived scale with a 28 px floor for older viewers at 2–3 m. Vega has no backdrop blur, so "materials" are
+translucent glass over black. Lesson artwork is placeholder until real footage is recorded.
 
 ### Phone
 
