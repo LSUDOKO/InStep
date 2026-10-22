@@ -95,6 +95,10 @@ test camera and real MediaPipe inference.
 | :--------------------------------------------------------------------------: | :----------------------------------------------------------------------------: | :---------------------------------------------------: |
 | ![Last 14 days: sessions, reps, streak](docs/screenshots/tv/11-progress.png) | ![Settings list: label left, value right](docs/screenshots/tv/10-settings.png) | ![Welcome screen](docs/screenshots/tv/01-welcome.png) |
 
+|                                          Together mode: pairing (second QR for a family member)                                           |                                   Together mode: both learners in the player                                   |
+| :---------------------------------------------------------------------------------------------------------------------------------------: | :------------------------------------------------------------------------------------------------------------: |
+| ![Practise together: room code, camera connected, waiting for a family member, Start on my own](docs/screenshots/tv/12-together-pair.png) | ![Heel raises with two learners, Demo and Mia, rep counter 3 of 5](docs/screenshots/tv/13-together-player.png) |
+
 **Design.** The TV app follows Apple's tvOS 18 design templates for metrics and behaviour, not for branding:
 80 × 60 px safe area, 4-up lockups (410 × 231, 40 px gutters), 72 px button platters that turn white with a dark
 label on focus, a pill tab bar holding only the three real destinations, the product-page layout for lessons,

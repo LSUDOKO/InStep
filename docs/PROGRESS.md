@@ -12,6 +12,9 @@ Newest first. Each entry: what works, what doesn't, what changed from the spec a
   Post-Play summary, user-selection profiles, list-style Settings. Font is Amazon Ember (Vega system font).
 - Player: persistent step rail, coach tip as a subtitle inside the video, centred alert-style overlays.
 - Together mode: host + guest pairing screen (second QR), participant chips in the player.
+- A "Camera disconnected" overlay showed once at the start of a Together lesson, right after the demo
+  learners were killed and restarted mid-pairing. A clean re-run (host, then guest, screenshots every few
+  seconds from Camera check to Summary) did not reproduce it.
 - "Over the video" body-panel mode: 16:9 video with the skeleton drawn on top.
 - Lesson posters: a frame from the real recording when there is one; channel-coloured art for placeholders.
 
