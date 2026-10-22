@@ -3,7 +3,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import { View } from 'react-native';
 import { DefaultFocus } from 'react-tv-space-navigation';
 import { HandLines, Skeleton } from '../components/Skeleton';
-import { Button, Card, Screen, StateScreen, T, useTheme } from '../components/ui';
+import { Button, Screen, StateScreen, T, useTheme } from '../components/ui';
 import { nav, services } from '../lib/app';
 import { useLesson } from '../lib/useLesson';
 import { px } from '../theme/tokens';
@@ -116,22 +116,21 @@ export function CameraCheck({ lessonId }: { lessonId: string }) {
       />
     );
 
-  const W = px(720);
-  const H = px(800);
+  const W = px(640);
+  const H = px(860);
   const hand = frame?.hands?.right ?? frame?.hands?.left;
   return (
     <Screen>
-      <T size="h1">Camera check</T>
-      <View style={{ flexDirection: 'row', gap: px(64), marginTop: px(32) }}>
+      <View style={{ flexDirection: 'row', gap: px(80), flex: 1, alignItems: 'center' }}>
         <View
           style={{
             width: W,
             height: H,
             backgroundColor: c.surface,
-            borderRadius: px(24),
+            borderRadius: px(28),
             overflow: 'hidden',
-            borderWidth: px(4),
-            borderColor: allOk ? c.ok : c.surface2,
+            borderWidth: px(allOk ? 4 : 1),
+            borderColor: allOk ? c.ok : c.hairline,
           }}
         >
           {lesson.track.camera.view === 'hands' && hand ? (
@@ -156,23 +155,41 @@ export function CameraCheck({ lessonId }: { lessonId: string }) {
           )}
         </View>
         <View style={{ flex: 1, gap: px(28) }}>
-          <T size="h2">{lesson.track.camera.hint}</T>
-          <Card style={{ gap: px(16) }}>
+          <T size="caption" weight="600" color={c.muted}>
+            Camera check
+          </T>
+          <T size="h1">{count !== null ? 'Looks good' : 'Step into view'}</T>
+          <T color={c.muted}>{lesson.track.camera.hint}</T>
+          <View style={{ gap: px(18), marginTop: px(8) }}>
             {checks.map((k) => (
-              <T key={k.label} color={k.ok ? c.ok : c.near} weight="600">
-                {k.ok ? '✓' : '!'} {k.label}
-              </T>
+              <View key={k.label} style={{ flexDirection: 'row', alignItems: 'center', gap: px(18) }}>
+                <View
+                  style={{
+                    width: px(40),
+                    height: px(40),
+                    borderRadius: px(20),
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    backgroundColor: k.ok ? c.ok : c.surface2,
+                  }}
+                >
+                  <T size="caption" weight="700" color={k.ok ? c.onFocus : c.muted}>
+                    {k.ok ? '✓' : '·'}
+                  </T>
+                </View>
+                <T color={k.ok ? c.text : c.muted}>{k.label}</T>
+              </View>
             ))}
-          </Card>
+          </View>
           {count !== null ? (
             <T size="display" color={c.ok}>
-              Looks good! {count}
+              Starting in {count}
             </T>
           ) : (
-            <T color={c.muted}>The lesson starts by itself when everything is ✓.</T>
+            <T color={c.faint}>The lesson starts by itself when every check is done.</T>
           )}
           <DefaultFocus>
-            <Button label="Back" onSelect={nav.back} />
+            <Button label="Back" width={300} onSelect={nav.back} />
           </DefaultFocus>
         </View>
       </View>

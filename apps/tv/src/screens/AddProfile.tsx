@@ -65,7 +65,13 @@ export function AddProfile() {
                     <Focusable
                       key={a}
                       onSelect={() => setAvatar(a)}
-                      style={{ padding: px(6), borderColor: a === avatar ? c.brand : 'transparent' }}
+                      variant="lift"
+                      scale={1.12}
+                      style={{
+                        padding: px(5),
+                        borderRadius: px(48),
+                        borderColor: a === avatar ? c.text : 'transparent',
+                      }}
                     >
                       {() => <Avatar name={name || '?'} avatar={a} size={px(72)} />}
                     </Focusable>

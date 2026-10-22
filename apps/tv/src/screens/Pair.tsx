@@ -95,6 +95,7 @@ export function Pair({ lessonId, together }: { lessonId: string; together: boole
             )}
           </View>
           <View style={{ alignItems: 'center', gap: px(2) }}>
+            <T color={c.muted}>{site}</T>
             <T color={c.muted}>Room code</T>
             <T size="display" style={{ letterSpacing: px(18) }}>
               {room || '····'}

@@ -9,7 +9,7 @@ const ROWS = {
   url: ['1234567890', 'abcdefghij', 'klmnopqrst', 'uvwxyz:/.-_'],
 };
 
-/** D-pad on-screen keyboard (names, server URL). */
+/** tvOS grid keyboard: bare characters on the canvas, a white platter on the focused key. */
 export function Keyboard({
   value,
   onChange,
@@ -22,19 +22,24 @@ export function Keyboard({
   max?: number;
 }) {
   const c = useTheme();
-  const key = (label: string, onSelect: () => void, wide = false) => (
+  const key = (label: string, onSelect: () => void, wide = label === ' ') => (
     <Focusable
       key={label}
       onSelect={onSelect}
       style={{
-        width: px(wide ? 200 : 88),
+        width: px(wide ? 200 : 84),
         height: px(80),
         alignItems: 'center',
         justifyContent: 'center',
-        backgroundColor: c.surface,
+        backgroundColor: wide ? c.surface : 'transparent',
       }}
+      scale={1.12}
     >
-      {() => <T weight="700">{label === ' ' ? '␣' : label}</T>}
+      {() => (
+        <T size={wide ? 'body' : 'headline'} weight="600">
+          {label === ' ' ? 'Space' : label}
+        </T>
+      )}
     </Focusable>
   );
   return (

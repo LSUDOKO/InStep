@@ -6,7 +6,7 @@ import { DefaultFocus, SpatialNavigationNode } from 'react-tv-space-navigation';
 import { DeltaGlow } from '../components/DeltaGlow';
 import { GateWidget, StepRail } from '../components/Hud';
 import { Skeleton } from '../components/Skeleton';
-import { Button, Card, Chip, Screen, StateScreen, T, useMotion, useTheme } from '../components/ui';
+import { Button, Chip, Screen, StateScreen, T, useMotion, useTheme } from '../components/ui';
 import { nav, services, store } from '../lib/app';
 import { createLessonSession, TICK_MS, type LessonSession, type SessionView } from '../lib/lessonSession';
 import { useLesson } from '../lib/useLesson';
@@ -203,6 +203,38 @@ export function Player({ lessonId }: { lessonId: string }) {
             onEnded={() => session.current?.player.end()}
           />
           {overlay && <View style={{ position: 'absolute', top: 0, left: 0 }}>{learnerPanel(VW, VH)}</View>}
+          {view?.caption && (
+            <View
+              style={{
+                position: 'absolute',
+                left: px(32),
+                right: px(32),
+                bottom: px(track.channel === 'cpr' ? 96 : 32),
+                alignItems: 'center',
+              }}
+            >
+              <View
+                style={{
+                  backgroundColor: 'rgba(0,0,0,0.78)',
+                  borderRadius: px(16),
+                  paddingHorizontal: px(28),
+                  paddingVertical: px(16),
+                  maxWidth: '100%',
+                }}
+              >
+                <T
+                  weight="600"
+                  style={{
+                    textAlign: 'center',
+                    fontSize: px(type.body * captionScale),
+                    lineHeight: px(type.body * captionScale * 1.3),
+                  }}
+                >
+                  {view.caption.text}
+                </T>
+              </View>
+            </View>
+          )}
           {track.channel === 'cpr' && (
             <View
               style={{
@@ -293,29 +325,6 @@ export function Player({ lessonId }: { lessonId: string }) {
         <View style={{ marginTop: px(20) }}>
           <StepRail labels={track.gates.map((g) => g.label)} current={railIndex} />
         </View>
-      )}
-
-      {view?.caption && (
-        <Card
-          style={{
-            position: 'absolute',
-            left: px(64),
-            right: px(64),
-            bottom: px(40),
-            backgroundColor: 'rgba(20,20,20,0.92)',
-            borderLeftWidth: px(6),
-            borderLeftColor: c.brand,
-          }}
-        >
-          <T
-            style={{
-              fontSize: px(type.body * captionScale),
-              lineHeight: px(type.body * captionScale * 1.25),
-            }}
-          >
-            💬 {view.caption.text}
-          </T>
-        </Card>
       )}
 
       {passing && (
