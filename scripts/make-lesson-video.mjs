@@ -121,21 +121,8 @@ function render(id, force) {
     ],
     { stdio: 'inherit' },
   );
-  execFileSync('ffmpeg', [
-    '-loglevel',
-    'error',
-    '-y',
-    '-ss',
-    String(Math.min(firstT + 0.5, dur - 1)),
-    '-i',
-    out,
-    '-frames:v',
-    '1',
-    '-vf',
-    'scale=1280:720',
-    join(dir, 'poster.jpg'),
-  ]);
-  console.log(`wrote ${id}/video.mp4 (${dur}s, ${gates.length} steps) + poster.jpg`);
+  // posters: scripts/make-posters.mjs (text-free art) until a real recording provides a frame
+  console.log(`wrote ${id}/video.mp4 (${dur}s, ${gates.length} steps)`);
 }
 
 const args = process.argv.slice(2);
