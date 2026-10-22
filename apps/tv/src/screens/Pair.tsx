@@ -32,8 +32,8 @@ export function Pair({ lessonId, together }: { lessonId: string; together: boole
       <View style={{ width: px(960), gap: px(32) }}>
         <T size="h1">{together ? 'Practise together' : 'Use your phone as the camera'}</T>
         <T color={c.muted}>
-          Scan the code with your phone, or open {site} and enter the room code. Then stand your phone where
-          it can see you.
+          Scan the code with your phone&apos;s camera, or open the address on the right in any browser and
+          enter the room code. Then stand the phone where it can see you.
         </T>
         <View style={{ flexDirection: 'row', alignItems: 'center', gap: px(16) }}>
           <View style={{ width: px(10), height: px(10), borderRadius: px(5), backgroundColor: c.ok }} />

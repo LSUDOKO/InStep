@@ -5,7 +5,7 @@ import { nav } from '../lib/app';
 import { useApp } from '../useStore';
 import { connectAndCheck } from './Splash';
 
-export function ServerError({ message }: { message: string }) {
+export function ServerError({ message: _message }: { message: string }) {
   const c = useTheme();
   const url = useApp((s) => s.settings.serverUrl);
   return (
@@ -14,10 +14,13 @@ export function ServerError({ message }: { message: string }) {
       title="Can't reach the InStep server"
       body={
         <>
-          <T color={c.muted}>{message}</T>
-          <T color={c.muted}>Server address: {url}</T>
-          <T color={c.muted}>
-            Make sure the InStep server is running on your computer and both are on the same network.
+          <T color={c.muted} style={{ textAlign: 'center' }}>
+            {url}
+          </T>
+          <T color={c.muted} style={{ textAlign: 'center' }}>
+            {/^https:/.test(url)
+              ? 'The hosted server may be waking up, which can take up to a minute. Try again shortly.'
+              : 'Make sure the InStep server is running on your computer and the TV is on the same network.'}
           </T>
         </>
       }

@@ -24,14 +24,25 @@ export class Api {
   constructor(
     public baseUrl: string,
     private fetchImpl: typeof fetch = (...a) => fetch(...a),
-    private timeoutMs = 6000,
+    private timeoutMs = 15000,
   ) {}
 
   url(path: string) {
     return path.startsWith('http') ? path : `${this.baseUrl.replace(/\/$/, '')}${path}`;
   }
 
+  /** One retry for idempotent GETs: hosted free-tier servers can drop the first request while waking. */
   private async req<T>(path: string, init: RequestInit = {}): Promise<T> {
+    try {
+      return await this.once<T>(path, init);
+    } catch (e) {
+      if (init.method && init.method !== 'GET') throw e;
+      if (e instanceof ApiError && e.status !== 0) throw e;
+      return this.once<T>(path, init);
+    }
+  }
+
+  private async once<T>(path: string, init: RequestInit = {}): Promise<T> {
     const ctl = new AbortController();
     const timer = setTimeout(() => ctl.abort(), this.timeoutMs);
     try {
