@@ -1,15 +1,29 @@
-import React, { createContext, useContext, type ReactNode } from 'react';
-import { Pressable, StyleSheet, Text, View, type TextStyle, type ViewStyle } from 'react-native';
+import React, { createContext, useContext, useEffect, useRef, type ReactNode } from 'react';
+import {
+  Animated,
+  Image,
+  Pressable,
+  StyleSheet,
+  Text,
+  View,
+  type ImageSourcePropType,
+  type TextStyle,
+  type ViewStyle,
+} from 'react-native';
+import Svg, { Defs, LinearGradient, Rect, Stop } from 'react-native-svg';
 import {
   SpatialNavigationFocusableView,
   SpatialNavigationNode,
   SpatialNavigationRoot,
 } from 'react-tv-space-navigation';
 import { useApp } from '../useStore';
-import { palettes, px, SAFE, type, type Palette } from '../theme/tokens';
+import { FOCUS, FONT, lineHeight, palettes, px, RADIUS, SAFE, type, type Palette } from '../theme/tokens';
 
 const ThemeCtx = createContext<Palette>(palettes.dark);
 export const useTheme = () => useContext(ThemeCtx);
+
+/** True inside a focused platter: text flips to the dark label colour (tvOS button focus). */
+const OnPlatter = createContext(false);
 
 export function ThemeProvider({ children }: { children: ReactNode }) {
   const hc = useApp((s) => s.settings.highContrast);
@@ -25,17 +39,21 @@ export function Screen({
   children,
   active = true,
   style,
+  bleed = false,
 }: {
   children: ReactNode;
   active?: boolean;
   style?: ViewStyle;
+  /** full-bleed: no safe-area padding (the screen places its own content) */
+  bleed?: boolean;
 }) {
   const c = useTheme();
   return (
     <SpatialNavigationRoot isActive={active}>
       <View
         style={[
-          { flex: 1, backgroundColor: c.bg, paddingHorizontal: px(SAFE.h), paddingVertical: px(SAFE.v) },
+          { flex: 1, backgroundColor: c.bg },
+          !bleed && { paddingHorizontal: px(SAFE.h), paddingVertical: px(SAFE.v) },
           style,
         ]}
       >
@@ -61,16 +79,25 @@ export function T({
   lines?: number;
 }) {
   const c = useTheme();
+  const onPlatter = useContext(OnPlatter);
   const fs = type[size];
+  let col = color ?? c.text;
+  if (onPlatter) {
+    if (!color || color === c.text) col = c.onFocus;
+    else if (color === c.muted || color === c.faint) col = 'rgba(11,11,12,0.62)';
+  }
+  const heading = size === 'display' || size === 'h1' || size === 'h2' || size === 'headline';
   return (
     <Text
       numberOfLines={lines}
       style={[
         {
-          color: color ?? c.text,
+          color: col,
+          fontFamily: FONT,
           fontSize: px(fs),
-          lineHeight: px(fs * 1.2),
-          fontWeight: weight ?? (size === 'body' || size === 'caption' ? '400' : '700'),
+          lineHeight: px(lineHeight[size]),
+          fontWeight: weight ?? (heading ? '700' : '500'),
+          letterSpacing: size === 'display' ? px(-0.5) : 0,
         },
         style,
       ]}
@@ -80,46 +107,94 @@ export function T({
   );
 }
 
-/** Focus state per docs/09: scale 1.06, white 3 px ring, raised background. */
+function FocusBody({
+  focused,
+  variant,
+  scale,
+  style,
+  focusedStyle,
+  children,
+}: {
+  focused: boolean;
+  variant: 'platter' | 'lift';
+  scale: number;
+  style?: ViewStyle;
+  focusedStyle?: ViewStyle;
+  children: ReactNode;
+}) {
+  const c = useTheme();
+  const motion = useMotion();
+  const anim = useRef(new Animated.Value(focused ? 1 : 0)).current;
+  useEffect(() => {
+    if (!motion) return anim.setValue(focused ? 1 : 0);
+    Animated.timing(anim, { toValue: focused ? 1 : 0, duration: FOCUS.ms, useNativeDriver: true }).start();
+  }, [focused, motion, anim]);
+  const s = anim.interpolate({ inputRange: [0, 1], outputRange: [1, motion ? scale : 1] });
+  return (
+    <Animated.View
+      style={[
+        { borderRadius: px(RADIUS.button), transform: [{ scale: s }] },
+        style,
+        focused && (variant === 'platter' ? { backgroundColor: c.focus } : { borderColor: c.focus }),
+        focused && {
+          shadowColor: c.shadow,
+          shadowOpacity: 0.5,
+          shadowRadius: px(28),
+          shadowOffset: { width: 0, height: px(18) },
+          elevation: 12,
+        },
+        focused && focusedStyle,
+      ]}
+    >
+      <OnPlatter.Provider value={focused && variant === 'platter'}>{children}</OnPlatter.Provider>
+    </Animated.View>
+  );
+}
+
+/**
+ * Remote-focusable element. "platter" (default) turns white with a dark label when focused, like a tvOS
+ * button; "lift" scales the element up with a deep shadow and a thin light edge, like a tvOS lockup.
+ */
 export function Focusable({
   onSelect,
   children,
   style,
   focusedStyle,
   testID,
+  variant = 'platter',
+  scale,
 }: {
   onSelect?: () => void;
   children: (focused: boolean) => ReactNode;
   style?: ViewStyle;
   focusedStyle?: ViewStyle;
   testID?: string;
+  variant?: 'platter' | 'lift';
+  scale?: number;
 }) {
-  const c = useTheme();
-  const motion = useMotion();
   return (
     <SpatialNavigationFocusableView onSelect={onSelect}>
       {({ isFocused }: { isFocused: boolean }) => (
-        <Pressable
-          testID={testID}
-          onPress={onSelect}
-          style={[
-            { borderRadius: px(16), borderWidth: px(3), borderColor: 'transparent' },
-            style,
-            isFocused && {
-              borderColor: c.focus,
-              backgroundColor: c.surface2,
-              ...(motion ? { transform: [{ scale: 1.06 }] } : {}),
-            },
-            isFocused && focusedStyle,
-          ]}
-        >
-          {children(isFocused)}
+        <Pressable testID={testID} onPress={onSelect}>
+          <FocusBody
+            focused={isFocused}
+            variant={variant}
+            scale={scale ?? (variant === 'lift' ? FOCUS.card : FOCUS.button)}
+            style={variant === 'lift' ? { borderWidth: px(3), borderColor: 'transparent', ...style } : style}
+            focusedStyle={focusedStyle}
+          >
+            {children(isFocused)}
+          </FocusBody>
         </Pressable>
       )}
     </SpatialNavigationFocusableView>
   );
 }
 
+/**
+ * tvOS button: 72 px platter, 14 px radius, glass when idle, white with a dark label when focused.
+ * "primary" is the one call to action on a screen: a brighter platter at rest so it reads first.
+ */
 export function Button({
   label,
   onSelect,
@@ -127,6 +202,7 @@ export function Button({
   icon,
   disabled,
   testID,
+  width,
 }: {
   label: string;
   onSelect: () => void;
@@ -134,6 +210,7 @@ export function Button({
   icon?: string;
   disabled?: boolean;
   testID?: string;
+  width?: number;
 }) {
   const c = useTheme();
   return (
@@ -141,19 +218,22 @@ export function Button({
       testID={testID}
       onSelect={disabled ? undefined : onSelect}
       style={{
-        backgroundColor: primary ? c.brand : c.surface2,
+        backgroundColor: primary ? 'rgba(255,255,255,0.28)' : c.surface2,
         paddingHorizontal: px(40),
-        height: px(84),
+        height: px(72),
+        minWidth: px(width ?? 0),
+        alignItems: 'center',
         justifyContent: 'center',
-        opacity: disabled ? 0.45 : 1,
+        flexDirection: 'row',
+        gap: px(14),
+        opacity: disabled ? 0.4 : 1,
       }}
-      focusedStyle={primary ? { backgroundColor: c.brand } : {}}
     >
       {() => (
-        <T weight="700" color={primary ? '#04201D' : c.text}>
-          {icon ? `${icon}  ` : ''}
-          {label}
-        </T>
+        <>
+          {icon ? <T weight="700">{icon}</T> : null}
+          <T weight="700">{label}</T>
+        </>
       )}
     </Focusable>
   );
@@ -171,9 +251,9 @@ export function Chip({
   const c = useTheme();
   const color = { ok: c.ok, near: c.near, far: c.far, info: c.info, brand: c.brand }[tone];
   return (
-    <View style={[styles.chip, { backgroundColor: c.surface2 }]}>
+    <View style={[styles.chip, { backgroundColor: 'rgba(0,0,0,0.45)', borderColor: c.hairline }]}>
       <View style={[styles.dot, { backgroundColor: color }]} />
-      <T size="caption" color={color} weight="700">
+      <T size="caption" weight="600">
         {icon ? `${icon} ` : ''}
         {label}
       </T>
@@ -181,16 +261,82 @@ export function Chip({
   );
 }
 
+/** Glass panel (tvOS material, without blur: Vega has no backdrop filter). */
 export function Card({ children, style }: { children: ReactNode; style?: ViewStyle }) {
   const c = useTheme();
   return (
-    <View style={[{ backgroundColor: c.surface, borderRadius: px(24), padding: px(32) }, style]}>
+    <View
+      style={[
+        {
+          backgroundColor: c.surface,
+          borderRadius: px(RADIUS.panel),
+          padding: px(32),
+          borderWidth: px(1),
+          borderColor: c.hairline,
+        },
+        style,
+      ]}
+    >
       {children}
     </View>
   );
 }
 
-/** Full-screen designed state (loading / error / empty). */
+/** Thin label above a group of content (tvOS section header): sentence case, secondary colour. */
+export function SectionHeader({ children, style }: { children: ReactNode; style?: TextStyle }) {
+  const c = useTheme();
+  return (
+    <T size="headline" color={c.text} style={{ marginBottom: px(20), ...style }}>
+      {children}
+    </T>
+  );
+}
+
+/**
+ * Full-bleed artwork with tvOS-style fades: a left-to-right darkening for the text column and a bottom
+ * fade into the canvas. The image is decorative; text never relies on it for contrast.
+ */
+export function Backdrop({
+  source,
+  tint = '#000000',
+  dim = 0.35,
+  children,
+}: {
+  source?: ImageSourcePropType | null;
+  tint?: string;
+  dim?: number;
+  children?: ReactNode;
+}) {
+  const c = useTheme();
+  return (
+    <View style={StyleSheet.absoluteFill} pointerEvents="none">
+      {source ? (
+        <Image source={source} style={StyleSheet.absoluteFill} resizeMode="cover" />
+      ) : (
+        <View style={[StyleSheet.absoluteFill, { backgroundColor: c.solid }]} />
+      )}
+      <View style={[StyleSheet.absoluteFill, { backgroundColor: `rgba(0,0,0,${dim})` }]} />
+      <Svg width="100%" height="100%" style={StyleSheet.absoluteFill}>
+        <Defs>
+          <LinearGradient id="bdLeft" x1="0" y1="0" x2="1" y2="0">
+            <Stop offset="0" stopColor={tint} stopOpacity="0.92" />
+            <Stop offset="0.45" stopColor={tint} stopOpacity="0.55" />
+            <Stop offset="0.8" stopColor={tint} stopOpacity="0" />
+          </LinearGradient>
+          <LinearGradient id="bdBottom" x1="0" y1="0" x2="0" y2="1">
+            <Stop offset="0.35" stopColor="#000000" stopOpacity="0" />
+            <Stop offset="1" stopColor="#000000" stopOpacity="1" />
+          </LinearGradient>
+        </Defs>
+        <Rect x="0" y="0" width="100%" height="100%" fill="url(#bdLeft)" />
+        <Rect x="0" y="0" width="100%" height="100%" fill="url(#bdBottom)" />
+      </Svg>
+      {children}
+    </View>
+  );
+}
+
+/** Full-screen designed state (loading / error / empty), tvOS alert layout: centred column on black. */
 export function StateScreen({
   icon,
   title,
@@ -204,18 +350,26 @@ export function StateScreen({
 }) {
   const c = useTheme();
   return (
-    <Screen style={{ justifyContent: 'center' }}>
-      <View style={{ maxWidth: px(1200), gap: px(28) }}>
-        <View style={[styles.iconWrap, { backgroundColor: c.surface2 }]}>
-          <T size="h1" color={c.brand}>
+    <Screen style={{ justifyContent: 'center', alignItems: 'center' }}>
+      <View style={{ width: px(1040), gap: px(24), alignItems: 'center' }}>
+        <View style={[styles.iconWrap, { backgroundColor: c.surface, borderColor: c.hairline }]}>
+          <T size="h1" color={c.muted}>
             {icon}
           </T>
         </View>
-        <T size="h1">{title}</T>
-        {typeof body === 'string' ? <T color={c.muted}>{body}</T> : body}
+        <T size="h1" style={{ textAlign: 'center' }}>
+          {title}
+        </T>
+        {typeof body === 'string' ? (
+          <T color={c.muted} style={{ textAlign: 'center' }}>
+            {body}
+          </T>
+        ) : (
+          body
+        )}
         {actions && (
           <SpatialNavigationNode orientation="horizontal">
-            <View style={{ flexDirection: 'row', gap: px(24), marginTop: px(16) }}>{actions}</View>
+            <View style={{ flexDirection: 'row', gap: px(24), marginTop: px(24) }}>{actions}</View>
           </SpatialNavigationNode>
         )}
       </View>
@@ -227,17 +381,19 @@ const styles = StyleSheet.create({
   chip: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: px(10),
+    gap: px(12),
     paddingHorizontal: px(20),
-    paddingVertical: px(8),
-    borderRadius: px(999),
+    height: px(48),
+    borderRadius: px(RADIUS.pill),
+    borderWidth: px(1),
   },
-  dot: { width: px(14), height: px(14), borderRadius: px(7) },
+  dot: { width: px(12), height: px(12), borderRadius: px(6) },
   iconWrap: {
-    width: px(120),
-    height: px(120),
-    borderRadius: px(32),
+    width: px(132),
+    height: px(132),
+    borderRadius: px(66),
     alignItems: 'center',
     justifyContent: 'center',
+    borderWidth: px(1),
   },
 });

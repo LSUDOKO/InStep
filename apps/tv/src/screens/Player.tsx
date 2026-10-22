@@ -164,10 +164,11 @@ export function Player({ lessonId }: { lessonId: string }) {
   const passing = view && Date.now() - view.justPassedAt < PASS_GLOW_MS;
   const captionScale = settings.captionScale;
   const overlay = settings.overlayMode === 'overlay';
-  const PW = px(560);
-  const PH = px(720);
-  const VW = overlay ? px(1728) : px(1280);
-  const VH = overlay ? px(972) - px(200) : px(720);
+  // side-by-side: 16:9 video + body panel, both 675 px tall, filling the 1760 px safe width
+  const PW = px(536);
+  const PH = px(675);
+  const VW = overlay ? px(1760) : px(1200);
+  const VH = overlay ? px(990) - px(260) : px(675);
 
   const learnerPanel = (w: number, h: number) =>
     isHandGate ? (
@@ -191,7 +192,9 @@ export function Player({ lessonId }: { lessonId: string }) {
   return (
     <Screen style={{ paddingVertical: px(40), paddingHorizontal: px(64) }} active={confirmExit}>
       <View style={{ flexDirection: 'row', gap: px(24) }}>
-        <View style={{ width: VW, height: VH, borderRadius: px(16), overflow: 'hidden' }}>
+        <View
+          style={{ width: VW, height: VH, borderRadius: px(28), overflow: 'hidden', backgroundColor: '#000' }}
+        >
           <VegaVideo
             uri={services.api.url(lesson.detail.videoUrl)}
             style={{ width: VW, height: VH }}
@@ -221,10 +224,10 @@ export function Player({ lessonId }: { lessonId: string }) {
               width: PW,
               height: PH,
               backgroundColor: c.surface,
-              borderRadius: px(16),
+              borderRadius: px(28),
               overflow: 'hidden',
-              borderWidth: px(4),
-              borderColor: hostEval?.status === 'blocked_safety' ? c.far : c.surface,
+              borderWidth: px(hostEval?.status === 'blocked_safety' ? 4 : 1),
+              borderColor: hostEval?.status === 'blocked_safety' ? c.far : c.hairline,
             }}
           >
             {learnerPanel(PW, PH)}
@@ -244,8 +247,13 @@ export function Player({ lessonId }: { lessonId: string }) {
       >
         {gate ? (
           <>
-            <View style={{ flex: 1, gap: px(8) }}>
-              <T size="h1">{gate.label}</T>
+            <View style={{ flex: 1, gap: px(6) }}>
+              <T size="caption" weight="600" color={c.muted}>
+                Step {railIndex + 1} of {track.gates.length}
+              </T>
+              <T size="h1" lines={1}>
+                {gate.label}
+              </T>
               {hostEval?.message && hostEval.status !== 'passed' ? (
                 <T color={c.near}>{hostEval.message}</T>
               ) : hostEval?.worst ? (
@@ -294,8 +302,8 @@ export function Player({ lessonId }: { lessonId: string }) {
             left: px(64),
             right: px(64),
             bottom: px(40),
-            backgroundColor: c.surface2,
-            borderLeftWidth: px(8),
+            backgroundColor: 'rgba(20,20,20,0.92)',
+            borderLeftWidth: px(6),
             borderLeftColor: c.brand,
           }}
         >
@@ -319,7 +327,7 @@ export function Player({ lessonId }: { lessonId: string }) {
             left: 0,
             right: 0,
             bottom: 0,
-            borderWidth: px(16),
+            borderWidth: px(8),
             borderColor: c.ok,
           }}
         />
@@ -391,15 +399,27 @@ function Overlay({ children }: { children: React.ReactNode }) {
         left: 0,
         right: 0,
         bottom: 0,
-        backgroundColor: 'rgba(14,17,22,0.94)',
+        backgroundColor: 'rgba(0,0,0,0.72)',
         alignItems: 'center',
         justifyContent: 'center',
-        gap: px(28),
-        padding: px(96),
       }}
     >
-      <View style={{ maxWidth: px(1300), gap: px(28), alignItems: 'center' }}>{children}</View>
-      <View style={{ width: px(120), height: px(8), borderRadius: px(4), backgroundColor: c.brand }} />
+      {/* tvOS alert: a centred material platter */}
+      <View
+        style={{
+          width: px(1200),
+          paddingVertical: px(64),
+          paddingHorizontal: px(80),
+          borderRadius: px(44),
+          backgroundColor: 'rgba(30,30,30,0.94)',
+          borderWidth: px(1),
+          borderColor: c.hairline,
+          gap: px(28),
+          alignItems: 'center',
+        }}
+      >
+        {children}
+      </View>
     </View>
   );
 }

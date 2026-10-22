@@ -6,6 +6,7 @@ import { Keyboard } from '../components/Keyboard';
 import { Button, Card, Focusable, Screen, T, useTheme } from '../components/ui';
 import { nav, store } from '../lib/app';
 import { LANGUAGES, type Settings as S } from '../lib/settings';
+import { TabBar } from '../components/TabBar';
 import { px } from '../theme/tokens';
 import { useApp } from '../useStore';
 import { connectAndCheck, SETTINGS_KEY } from './Splash';
@@ -97,7 +98,10 @@ export function Settings() {
 
   return (
     <Screen>
-      <T size="h1">Settings</T>
+      <TabBar current="settings" />
+      <T size="h1" style={{ marginTop: px(40) }}>
+        Settings
+      </T>
       <SpatialNavigationScrollView offsetFromStart={px(120)}>
         <View style={{ gap: px(36), marginTop: px(28), paddingBottom: px(80) }}>
           <View style={{ gap: px(12) }}>

@@ -2,40 +2,45 @@ import type { LessonSummary } from '@instep/protocol';
 import React, { useEffect, useState } from 'react';
 import { Image, View } from 'react-native';
 import { DefaultFocus, SpatialNavigationNode, SpatialNavigationScrollView } from 'react-tv-space-navigation';
-import { Avatar } from '../components/Avatar';
-import { Logo } from '../components/Logo';
-import { Button, Chip, Focusable, Screen, StateScreen, T, useMotion, useTheme } from '../components/ui';
+import { TabBar } from '../components/TabBar';
+import { Backdrop, Button, Focusable, Screen, StateScreen, T, useMotion, useTheme } from '../components/ui';
 import { nav, refreshCatalog, services } from '../lib/app';
-import { channelColor, px } from '../theme/tokens';
+import { channelColor, LOCKUP, px, RADIUS, SAFE } from '../theme/tokens';
 import { useApp } from '../useStore';
 
-const HERO: Record<string, { title: string; line: string }> = {
-  fall_prevention: {
-    title: 'Fall Prevention',
-    line: 'Strength and balance at home — safety checked before every exercise.',
-  },
-  sign_language: {
-    title: 'Sign Language for Families',
-    line: 'Practise your first signs together. See exactly which finger to fix.',
-  },
+/** What each channel is for, in one line (Top Shelf copy). */
+const CHANNEL_LINE: Record<string, string> = {
+  fall_prevention: 'Strength and balance at home. A safety check comes before every exercise.',
+  sign_language: 'Your first signs, practised together. See exactly which finger to fix.',
+  stroke_rehab: 'Hand exercises that only count a rep when it reaches the full range.',
+  cpr: 'Rhythm and straight arms for hands-only CPR. A practice aid, not certification.',
+  kids: 'Story time you move along with. Every pose you hold moves the story on.',
 };
+/** Channels that lead the Top Shelf, in order. */
+const FEATURED = ['fall_prevention', 'sign_language'];
 
-const minutes = (s: number) => (s < 60 ? `${Math.round(s)} s` : `${Math.round(s / 60)} min`);
+const duration = (s: number) => (s < 60 ? `${Math.round(s)} sec` : `${Math.round(s / 60)} min`);
+const steps = (n: number) => `${n} ${n === 1 ? 'step' : 'steps'}`;
+const LEVEL = ['', 'Gentle', 'Steady', 'Challenging'];
 
-function LessonCard({ l }: { l: LessonSummary }) {
+function Lockup({ l }: { l: LessonSummary }) {
   const c = useTheme();
   const accent = channelColor[l.channel] ?? c.brand;
   return (
-    <Focusable onSelect={() => nav.push({ name: 'detail', lessonId: l.id })} style={{ width: px(384) }}>
-      {() => (
-        <View>
+    <View style={{ width: px(LOCKUP.w) }}>
+      <Focusable
+        variant="lift"
+        onSelect={() => nav.push({ name: 'detail', lessonId: l.id })}
+        style={{ borderRadius: px(LOCKUP.radius + 3) }}
+      >
+        {() => (
           <View
             style={{
-              width: '100%',
-              height: px(216),
-              borderRadius: px(14),
+              width: px(LOCKUP.w) - px(6),
+              height: px(LOCKUP.h),
+              borderRadius: px(LOCKUP.radius),
               overflow: 'hidden',
-              backgroundColor: c.surface2,
+              backgroundColor: c.solid,
             }}
           >
             {l.posterUrl ? (
@@ -45,39 +50,93 @@ function LessonCard({ l }: { l: LessonSummary }) {
                 resizeMode="cover"
               />
             ) : (
-              <View style={{ flex: 1, backgroundColor: accent, opacity: 0.25 }} />
+              <View style={{ flex: 1, backgroundColor: accent, opacity: 0.35 }} />
             )}
             {l.isNew && (
               <View
                 style={{
                   position: 'absolute',
-                  top: px(12),
-                  left: px(12),
-                  backgroundColor: c.brand,
+                  top: px(14),
+                  left: px(14),
+                  backgroundColor: c.focus,
                   borderRadius: px(8),
                   paddingHorizontal: px(12),
-                  paddingVertical: px(4),
+                  height: px(36),
+                  justifyContent: 'center',
                 }}
               >
-                <T size="caption" color="#04201D" weight="700">
+                <T size="caption" color={c.onFocus} weight="700" style={{ lineHeight: px(30) }}>
                   New
                 </T>
               </View>
             )}
           </View>
-          <View style={{ padding: px(14), gap: px(4) }}>
-            <T weight="700" lines={2}>
-              {l.title}
-            </T>
-            <T size="caption" color={c.muted}>
-              {minutes(l.durationSec)} · {l.gateCount} {l.gateCount === 1 ? 'step' : 'steps'} ·{' '}
-              {'●'.repeat(l.difficulty)}
-              {'○'.repeat(3 - l.difficulty)}
-            </T>
-          </View>
+        )}
+      </Focusable>
+      <View style={{ paddingTop: px(16), paddingHorizontal: px(4), gap: px(2) }}>
+        <T weight="600" lines={1}>
+          {l.title}
+        </T>
+        <T size="caption" color={c.muted} lines={1}>
+          {duration(l.durationSec)}, {steps(l.gateCount)}, {LEVEL[l.difficulty]?.toLowerCase()}
+        </T>
+      </View>
+    </View>
+  );
+}
+
+/** Top Shelf: the featured lesson over its own artwork, with the screen's one primary action. */
+function TopShelf({ l, channelTitle }: { l: LessonSummary; channelTitle: string }) {
+  const c = useTheme();
+  return (
+    <View style={{ height: px(700) }}>
+      <Backdrop source={l.posterUrl ? { uri: services.api.url(l.posterUrl) } : null} dim={0.25} />
+      <View style={{ paddingHorizontal: px(SAFE.h), paddingTop: px(SAFE.v) }}>
+        <TabBar current="home" />
+      </View>
+      <View style={{ position: 'absolute', left: px(SAFE.h), bottom: px(64), width: px(900), gap: px(18) }}>
+        <View style={{ flexDirection: 'row', alignItems: 'center', gap: px(14) }}>
+          <View
+            style={{
+              width: px(12),
+              height: px(12),
+              borderRadius: px(6),
+              backgroundColor: channelColor[l.channel],
+            }}
+          />
+          <T size="caption" weight="600" color={c.muted}>
+            {channelTitle}
+          </T>
         </View>
-      )}
-    </Focusable>
+        <T size="display" lines={2}>
+          {l.title}
+        </T>
+        <T color={c.muted} lines={2} style={{ width: px(820) }}>
+          {CHANNEL_LINE[l.channel] ?? ''}
+        </T>
+        <T size="caption" color={c.faint}>
+          {duration(l.durationSec)}, {steps(l.gateCount)}, {LEVEL[l.difficulty]}
+        </T>
+        <SpatialNavigationNode orientation="horizontal">
+          <View style={{ flexDirection: 'row', gap: px(24), marginTop: px(14) }}>
+            <DefaultFocus>
+              <Button
+                primary
+                icon="▶"
+                label="Start lesson"
+                width={300}
+                onSelect={() => nav.push({ name: 'pair', lessonId: l.id, together: false })}
+              />
+            </DefaultFocus>
+            <Button
+              label="Details"
+              width={220}
+              onSelect={() => nav.push({ name: 'detail', lessonId: l.id })}
+            />
+          </View>
+        </SpatialNavigationNode>
+      </View>
+    </View>
   );
 }
 
@@ -86,17 +145,18 @@ export function Home() {
   const motion = useMotion();
   const catalog = useApp((s) => s.catalog);
   const error = useApp((s) => s.catalogError);
-  const profile = useApp((s) => s.profile);
-  const relay = useApp((s) => s.relayStatus);
   const [hero, setHero] = useState(0);
   const rows = catalog?.channels.filter((ch) => ch.lessons.length > 0) ?? [];
-  const heroes = rows.filter((r) => HERO[r.channel]);
+  const featured = FEATURED.map((f) => rows.find((r) => r.channel === f)).filter(
+    (r): r is NonNullable<typeof r> => !!r,
+  );
 
+  // the Top Shelf rotates between featured channels, slowly, unless motion is reduced
   useEffect(() => {
-    if (!motion || heroes.length < 2) return;
-    const id = setInterval(() => setHero((h) => (h + 1) % heroes.length), 8000);
+    if (!motion || featured.length < 2) return;
+    const id = setInterval(() => setHero((h) => (h + 1) % featured.length), 12000);
     return () => clearInterval(id);
-  }, [motion, heroes.length]);
+  }, [motion, featured.length]);
 
   if (!catalog && error)
     return (
@@ -109,101 +169,44 @@ export function Home() {
     );
   if (!catalog) return <StateScreen icon="…" title="Loading lessons" />;
 
-  const h = heroes[hero % Math.max(1, heroes.length)];
-
-  return (
-    <Screen>
-      <SpatialNavigationNode orientation="horizontal">
-        <View style={{ flexDirection: 'row', alignItems: 'center', gap: px(24), marginBottom: px(28) }}>
-          <Logo size={px(64)} />
-          <T size="h2" style={{ flex: 1 }}>
-            InStep
-          </T>
-          {relay !== 'online' && (
-            <Chip tone="near" label={relay === 'connecting' ? 'Connecting…' : 'Server offline — retrying'} />
-          )}
-          <Button label="My progress" onSelect={() => nav.push({ name: 'progress' })} />
-          <Button label="Settings" icon="⚙" onSelect={() => nav.push({ name: 'settings' })} />
-          {profile && (
-            <Focusable
-              onSelect={() => nav.reset({ name: 'profiles' })}
-              style={{
-                flexDirection: 'row',
-                alignItems: 'center',
-                gap: px(14),
-                paddingHorizontal: px(16),
-                height: px(84),
-              }}
-            >
-              {() => (
-                <>
-                  <Avatar name={profile.name} avatar={profile.avatar} size={px(56)} />
-                  <T>{profile.name}</T>
-                </>
-              )}
-            </Focusable>
-          )}
-        </View>
-      </SpatialNavigationNode>
-
-      {rows.length === 0 ? (
-        <View style={{ flex: 1, justifyContent: 'center', gap: px(20), maxWidth: px(1200) }}>
+  if (rows.length === 0)
+    return (
+      <Screen>
+        <TabBar current="home" />
+        <View style={{ flex: 1, justifyContent: 'center', gap: px(20), width: px(1100) }}>
           <T size="h1">No lessons yet</T>
           <T color={c.muted}>
-            Lessons appear here as soon as their demonstration video has been recorded and published.
+            Lessons appear here when their demonstration video has been recorded and published in Creator
+            Studio.
           </T>
         </View>
-      ) : (
-        <SpatialNavigationScrollView offsetFromStart={px(140)}>
-          {h && (
-            <View
-              style={{
-                height: px(260),
-                borderRadius: px(28),
-                backgroundColor: c.surface,
-                padding: px(48),
-                justifyContent: 'center',
-                marginBottom: px(40),
-                borderLeftWidth: px(12),
-                borderLeftColor: channelColor[h.channel],
-              }}
-            >
-              <T size="h1">{HERO[h.channel]!.title}</T>
-              <T color={c.muted} style={{ marginTop: px(12) }}>
-                {HERO[h.channel]!.line}
+      </Screen>
+    );
+
+  const shelf = featured[hero % Math.max(1, featured.length)] ?? rows[0]!;
+
+  return (
+    <Screen bleed>
+      <SpatialNavigationScrollView offsetFromStart={px(120)}>
+        <TopShelf l={shelf.lessons[0]!} channelTitle={shelf.title} />
+        <View style={{ paddingHorizontal: px(SAFE.h), paddingBottom: px(SAFE.v), gap: px(56) }}>
+          {rows.map((row) => (
+            <View key={row.channel}>
+              <T size="headline" style={{ marginBottom: px(22) }}>
+                {row.title}
               </T>
-            </View>
-          )}
-          {rows.map((row, ri) => (
-            <View key={row.channel} style={{ marginBottom: px(36) }}>
-              <View style={{ flexDirection: 'row', alignItems: 'center', gap: px(14), marginBottom: px(16) }}>
-                <View
-                  style={{
-                    width: px(14),
-                    height: px(40),
-                    borderRadius: px(7),
-                    backgroundColor: channelColor[row.channel],
-                  }}
-                />
-                <T size="h2">{row.title}</T>
-              </View>
               <SpatialNavigationNode orientation="horizontal">
-                <View style={{ flexDirection: 'row', gap: px(28) }}>
-                  {row.lessons.map((l, i) =>
-                    ri === 0 && i === 0 ? (
-                      <DefaultFocus key={l.id}>
-                        <LessonCard l={l} />
-                      </DefaultFocus>
-                    ) : (
-                      <LessonCard key={l.id} l={l} />
-                    ),
-                  )}
+                <View style={{ flexDirection: 'row', gap: px(LOCKUP.gap) }}>
+                  {row.lessons.map((l) => (
+                    <Lockup key={l.id} l={l} />
+                  ))}
                 </View>
               </SpatialNavigationNode>
             </View>
           ))}
-        </SpatialNavigationScrollView>
-      )}
+          <View style={{ height: px(RADIUS.panel) }} />
+        </View>
+      </SpatialNavigationScrollView>
     </Screen>
   );
 }

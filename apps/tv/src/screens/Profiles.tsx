@@ -47,47 +47,50 @@ export function Profiles() {
       />
     );
 
+  // tvOS user selection: large round portraits, centred; focus lifts the portrait
+  const tileW = avatarSize + px(40);
   return (
-    <Screen style={{ justifyContent: 'center' }}>
-      <T size="h1" style={{ marginBottom: px(64) }}>
+    <Screen style={{ justifyContent: 'center', alignItems: 'center' }}>
+      <T size="h1" style={{ marginBottom: px(80), textAlign: 'center' }}>
         Who's practising?
       </T>
       <SpatialNavigationNode orientation="horizontal">
-        <View style={{ flexDirection: 'row', gap: px(48) }}>
+        <View style={{ flexDirection: 'row', gap: px(64), alignItems: 'flex-start' }}>
           {profiles.map((p, i) => {
             const tile = (
-              <Focusable
-                key={p.id}
-                onSelect={() => choose(p)}
-                style={{ padding: px(24), alignItems: 'center', gap: px(20), width: px(280) }}
-              >
-                {() => (
-                  <>
-                    <Avatar name={p.name} avatar={p.avatar} size={avatarSize} />
-                    <T size="h2" lines={1}>
-                      {p.name}
-                    </T>
-                  </>
-                )}
-              </Focusable>
+              <View key={p.id} style={{ width: tileW, alignItems: 'center', gap: px(28) }}>
+                <Focusable
+                  variant="lift"
+                  scale={1.12}
+                  onSelect={() => choose(p)}
+                  style={{ borderRadius: avatarSize, padding: px(6) }}
+                >
+                  {() => <Avatar name={p.name} avatar={p.avatar} size={avatarSize} />}
+                </Focusable>
+                <T size="headline" lines={1}>
+                  {p.name}
+                </T>
+              </View>
             );
             return i === 0 ? <DefaultFocus key={p.id}>{tile}</DefaultFocus> : tile;
           })}
           {profiles.length < 6 && (
-            <Focusable
-              onSelect={() => nav.push({ name: 'addProfile' })}
-              style={{ padding: px(24), alignItems: 'center', gap: px(20), width: px(280) }}
-            >
-              {() => (
-                <>
+            <View style={{ width: tileW, alignItems: 'center', gap: px(28) }}>
+              <Focusable
+                variant="lift"
+                scale={1.12}
+                onSelect={() => nav.push({ name: 'addProfile' })}
+                style={{ borderRadius: avatarSize, padding: px(6) }}
+              >
+                {() => (
                   <View
                     style={{
                       width: avatarSize,
                       height: avatarSize,
                       borderRadius: avatarSize / 2,
-                      borderWidth: px(4),
-                      borderColor: c.muted,
-                      borderStyle: 'dashed',
+                      backgroundColor: c.surface,
+                      borderWidth: px(1),
+                      borderColor: c.hairline,
                       alignItems: 'center',
                       justifyContent: 'center',
                     }}
@@ -96,12 +99,12 @@ export function Profiles() {
                       +
                     </T>
                   </View>
-                  <T size="h2" color={c.muted}>
-                    Add profile
-                  </T>
-                </>
-              )}
-            </Focusable>
+                )}
+              </Focusable>
+              <T size="headline" color={c.muted}>
+                Add profile
+              </T>
+            </View>
           )}
         </View>
       </SpatialNavigationNode>

@@ -4,6 +4,7 @@ import { View } from 'react-native';
 import { DefaultFocus } from 'react-tv-space-navigation';
 import { Button, Card, Screen, StateScreen, T, useTheme } from '../components/ui';
 import { nav, services } from '../lib/app';
+import { TabBar } from '../components/TabBar';
 import { px } from '../theme/tokens';
 import { useApp } from '../useStore';
 
@@ -34,7 +35,10 @@ export function Progress() {
   const H = px(360);
   return (
     <Screen>
-      <T size="h1">My progress</T>
+      <TabBar current="progress" />
+      <T size="h1" style={{ marginTop: px(40) }}>
+        My progress
+      </T>
       <T color={c.muted}>Last 14 days</T>
       <View style={{ flexDirection: 'row', gap: px(24), marginTop: px(36) }}>
         <Card style={{ minWidth: px(300) }}>
