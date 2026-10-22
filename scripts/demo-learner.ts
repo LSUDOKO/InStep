@@ -40,7 +40,14 @@ ws.on('error', (e) => {
 });
 ws.on('open', () =>
   ws.send(
-    encode({ type: 'hello', v: 1, role: 'host', room: values.room!, deviceId: 'demo-learner', name: 'Demo' }),
+    encode({
+      type: 'hello',
+      v: 1,
+      role,
+      room: values.room!,
+      deviceId: `demo-learner-${role}`,
+      name: values.name!,
+    }),
   ),
 );
 ws.on('message', (d) => {

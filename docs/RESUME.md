@@ -33,7 +33,11 @@ first Select on the Profiles screen opens Home.
 
 1. (done 02:35) All seven lessons recorded on the device; GIFs committed in `docs/screenshots/tv/gif/`; README
    embeds them; loop-aware placeholder videos deployed to Render; step-rail TV build installed on the device.
-2. Record real people for the two hero channels (consent in `content/CREDITS.md`), replace the placeholder
+2. (done, Oct 22) tvOS-style redesign of every TV screen, installed on the device and checked (solo, Together
+   mode, "Over the video"). The README GIFs still show the old design: re-run `scripts/device/record-all.sh`
+   after the real videos are in. Render still serves the pre-redesign posters until the next deploy (a deploy
+   wipes profiles; recreate one on the TV).
+3. Record real people for the two hero channels (consent in `content/CREDITS.md`), replace the placeholder
    `video.mp4` files, re-run `pnpm dryrun-lessons` and the device recording for those two.
-3. Phone fps check, AWS probe when the daily quota resets (`pnpm aws:check --probe`), demo video, Devpost form
+4. Phone fps check, AWS probe when the daily quota resets (`pnpm aws:check --probe`), demo video, Devpost form
    (`docs/SUBMISSION.md`, `docs/12-submission-kit.md`).

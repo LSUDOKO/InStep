@@ -2,6 +2,32 @@
 
 Newest first. Each entry: what works, what doesn't, what changed from the spec and why.
 
+## 2026-10-22 — TV redesign in the tvOS idiom, verified on the device
+
+**What works (checked on the Vega Virtual Device, screenshots in `docs/screenshots/tv/`)**
+
+- Every TV screen rebuilt on Apple's tvOS 18 metrics (taken from the official Sketch templates): 80×60 safe
+  area, tvOS type ramp (76/57/48/38/31/28), 72 px platter buttons that turn white when focused, a pill tab bar
+  (Home / My progress / Settings), Top Shelf on Home, Product-page lesson detail, QR-auth pairing screen,
+  Post-Play summary, user-selection profiles, list-style Settings. Font is Amazon Ember (Vega system font).
+- Player: persistent step rail, coach tip as a subtitle inside the video, centred alert-style overlays.
+- Together mode: host + guest pairing screen (second QR), participant chips in the player.
+- "Over the video" body-panel mode: 16:9 video with the skeleton drawn on top.
+- Lesson posters: a frame from the real recording when there is one; channel-coloured art for placeholders.
+
+**Fixed along the way (root causes)**
+
+- Render free plan sleeps after 15 min; the first request timed out ("Couldn't open this lesson"). TV API
+  timeout 15 s + one retry for GETs, honest "server may be waking up" error copy, keep-warm workflow.
+- `scripts/demo-learner.ts` always said `role: 'host'` in its hello, so a "guest" replaced the host. Now sends
+  its role and name, with a per-role device id.
+- Coach caption overlapped the placeholder video's honesty strip; raised to 96 px from the bottom.
+- Server tests broke when placeholder videos were committed (fixture expected unpublished lessons); the
+  fixture now drops videos marked `video.placeholder`.
+
+**Changed from the spec:** docs/09 colours, type and focus style are superseded by the tvOS values in
+`apps/tv/src/theme/tokens.ts` (see the note at the top of docs/09).
+
 ## 2026-10-22 — Every channel playable on the device; recorded walkthroughs
 
 - **Placeholder instruction videos** for the six unrecorded lessons (`scripts/make-lesson-video.mjs`): illustrated

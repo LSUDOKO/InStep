@@ -57,7 +57,7 @@ export function Pair({ lessonId, together }: { lessonId: string; together: boole
           <View style={{ gap: px(16), marginTop: px(16), width: px(500) }}>
             {together && host && !guests.length && (
               <Button
-                label="Start without a family member"
+                label="Start on my own"
                 width={500}
                 onSelect={() => nav.replace({ name: 'cameraCheck', lessonId })}
               />

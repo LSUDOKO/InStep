@@ -209,7 +209,7 @@ export function Player({ lessonId }: { lessonId: string }) {
                 position: 'absolute',
                 left: px(32),
                 right: px(32),
-                bottom: px(track.channel === 'cpr' ? 96 : 32),
+                bottom: px(96), // clear of the placeholder's honesty strip and the CPR metronome
                 alignItems: 'center',
               }}
             >

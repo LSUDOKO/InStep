@@ -2,6 +2,12 @@
 
 InStep should feel **calm, warm and trustworthy** — closer to a good physiotherapy clinic than a gym app. Large, legible, generous spacing, very clear state changes.
 
+> **As built (Oct 22):** the TV app follows Apple's tvOS 18 metrics instead of the values below: black
+> background with translucent white "glass" surfaces, Amazon Ember (the Vega system font) at 76/57/48/38/31/28,
+> 80×60 safe area, 410×231 lockups, focused buttons turn white (scale 1.06), focused cards lift (scale 1.1).
+> Source of truth: `apps/tv/src/theme/tokens.ts`. Brand voice, state colours (ok/near/far) and the
+> skeleton rules below still apply.
+
 ## 1. Brand
 
 - **Name:** InStep · **Tagline:** "The video that waits for you."

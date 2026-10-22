@@ -86,3 +86,23 @@ Only real experiences, recorded as they happen. Format from `docs/12-submission-
 - Severity: Medium (reproducible; blocks automated capture).
 - Workaround: record at `--size 1280x720 --fps 12 --bit-rate 3M`, relaunch the app before each recording, and have the capture script restart the device when its console stops answering.
 - Suggestion: cap the recorder below the host's capability or warn; expose the hang in `vega virtual-device status` (it reported "running" for a while after the hang).
+
+### F-08: No documented font list or backdrop blur for TV UI
+
+- Task attempted: build a tvOS-style UI (frosted platters, a specific typeface) in the React Native for Vega app.
+- Steps taken: searched the Vega docs and samples for the system font families and for a blur/vibrancy view.
+- Expected: a list of bundled font families and a supported blur component (or a statement that there is none).
+- Actual: neither is documented. The family name `Amazon Ember` works when set by name; no blur component was found, so translucent fills stand in for frosted glass.
+- Severity: Low (cosmetic), but costs trial-and-error builds on the Virtual Device.
+- Workaround: `fontFamily: 'Amazon Ember'`; `rgba(255,255,255,0.08–0.22)` surfaces with a 1 px hairline; gradients with `react-native-svg`.
+- Suggestion: a "Typography and materials" page listing system fonts and whether blur is supported.
+
+### F-09: The Virtual Device silently fails to boot when the host is short of memory
+
+- Task attempted: start the Virtual Device (`vega virtual-device start`) on a laptop with a browser and editor open.
+- Expected: boot, or an error about memory.
+- Actual: the boot wait never finished, or the running device froze mid-session; nothing in the CLI output pointed at memory. Freeing memory (about 4 GB available) fixed it every time.
+- Severity: Medium (looks like a broken install).
+- Workaround: close memory-heavy apps before starting; check `free -g` first.
+- Suggestion: check available memory in `vega virtual-device start` and print a warning with the required amount.
+
