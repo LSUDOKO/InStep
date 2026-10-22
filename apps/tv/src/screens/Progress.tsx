@@ -1,9 +1,8 @@
 import type { Progress as P } from '@instep/protocol';
 import React, { useEffect, useState } from 'react';
 import { View } from 'react-native';
-import { DefaultFocus } from 'react-tv-space-navigation';
 import { Button, Card, Screen, StateScreen, T, useTheme } from '../components/ui';
-import { nav, services } from '../lib/app';
+import { services } from '../lib/app';
 import { TabBar } from '../components/TabBar';
 import { px } from '../theme/tokens';
 import { useApp } from '../useStore';
@@ -92,11 +91,6 @@ export function Progress() {
           ))}
         </View>
       )}
-      <View style={{ marginTop: px(40), flexDirection: 'row' }}>
-        <DefaultFocus>
-          <Button label="Back" onSelect={nav.back} />
-        </DefaultFocus>
-      </View>
     </Screen>
   );
 }
