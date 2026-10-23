@@ -2,9 +2,31 @@
 // Each shape is fully formed at least 2.5 s before its gate time and still held 0.6 s after it (the TV pauses at t).
 // Every frame says the handshapes are illustrated and not yet reviewed by Deaf signers.
 (() => {
-  const { fill, rrect, circle, text, textWidth, rgba, shade, ramp, ease, backOut, wave, rng, sparkle, label, glow } = KIT;
+  const {
+    fill,
+    rrect,
+    circle,
+    text,
+    textWidth,
+    rgba,
+    shade,
+    ramp,
+    ease,
+    backOut,
+    wave,
+    rng,
+    sparkle,
+    label,
+    glow,
+  } = KIT;
   const LABEL = 'Illustrated handshape · not yet reviewed by Deaf signers';
-  const SHAPE_OF = (s) => (/love you/i.test(s) ? 'ILY' : s.replace(/^(letter|sign)\s*:?\s*/i, '').trim().toUpperCase());
+  const SHAPE_OF = (s) =>
+    /love you/i.test(s)
+      ? 'ILY'
+      : s
+          .replace(/^(letter|sign)\s*:?\s*/i, '')
+          .trim()
+          .toUpperCase();
 
   window.ASL = (track, P) => {
     const dur = track.video.durationSec;
@@ -50,7 +72,9 @@
 
     const rnd = rng(11);
     const MOTES = Array.from({ length: 70 }, () => [rnd(), rnd(), rnd(), rnd()]);
-    const steps = gates.map((g) => (g.type === 'sequence_order' ? g.steps.map((s) => SHAPE_OF(s.label)).join(' ') : SHAPE_OF(g.label)));
+    const steps = gates.map((g) =>
+      g.type === 'sequence_order' ? g.steps.map((s) => SHAPE_OF(s.label)).join(' ') : SHAPE_OF(g.label),
+    );
 
     return (c, t) => {
       // ---- background: night canvas, two slow drifting forms, twinkling motes ----
@@ -62,12 +86,20 @@
       for (const [x, y, s, ph] of MOTES) {
         const tw = 0.5 + 0.5 * wave(t, 2.5 + 3 * s, ph);
         const col = [P.accents.sky, iris, P.accents.sun, P.accents.lagoon][Math.floor(ph * 4)];
-        sparkle(c, x * 1920, ((y * 1080 - t * (6 + 10 * s)) % 1080 + 1080) % 1080, 3 + 7 * s, col, 0.12 + 0.35 * tw * s);
+        sparkle(
+          c,
+          x * 1920,
+          (((y * 1080 - t * (6 + 10 * s)) % 1080) + 1080) % 1080,
+          3 + 7 * s,
+          col,
+          0.12 + 0.35 * tw * s,
+        );
       }
 
       // ---- the hand ----
       const rise = backOut(ramp(t, 0.1, 1.3), 0.8);
-      const cx = 690, cy = 640 + (1 - rise) * 600;
+      const cx = 690,
+        cy = 640 + (1 - rise) * 600;
       HAND.draw(c, shapeAt(t), cx, cy, 300, pal);
 
       // ---- celebration after each step (starts 0.4 s after the gate, when the video is playing again) ----
@@ -75,13 +107,18 @@
         if (gates.length === 1) {
           // one sign: hearts keep rising from the hand after the step, a new one every 0.35 s
           for (let i = 0; i < 40; i++) {
-            const born = g.t + 0.4 + i * 0.35, k = (t - born) / 2.6;
+            const born = g.t + 0.4 + i * 0.35,
+              k = (t - born) / 2.6;
             if (k <= 0 || k >= 1) continue;
             const r2 = rng(300 + i);
             const x = cx - 40 + (r2() - 0.5) * 460 + 26 * wave(t, 1.6, r2());
             const y = cy - 360 - k * (300 + 160 * r2());
             const a = Math.min(1, k * 6) * (1 - KIT.smooth((k - 0.6) / 0.4));
-            fill(c, KIT.heart(x, y, (26 + 22 * r2()) * backOut(KIT.clamp(k * 4), 2)), rgba([P.accents.rose, iris, P.accents.peach][i % 3], a));
+            fill(
+              c,
+              KIT.heart(x, y, (26 + 22 * r2()) * backOut(KIT.clamp(k * 4), 2)),
+              rgba([P.accents.rose, iris, P.accents.peach][i % 3], a),
+            );
           }
           return;
         }
@@ -89,8 +126,16 @@
         if (k <= 0 || k >= 1) return;
         const r2 = rng(100 + gi);
         for (let i = 0; i < 12; i++) {
-          const a = (i / 12) * Math.PI * 2 + r2() * 0.5, d = 230 + 160 * backOut(KIT.clamp(k * 1.6), 1.2);
-          sparkle(c, cx + Math.cos(a) * d, cy - 260 + Math.sin(a) * d * 0.8, (18 + 14 * r2()) * (1 - k), [P.accents.sun, iris, P.accents.sky][i % 3], 1 - k);
+          const a = (i / 12) * Math.PI * 2 + r2() * 0.5,
+            d = 230 + 160 * backOut(KIT.clamp(k * 1.6), 1.2);
+          sparkle(
+            c,
+            cx + Math.cos(a) * d,
+            cy - 260 + Math.sin(a) * d * 0.8,
+            (18 + 14 * r2()) * (1 - k),
+            [P.accents.sun, iris, P.accents.sky][i % 3],
+            1 - k,
+          );
         }
       });
 
@@ -100,21 +145,33 @@
       for (let i = steps.length > 1 ? steps.length - 1 : -1; i >= 0; i--) {
         const w = textWidth(c, steps[i], 34, 800) + 44;
         x -= w;
-        const on = cur && cur.gate === i, done = t > gates[i].t + 0.4;
+        const on = cur && cur.gate === i,
+          done = t > gates[i].t + 0.4;
         fill(c, rrect(x, 146, w, 60, 30), on ? iris : done ? rgba(iris, 0.28) : rgba(P.surface2, 0.9));
         text(c, steps[i], x + w / 2, 189, 34, on ? P.canvas : done ? P.text : P.textMuted, 800);
         x -= 14;
       }
 
       // ---- letter card ----
-      const cardX = 1130, cardY = 250, cardW = 600, cardH = 560;
+      const cardX = 1130,
+        cardY = 250,
+        cardW = 600,
+        cardH = 560;
       fill(c, rrect(cardX + 18, cardY + 22, cardW, cardH, 44), rgba(P.illustration.shadow, 0.45)); // long shadow
       fill(c, rrect(cardX, cardY, cardW, cardH, 44), P.surface);
       fill(c, rrect(cardX, cardY, cardW, 14, [44, 44, 0, 0]), iris);
       if (!cur) {
         const k = ramp(t, 0.3, 1.0);
         c.globalAlpha = k;
-        text(c, gates.length > 1 ? 'Fingerspelling' : 'Your first sign', cardX + cardW / 2, cardY + 150, 40, P.textMuted, 700);
+        text(
+          c,
+          gates.length > 1 ? 'Fingerspelling' : 'Your first sign',
+          cardX + cardW / 2,
+          cardY + 150,
+          40,
+          P.textMuted,
+          700,
+        );
         const title = gates.length > 1 ? steps.slice(0, -1).join(' ') : 'I love you';
         const size = Math.min(150, (cardW - 80) / (textWidth(c, title, 100, 800) / 100));
         text(c, title, cardX + cardW / 2, cardY + 300 + size * 0.2, size, P.text, 800);
@@ -133,14 +190,30 @@
       } else {
         const g = gates[cur.gate];
         const pop = backOut(ramp(t, cur.from, cur.from + 0.35), 1.8);
-        text(c, g.type === 'sequence_order' ? 'Spell the word' : cur.letters[0] === 'ILY' ? 'Sign' : 'Letter', cardX + cardW / 2, cardY + 92, 36, P.textMuted, 700);
+        text(
+          c,
+          g.type === 'sequence_order' ? 'Spell the word' : cur.letters[0] === 'ILY' ? 'Sign' : 'Letter',
+          cardX + cardW / 2,
+          cardY + 92,
+          36,
+          P.textMuted,
+          700,
+        );
         c.save();
         c.translate(cardX + cardW / 2, cardY + 290);
         c.scale(0.7 + 0.3 * pop, 0.7 + 0.3 * pop);
         if (cur.letters.length > 1) {
           cur.letters.forEach((s, i) => {
             const on = i === cur.active;
-            text(c, s, (i - 1) * 170, 70, on ? 240 : 150, on ? P.text : rgba(P.textMuted, i < cur.active ? 0.8 : 0.45), 800);
+            text(
+              c,
+              s,
+              (i - 1) * 170,
+              70,
+              on ? 240 : 150,
+              on ? P.text : rgba(P.textMuted, i < cur.active ? 0.8 : 0.45),
+              800,
+            );
           });
         } else if (cur.letters[0] === 'ILY') {
           text(c, 'I love you', 0, 40, 104, P.text, 800);
@@ -156,7 +229,19 @@
           if (textWidth(c, trial, 30, 500) > cardW - 90 && lines[lines.length - 1]) lines.push(w);
           else lines[lines.length - 1] = trial;
         }
-        lines.slice(0, 3).forEach((l, i) => text(c, l, cardX + cardW / 2, cardY + 480 + i * 40 - (lines.length > 2 ? 20 : 0), 30, P.textMuted, 500));
+        lines
+          .slice(0, 3)
+          .forEach((l, i) =>
+            text(
+              c,
+              l,
+              cardX + cardW / 2,
+              cardY + 480 + i * 40 - (lines.length > 2 ? 20 : 0),
+              30,
+              P.textMuted,
+              500,
+            ),
+          );
       }
 
       KIT.fade(c, t, dur);
