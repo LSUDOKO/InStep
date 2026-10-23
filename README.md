@@ -12,7 +12,7 @@ hand shape, rhythm or hold is right — using the phone or laptop you already ow
 [![CI](https://github.com/LSUDOKO/InStep/actions/workflows/ci.yml/badge.svg)](https://github.com/LSUDOKO/InStep/actions/workflows/ci.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-4FD1C5.svg)](LICENSE)
 ![TypeScript strict](https://img.shields.io/badge/TypeScript-strict-3178c6)
-![Tests](https://img.shields.io/badge/tests-239%20unit%20%2B%206%20e2e-3DDC97)
+![Tests](https://img.shields.io/badge/tests-240%20unit%20%2B%206%20e2e-3DDC97)
 ![Platform: Vega OS](https://img.shields.io/badge/Fire%20TV-Vega%20OS-ff9900)
 ![Privacy](https://img.shields.io/badge/video%20uploaded-0%20bytes-3DDC97)
 
@@ -127,9 +127,21 @@ translucent glass over black. Lesson artwork is placeholder until real footage i
 
 Every channel below runs end to end on the Vega Virtual Device against the hosted server. Each GIF is a real
 screen recording of the TV (emulator screen recorder, played 3× faster) with the synthetic learner performing
-the steps (`pnpm demo-learner`). The lesson videos themselves are illustrated placeholder step cards until a
-person is recorded for them; the gates, safety checks, reps, rhythm and hand shapes are the real engine. Only
-"The Forest Walk" has its own illustrated video.
+the steps (`pnpm demo-learner`). The gates, safety checks, reps, rhythm and hand shapes are the real engine.
+
+**What the teacher video is, per lesson** (each one says so on screen):
+
+| Lesson                        | Video                                                                                                                |
+| ----------------------------- | -------------------------------------------------------------------------------------------------------------------- |
+| Heel raises, single-leg stand | **Animated demonstration** — a drawn figure does the exact move, timed to each gate                                  |
+| Open and close your hand      | **Animated demonstration** — a drawn hand at the teacher's 2 s pace (loops seamlessly while you catch up)            |
+| Hands-only CPR rhythm         | **Real footage** — compressions on a training manikin (Pexels stock, credited)                                       |
+| Fingerspelling, "I love you"  | **Practice cards** — what to sign, until Deaf signers record it (no drawn hands: a wrong shape teaches a wrong sign) |
+| The Forest Walk (kids)        | Illustrated story cards                                                                                              |
+
+Animations: [`scripts/make-animated-lesson.py`](scripts/make-animated-lesson.py) (pycairo + ffmpeg). Credits and
+consent: [`content/CREDITS.md`](content/CREDITS.md). A recorded demonstration replaces any of them by dropping in a
+new `video.mp4` and re-timing the gates (or by recording one in Creator Studio).
 
 | Channel                               | What the gates check                                                                                                      |
 | ------------------------------------- | ------------------------------------------------------------------------------------------------------------------------- |
@@ -406,14 +418,14 @@ with a demo driven by a synthetic landmark stream. It is generated from this mon
 
 ## Status
 
-| Area                                                        | State                                                                                          |
-| ----------------------------------------------------------- | ---------------------------------------------------------------------------------------------- |
-| Packages (format, engine, protocol, player controller)      | ✅ built, tested (engine ≈ 98 % line coverage)                                                 |
-| Server (relay, REST, coach, labels, voice, MCP)             | ✅ built, tested (60 s relay soak: 1800/1800 msgs, p95 1.2 ms)                                 |
-| Companion (camera node, Creator Studio, report, hands-free) | ✅ built, Playwright e2e in CI                                                                 |
-| TV app (Vega)                                               | ✅ runs on the Vega Virtual Device: full lesson end to end against the hosted server           |
-| Bedrock / Polly                                             | 🟡 code complete; account verified (models + voices listed), first tip blocked by daily quota  |
-| Lesson videos                                               | 🟡 kids lesson generated (original illustration); fall / sign / rehab / CPR recordings pending |
+| Area                                                        | State                                                                                                          |
+| ----------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------- |
+| Packages (format, engine, protocol, player controller)      | ✅ built, tested (engine ≈ 98 % line coverage)                                                                 |
+| Server (relay, REST, coach, labels, voice, MCP)             | ✅ built, tested (60 s relay soak: 1800/1800 msgs, p95 1.2 ms)                                                 |
+| Companion (camera node, Creator Studio, report, hands-free) | ✅ built, Playwright e2e in CI                                                                                 |
+| TV app (Vega)                                               | ✅ runs on the Vega Virtual Device: full lesson end to end against the hosted server                           |
+| Bedrock / Polly                                             | 🟡 code complete; account verified (models + voices listed), first tip blocked by daily quota                  |
+| Lesson videos                                               | ✅ animated demos (fall, rehab), real CPR footage, kids story; 🟡 ASL practice cards until Deaf signers record |
 
 ## Contributing
 

@@ -29,10 +29,13 @@ gives one short tip when you're stuck.
 **How we built it.** React Native for Vega (Vega Developer Tools, W3C media player, react-tv-space-navigation);
 companion web app (React + MediaPipe Tasks in the browser); Node relay (Fastify + ws + SQLite); a pure-TypeScript gate
 engine shared by TV, browser and server; Amazon Bedrock (Converse API) for coaching tips and Creator Studio step
-labels; Amazon Polly for voice; zod-validated protocol; 235+ unit/integration tests and Playwright e2e in CI.
+labels; Amazon Polly for voice; zod-validated protocol; 240 unit/integration tests and Playwright e2e in CI.
+Lesson teacher videos: animated demonstrations drawn to each gate (pycairo + ffmpeg), real CPR footage (Pexels,
+credited) and sign-language practice cards.
 
 **Honesty notes.** The camera is an external phone/laptop. CPR does not measure compression depth and is not
-certification. Lessons are demonstrations — reviewed by: **[names]**. InStep has not been clinically tested; it is
+certification. The teacher videos are animated demonstrations (labelled on screen), one credited stock CPR clip and
+sign-language practice cards — no clinician or Deaf signer has reviewed them yet. InStep has not been clinically tested; it is
 designed to support practice, not to treat or diagnose. Related work: Kemtai, Fingerspelling.xyz, DRAX Inc. patent
 EP 4458432 (see README).
 
@@ -83,9 +86,10 @@ Template: what I used it for · what worked · what needs work · zero-to-hello-
 
 ## Friction logs
 
-`docs/FRICTION_LOG.md` — F-01 (Arch host), F-02 (RN 0.72 Babel vs shared TS packages), F-03 (Bedrock model
-access), F-04 (daily token cap surfaces as a generic throttle), F-05 (SDK install on Ubuntu 24.04: four manual
-repairs), F-06 (media player refuses `http://` sources).
+`docs/FRICTION_LOG.md` — F-01 (Arch host), F-02 (RN 0.72 Babel vs shared TS packages), F-03 (MediaPipe telemetry
+with no opt-out), F-04 (daily token cap surfaces as a generic throttle), F-05 (SDK install on Ubuntu 24.04: four
+manual repairs), F-06 (media player refuses `http://` sources), F-07 (VVD hangs under 1080p screen recording), F-08
+(no documented TV font list or blur), F-09 (VVD silently fails to boot on low host memory).
 
 ## Feature requests
 
@@ -112,8 +116,8 @@ repairs), F-06 (media player refuses `http://` sources).
 - [x] Repo **public**, MIT `LICENSE` at root
 - [x] README: setup, `.env.example`, mock mode, budget alert
 - [ ] Demo video < 3:00, public, English, shows the app on the Vega Virtual Device
-- [x] No third-party footage/music in the repo; kids video is original illustration (`content/CREDITS.md`)
-- [ ] Consent for every person in recorded lessons (`content/CREDITS.md`)
+- [x] Only third-party footage is one credited Pexels CPR clip; no music; the rest is original (`content/CREDITS.md`)
+- [x] No recorded people of our own yet, so no consent forms needed (`content/CREDITS.md`)
 - [ ] Product feedback for every tool, incl. AWS
 - [ ] Friction logs (4–6) and feature requests added on Devpost
 - [x] Every statistic in README appears in `SOURCES.md`
