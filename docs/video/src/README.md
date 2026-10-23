@@ -10,6 +10,9 @@ uv run --with playwright python docs/video/src/render.py      # frames (film.htm
 uv run --with playwright python docs/video/src/web_shots.py   # only to refresh the source-page screenshots
 ```
 
-`render.py s7 s9` re-renders only those shots; `--stills 14.5,47 --out DIR` writes single frames. TV footage comes from
-the Vega Virtual Device recordings in `~/instep-capture/` (slots and in-points in `timeline.py`); footage frames and
-segments are cached in `docs/video/.cache/` (git-ignored). The script and honesty rules are in `../script.md`.
+`render.py heel kids` re-renders only those shots; `--stills 14.5,47 --out DIR` writes single frames. TV footage comes
+from the Vega Virtual Device recordings in `~/instep-capture/film/` (Blue Hour design: `boot.mp4`, `launcher.webm`,
+`heel-raise.webm`, `asl.webm`, `kids.webm`) and the lesson videos in `content/lessons/*/video.mp4`; shots, reels, VO
+and TV-narration lines are set in `timeline.py`. The architecture section renders `docs/architecture/system-diagram.html`.
+Footage frames and segments are cached in `docs/video/.cache/` (git-ignored). The script and honesty rules are in
+`../script.md`.

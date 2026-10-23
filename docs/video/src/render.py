@@ -186,7 +186,7 @@ def mux(pic):
     out = VIDEO / 'instep-demo.mp4'
     cmd = ['ffmpeg', '-v', 'error', '-y', '-i', str(pic)]
     if mix.exists():
-        cmd += ['-i', str(mix), '-map', '0:v', '-map', '1:a', '-c:a', 'aac', '-b:a', '192k', '-ar', '48000', '-shortest']
+        cmd += ['-i', str(mix), '-map', '0:v', '-map', '1:a', '-af', 'volume=-0.4dB', '-c:a', 'aac', '-b:a', '192k', '-ar', '48000', '-shortest']
     cmd += ['-c:v', 'copy', '-movflags', '+faststart', str(out)]
     subprocess.run(cmd, check=True)
     print('[mux] ->', out, f'{out.stat().st_size / 1e6:.1f} MB', '(with audio)' if mix.exists() else '(no audio yet)')
