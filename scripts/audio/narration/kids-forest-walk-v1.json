@@ -8,11 +8,11 @@
     { "at": 7.5, "text": "Wonderful! What a tall tree you are!" },
     { "at": 11.0, "text": "A tiny mouse! Crouch down small like a mouse." },
     { "at": 15.5, "text": "Squeak squeak! Great crouching!" },
-    { "at": 19.2, "text": "Here's a flamingo. Can you stand on one foot?" },
+    { "at": 19.9, "text": "Here's a flamingo. Can you stand on one foot?" },
     { "at": 24.5, "text": "Amazing balancing!" },
-    { "at": 28.2, "text": "Time to go home. Wave goodbye to the forest!" },
-    { "at": 33.5, "text": "Bye bye, trees! Bye bye, mouse!" },
-    { "at": 37.2, "text": "The end. You were brilliant!" }
+    { "at": 28.9, "text": "Time to go home. Wave goodbye to the forest!" },
+    { "at": 33.5, "text": "Bye bye, forest friends!" },
+    { "at": 36.0, "text": "The end. You were brilliant!" }
   ],
   "sfx": [
     { "at": 7.4, "name": "sparkle" },
