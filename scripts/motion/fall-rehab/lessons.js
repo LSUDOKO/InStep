@@ -1,9 +1,9 @@
 // Timelines: each lesson's moves land on the gate times in content/lessons/<id>/track.istep. Segments a gate loops
 // (rewindTo .. t) start and end on the same pose, with ambient motion periodic in the loop length.
 (() => {
-  const { ramp, pulse, wave, mix, fill, ellipse, rgba, poly, shade } = K;
+  const { ramp, pulse, wave, mix, fill, ellipse, rgba, poly } = K;
   const LESSONS = (window.LESSONS = {});
-  const ill = (P, channel) => ({ ...P.illustration, skinTone: P.skin[2], hairGrey: P.illustration.hair[2] });
+  const ill = (P) => ({ ...P.illustration, skinTone: P.skin[2], hairGrey: P.illustration.hair[2] });
 
   // Figure + chair go through an offscreen layer so they can cast one flat long shadow down-right (no blur).
   const mk = () => {
