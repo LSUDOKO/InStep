@@ -13,6 +13,8 @@ import {
   SwitchCamera,
   Tv,
   VideoOff,
+  Volume2,
+  VolumeX,
   WifiOff,
 } from 'lucide-react';
 import { useCallback, useEffect, useRef, useState } from 'react';
@@ -25,6 +27,7 @@ import { placementAdvice, type CameraView, type Placement } from '../lib/placeme
 import { RelayClient, relayUrl, type RelayState } from '../lib/relay';
 import { getVision, loadedVision } from '../lib/getVision';
 import { Metronome } from '../lib/metronome';
+import { playChime, playTick, repTick, setSoundsMuted, soundsMuted, unlockSounds } from '../lib/sounds';
 import {
   listenOnce,
   parseVoiceCommand,
@@ -56,6 +59,7 @@ function downloadRecording() {
   URL.revokeObjectURL(a.href);
 }
 const metronome = new Metronome();
+const repSeen = { gateId: '', progress: 0 };
 
 /** Compact, readable copy of the last message for the privacy sheet. */
 function sample(m: unknown): string {
@@ -91,6 +95,8 @@ export function CameraNode() {
   const [toast, setToast] = useState<string | null>(null);
   const [fps, setFps] = useState(0);
   const [lastMessage, setLastMessage] = useState<string | null>(null);
+  const [muted, setMuted] = useState(soundsMuted);
+  const selfId = useRef('');
 
   const relay = useRef<RelayClient | null>(null);
   const videoRef = useRef<HTMLVideoElement | null>(null);
@@ -163,6 +169,7 @@ export function CameraNode() {
       ...(name ? { name } : {}),
       onState: (s) => {
         setRelayState(s);
+        if (s.kind === 'joined') selfId.current = s.peerId;
         if (s.kind === 'failed') {
           relay.current = null;
           setPhase({ kind: 'join', error: s.message });
@@ -184,9 +191,11 @@ export function CameraNode() {
             .finally(() => setLoadingTrackers(false));
         } else if (m.type === 'gate_state') {
           setGate(m);
+          if (repTick(m, selfId.current, repSeen)) playTick();
           metronome.set(m.status !== 'passed' ? (m.metronomeBpm ?? null) : null);
         } else if (m.type === 'gate_result') {
           metronome.stop();
+          playChime();
           setToast('Nice! Step passed');
           navigator.vibrate?.(120);
           setTimeout(() => setToast(null), 1600);
@@ -604,6 +613,18 @@ export function CameraNode() {
           >
             {hidePreview ? <Eye size={20} /> : <EyeOff size={20} />}{' '}
             {hidePreview ? 'Show preview' : 'Hide preview'}
+          </button>
+          <button
+            className="btn ghost icon"
+            aria-label="Mute sounds"
+            aria-pressed={muted}
+            onClick={() => {
+              unlockSounds();
+              setSoundsMuted(!muted);
+              setMuted(!muted);
+            }}
+          >
+            {muted ? <VolumeX size={22} /> : <Volume2 size={22} />}
           </button>
           <button
             className="btn ghost icon"
