@@ -1,33 +1,35 @@
-/* InStep companion — iOS 18 dark idiom (docs/09-design-system.md, "Companion (iOS idiom)").
-   System colours and type scale follow Apple's HIG; the tint is the InStep brand teal shared with the TV.
-   The phone is usually a camera in a living room, so the canvas is true black and the preview is the hero. */
+/* InStep companion — iOS 18 dark idiom (docs/09-design-system.md, "Companion (iOS idiom)") in the
+   "Blue Hour" brand (docs/brand/palette.json): the grouped-list structure and type scale follow Apple's HIG,
+   the colours are the InStep night-indigo canvas and sky tint shared with the TV.
+   The phone is usually a camera in a living room, so the canvas is dark and the preview is the hero. */
 :root {
-  /* backgrounds (grouped style: cells on black) */
-  --bg: #000000;
-  --bg-2: #1c1c1e; /* secondarySystemBackground: cells, cards, sheets */
-  --bg-3: #2c2c2e; /* tertiarySystemBackground: cells inside sheets */
-  --separator: rgba(84, 84, 88, 0.65);
-  --fill: rgba(120, 120, 128, 0.24); /* gray buttons, tracks */
-  --fill-2: rgba(120, 120, 128, 0.36);
-  --material: rgba(30, 30, 32, 0.66); /* blurred overlays on the camera */
-  /* labels */
-  --label: #ffffff;
-  --label-2: rgba(235, 235, 245, 0.6);
-  --label-3: rgba(235, 235, 245, 0.3);
+  /* backgrounds (grouped style: cells on the canvas) */
+  --bg: #0d0e2c; /* canvas */
+  --bg-2: #1a1c3f; /* surface: cells, cards, sheets */
+  --bg-3: #272a52; /* surface2: cells inside sheets */
+  --separator: rgba(150, 156, 214, 0.26);
+  --fill: rgba(140, 148, 230, 0.2); /* gray buttons, tracks */
+  --fill-2: rgba(140, 148, 230, 0.3);
+  --material: rgba(18, 20, 54, 0.66); /* blurred overlays on the camera */
+  /* labels (contrast in docs/09 §2) */
+  --label: #f5f6fe;
+  --label-2: rgba(226, 229, 255, 0.64);
+  --label-3: rgba(226, 229, 255, 0.5);
   /* tint + system colours */
-  --tint: #4fd1c5;
-  --on-tint: #00201d;
-  --green: #30d158;
-  --orange: #ff9f0a;
-  --red: #ff453a;
-  --blue: #0a84ff;
-  --indigo: #5e5ce6;
+  --tint: #5fc6ff;
+  --on-tint: #021630;
+  --green: #49de78;
+  --orange: #ffb439;
+  --red: #ff6762;
+  --blue: var(--tint);
+  --indigo: #ae97ff;
+  --lavender: #b5b8f1;
   /* semantic aliases used by components (state colours: ok / near / far) */
   --brand: var(--tint);
   --ok: var(--green);
   --near: var(--orange);
   --far: var(--red);
-  --info: var(--blue);
+  --info: var(--lavender);
   --text: var(--label);
   --text-muted: var(--label-2);
   /* shape */
@@ -432,7 +434,7 @@ button.item:active,
 }
 .btn.danger {
   background: var(--red);
-  color: #fff;
+  color: var(--bg); /* 6.6:1; white on this red is only 2.9:1 */
 }
 .btn.icon {
   width: 50px;
@@ -562,7 +564,7 @@ label.btn {
   transition: box-shadow 200ms var(--ease);
 }
 .text-input::placeholder {
-  color: var(--label-3);
+  color: var(--label-2);
 }
 .text-input:focus {
   outline: none;
@@ -580,7 +582,7 @@ textarea.text-input.short {
 select.text-input {
   appearance: none;
   padding-right: 44px;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='20' height='20' viewBox='0 0 24 24' fill='none' stroke='rgba(235,235,245,0.6)' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m7 15 5 5 5-5'/%3E%3Cpath d='m7 9 5-5 5 5'/%3E%3C/svg%3E");
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='20' height='20' viewBox='0 0 24 24' fill='none' stroke='rgba(226,229,255,0.64)' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m7 15 5 5 5-5'/%3E%3Cpath d='m7 9 5-5 5 5'/%3E%3C/svg%3E");
   background-position: calc(100% - 14px) 50%;
   background-repeat: no-repeat;
 }
@@ -758,7 +760,7 @@ input[type='range'] {
   padding: 10px 16px;
   border-radius: var(--r-sheet);
   border: 0;
-  background: rgba(28, 28, 30, 0.78);
+  background: rgba(26, 28, 63, 0.78);
   -webkit-backdrop-filter: saturate(180%) blur(24px);
   backdrop-filter: saturate(180%) blur(24px);
   color: var(--label);
@@ -798,7 +800,7 @@ input[type='range'] {
 .sheet-backdrop {
   position: fixed;
   inset: 0;
-  background: rgba(0, 0, 0, 0.48);
+  background: rgba(5, 6, 26, 0.55);
   display: flex;
   align-items: flex-end;
   justify-content: center;
@@ -958,7 +960,7 @@ input[type='range'] {
   left: 50%;
   top: max(env(safe-area-inset-top), 14px);
   transform: translateX(-50%);
-  background: rgba(44, 44, 46, 0.86);
+  background: rgba(39, 42, 82, 0.88);
   -webkit-backdrop-filter: saturate(180%) blur(20px);
   backdrop-filter: saturate(180%) blur(20px);
   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
@@ -1011,7 +1013,7 @@ input[type='range'] {
 }
 .step.safety .n {
   background: var(--red);
-  color: #fff;
+  color: var(--bg);
 }
 .step.selected .n {
   background: var(--tint);
@@ -1103,7 +1105,7 @@ input[type='range'] {
     --label: #000;
     --label-2: #3c3c43;
     --label-3: #8e8e93;
-    --tint: #1a9a8f;
+    --tint: #006b9f;
   }
   .no-print {
     display: none !important;
