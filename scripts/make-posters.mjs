@@ -14,13 +14,14 @@ import { existsSync, readdirSync, readFileSync } from 'node:fs';
 import { join } from 'node:path';
 
 const ROOT = new URL('../', import.meta.url).pathname;
-// [deep, light] per channel — muted, so white type on the TV reads over them
+// [deep, light] per channel (Blue Hour, docs/brand/palette.json): the night-indigo canvas rising into a deep
+// shade of the channel colour (oklch L 0.46), so white type on the TV reads over both (>= 6.4:1)
 const FIELD = {
-  fall_prevention: ['0x0B2A3A', '0x2F7F86'],
-  sign_language: ['0x1E1238', '0x7A4FB0'],
-  stroke_rehab: ['0x0C2A24', '0x3F8F6E'],
-  cpr: ['0x2A0A10', '0xA83A4A'],
-  kids: ['0x13301E', '0xD9934A'],
+  fall_prevention: ['0x0D0E2C', '0x005F8E'],
+  sign_language: ['0x0D0E2C', '0x5A4A90'],
+  stroke_rehab: ['0x0D0E2C', '0x006A68'],
+  cpr: ['0x0D0E2C', '0x873A58'],
+  kids: ['0x0D0E2C', '0x755010'],
 };
 
 function poster(id) {
