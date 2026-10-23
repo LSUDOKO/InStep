@@ -67,15 +67,16 @@
       return add(add(leg.heel, d, s * L.foot), [d[1], -d[0]], h * L.foot);
     };
     const white = shade(I.clothes[6], k), sole = shade(I.clothes[6], 0.78 * k);
-    const upper = [[-0.06, 0.1], [-0.07, 0.42], [0.06, 0.6], [0.3, 0.62], [0.5, 0.44], [0.8, 0.3], [1.02, 0.16], [1.04, 0.04], [0.5, 0.02]];
+    const upper = [[-0.06, 0.1], [-0.07, 0.36], [0.06, 0.46], [0.3, 0.46], [0.5, 0.38], [0.8, 0.28], [1.02, 0.16], [1.04, 0.04], [0.5, 0.02]];
     form(c, blob(upper.map((p) => map(...p))), white, { shadow: shade(I.clothes[6], 0.82 * k), v: [6, 7], w: [3, 3] });
     fill(c, poly([map(-0.07, 0.0), map(1.06, 0.0), map(1.06, 0.1), map(-0.07, 0.12)]), sole);
-    fill(c, circle(...map(0.42, 0.42), 4.5), shade(I.clothes[0], k)); // laces
-    fill(c, circle(...map(0.56, 0.36), 4.5), shade(I.clothes[0], k));
+    fill(c, circle(...map(0.4, 0.36), 4.5), shade(I.clothes[0], k)); // laces
+    fill(c, circle(...map(0.54, 0.31), 4.5), shade(I.clothes[0], k));
   }
-  function leg(c, I, g, k) {
-    const pants = shade(I.pants[1], k);
-    form(c, limb(g.knee, g.ankle, 0.084 * S, 0.07 * S), pants, { shadow: shade(I.pants[1], 0.8 * k) });
+  function leg(c, I, g, k, sock) {
+    const pants = shade(I.pants[1], k), hem = K.lerp2(g.knee, g.ankle, 0.66);
+    fill(c, limb(hem, g.ankle, 0.054 * S, 0.056 * S), shade(sock, k)); // a bright sock makes the heel easy to follow
+    form(c, limb(g.knee, hem, 0.084 * S, 0.074 * S), pants, { shadow: shade(I.pants[1], 0.8 * k) });
     form(c, limb(g.hip, g.knee, 0.112 * S, 0.088 * S), pants, { shadow: shade(I.pants[1], 0.8 * k) });
     shoe(c, I, g, k);
   }
@@ -153,11 +154,11 @@
 
   // Far arm (behind the chair) — drawn before the chair.
   F.drawFar = (c, P, I, p) => arm(c, P, I, p.shF, p.elF, p.handF, 0.74);
-  // Everything else, in depth order: far leg, torso, near leg, head, near arm.
+  // Everything else, in depth order: legs (the cardigan hem falls over the thighs), torso, head, near arm.
   F.drawMain = (c, P, I, p) => {
-    leg(c, I, p.far, 0.74);
+    leg(c, I, p.far, 0.74, P.accents.sun);
+    leg(c, I, p.near, 1, P.accents.sun);
     torso(c, P, I, p);
-    leg(c, I, p.near, 1);
     head(c, P, I, p);
     arm(c, P, I, p.shN, p.elN, p.handN, 1);
   };

@@ -79,7 +79,7 @@
       }
       lift = Math.max(lift, pulse(t, 30.8, 1.2, 5.2, 1.4)); // on the toes by 32 s, held to 37.2 s (gate at 36)
       const tall = ramp(t, 4.2, 6.8); // gate t=8: standing tall
-      const pose = { heel: 24 * lift, lean: mix(9, 2.5, tall), chin: mix(-2, 2, tall) };
+      const pose = { heel: 30 * lift, lean: mix(9, 2.5, tall), chin: mix(-2, 2, tall) };
       const { P } = livingRoom(c, P0, t, dur, pose, (g, fig, I, P) => {
         // an upward chevron by the heels while they lift
         const a = Math.max(lift, 0) * (t >= 12 ? 1 : 0);

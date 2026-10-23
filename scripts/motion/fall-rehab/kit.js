@@ -15,8 +15,9 @@
   K.lerp2 = (p, q, k) => [K.mix(p[0], q[0], k), K.mix(p[1], q[1], k)];
   // Ambient motion: every periodic thing uses a period that divides the lesson's loop length, so the frame at
   // rewindTo equals the frame at the gate time and the loop has no seam.
-  K.wave = (t, period, phase = 0) => Math.sin(2 * Math.PI * (t / period + phase));
-  K.cycle = (t, period, phase = 0) => (((t / period + phase) % 1) + 1) % 1;
+  // (t % period first, so whole-second boundaries give bit-identical values)
+  K.wave = (t, period, phase = 0) => Math.sin(2 * Math.PI * ((t % period) / period + phase));
+  K.cycle = (t, period, phase = 0) => ((((t % period) / period + phase) % 1) + 1) % 1;
   K.rng = (seed) => () => ((seed = (Math.imul(seed, 1664525) + 1013904223) >>> 0), seed / 4294967296);
 
   // ---------- colour ----------

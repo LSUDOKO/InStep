@@ -22,7 +22,7 @@ ap = argparse.ArgumentParser()
 ap.add_argument('lessons', nargs='*', default=LESSONS)
 ap.add_argument('--stills', help='comma-separated seconds: write PNGs to --out instead of a video')
 ap.add_argument('--out', help='directory for --stills')
-ap.add_argument('--crf', type=int, default=24)
+ap.add_argument('--crf', type=int, default=26)
 a = ap.parse_args()
 
 

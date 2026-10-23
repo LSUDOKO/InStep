@@ -89,7 +89,7 @@
   }
 
   function clock(c, P, I, t) {
-    const cx = 1470, cy = 300, swing = 0.2 * Math.sin((2 * Math.PI * t) / 2); // pendulum, 2 s period
+    const cx = 1470, cy = 300, swing = 0.2 * wave(t, 2); // pendulum, 2 s period
     fill(c, rrect(cx - 60 + 14, cy - 80 + 14, 120, 300, 30), I.longShadow);
     form(c, rrect(cx - 60, cy - 80, 120, 300, 30), I.furniture, { shadow: shade(I.furniture, 0.75) });
     fill(c, rrect(cx - 34, cy + 70, 68, 120, 18), shade(I.furniture, 0.6));
