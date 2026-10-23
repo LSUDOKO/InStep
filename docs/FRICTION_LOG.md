@@ -106,3 +106,14 @@ Only real experiences, recorded as they happen. Format from `docs/12-submission-
 - Workaround: close memory-heavy apps before starting; check `free -g` first.
 - Suggestion: check available memory in `vega virtual-device start` and print a warning with the required amount.
 
+
+### F-10: The launcher centre-crops a square app icon, and the manifest docs give no size
+
+- Task attempted: give the TV app a launcher icon (`icon = "@image/instep-icon.png"` in `manifest.toml`).
+- Expected: a documented size and aspect ratio for the icon.
+- Actual: the manifest page shows only the `icon` key. A 512×512 PNG (the size Amazon's `vega-tv-interfaces-sample`
+  ships) installs and shows, but the launcher crops it to a wide tile, cutting the top and bottom of the mark. With
+  no icon at all, the tile is a generic "APP" box.
+- Severity: Low (cosmetic, but it is the first thing a user sees).
+- Workaround: keep the mark inside the middle 16:9 band of the square (here a 250 px mark centred on a 512 px tile).
+- Suggestion: document the launcher tile's size and safe area next to the `icon` key.
