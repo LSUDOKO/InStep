@@ -12,11 +12,17 @@ hand shape, rhythm or hold is right — using the phone or laptop you already ow
 [![CI](https://github.com/LSUDOKO/InStep/actions/workflows/ci.yml/badge.svg)](https://github.com/LSUDOKO/InStep/actions/workflows/ci.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-4FD1C5.svg)](LICENSE)
 ![TypeScript strict](https://img.shields.io/badge/TypeScript-strict-3178c6)
-![Tests](https://img.shields.io/badge/tests-240%20unit%20%2B%206%20e2e-3DDC97)
+![Tests](https://img.shields.io/badge/tests-241%20unit%20%2B%206%20e2e-3DDC97)
 ![Platform: Vega OS](https://img.shields.io/badge/Fire%20TV-Vega%20OS-ff9900)
 ![Privacy](https://img.shields.io/badge/video%20uploaded-0%20bytes-3DDC97)
 
 </div>
+
+**Demo film (2:41):** [`docs/video/instep-demo.mp4`](docs/video/instep-demo.mp4) — narrated, original score,
+captions; TV shots recorded on the Vega Virtual Device, learner simulated where labelled. Script:
+[`docs/video/script.md`](docs/video/script.md).
+
+<p align="center"><a href="docs/video/instep-demo.mp4"><img src="docs/video/poster.jpg" width="720" alt="InStep demo film — logo lockup: The video that waits for you. Click to play." /></a></p>
 
 **Live:** [instep-wfcr.onrender.com/c](https://instep-wfcr.onrender.com/c/) — open it on a phone to use it as a camera
 (free Render instance: the first request after idle takes about a minute to wake).
