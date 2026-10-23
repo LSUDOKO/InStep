@@ -1,0 +1,144 @@
+{
+  "name": "InStep — Blue Hour",
+  "version": 1,
+  "about": "Flat, outline-free illustration on a deep night-indigo canvas (layered rounded shapes, soft long shadows, saturated colour). Dark-first for living-room TVs. Status colours (ok/near/far) are reserved for feedback and never used as brand or decoration. Hue families are frozen; only small shade tweaks allowed.",
+  "canvas": "#0D0E2C",
+  "surface": "#1A1C3F",
+  "surface2": "#272A52",
+  "text": "#F5F6FE",
+  "textMuted": "#B8BCD5",
+  "primary": "#5FC6FF",
+  "primaryInk": "#021630",
+  "accents": {
+    "sky": "#5FC6FF",
+    "iris": "#AE97FF",
+    "lagoon": "#5BD7D3",
+    "rose": "#F87BAA",
+    "sun": "#F6D653",
+    "peach": "#F9BB99"
+  },
+  "status": {
+    "ok": "#49DE78",
+    "near": "#FFB439",
+    "far": "#FF6762"
+  },
+  "channels": {
+    "fall_prevention": "#5FC6FF",
+    "sign_language": "#AE97FF",
+    "stroke_rehab": "#5BD7D3",
+    "cpr": "#F87BAA",
+    "kids": "#F6D653"
+  },
+  "skin": [
+    "#F5D8C1",
+    "#E9B999",
+    "#D09673",
+    "#AA7053",
+    "#814F39",
+    "#5B382C"
+  ],
+  "illustration": {
+    "shadow": "#05041B",
+    "longShadow": "rgba(5,6,26,0.45)",
+    "highlight": "rgba(255,255,255,0.22)",
+    "rimLight": "#ADDFFF",
+    "skyTop": "#181844",
+    "skyBottom": "#382E63",
+    "wall": "#272950",
+    "wallLight": "#3C3D69",
+    "floor": "#18263F",
+    "floorLight": "#243954",
+    "rug": "#5F4589",
+    "furniture": "#694234",
+    "furnitureLight": "#895D49",
+    "leaf": "#38988D",
+    "leafDark": "#0C6C68",
+    "hair": [
+      "#2D1D14",
+      "#6C4128",
+      "#CBCED4",
+      "#C26B4C"
+    ],
+    "clothes": [
+      "#5FC6FF",
+      "#AE97FF",
+      "#5BD7D3",
+      "#F87BAA",
+      "#F6D653",
+      "#6284CE",
+      "#EDEEF5"
+    ],
+    "pants": [
+      "#263454",
+      "#335166",
+      "#262738"
+    ]
+  },
+  "rules": [
+    "No outlines/strokes on illustrated shapes; separate shapes by value (lighter in front, darker behind).",
+    "Long shadows: 45 deg down-right, illustration.longShadow, no blur; contact shadows are soft ellipses in illustration.shadow at 40% opacity.",
+    "One highlight per form (illustration.highlight) on the upper-left edge; corner radius generous (>= 12% of the shape).",
+    "Never paint large areas in status.ok / status.near / status.far; never green plants next to the teaching figure (use illustration.leaf, a teal).",
+    "Figures: skin from skin[], clothes from illustration.clothes; the teaching figure wears the lesson channel colour.",
+    "Text over illustration: text colour on canvas/surface only (contrast table below), never on accents."
+  ],
+  "contrast": {
+    "text": {
+      "canvas": 17.46,
+      "surface": 15.21,
+      "surface2": 12.67
+    },
+    "textMuted": {
+      "canvas": 10.03,
+      "surface": 8.73,
+      "surface2": 7.27
+    },
+    "primary": {
+      "canvas": 9.86,
+      "surface": 8.59,
+      "surface2": 7.15
+    },
+    "ok": {
+      "canvas": 10.75,
+      "surface": 9.36,
+      "surface2": 7.8
+    },
+    "near": {
+      "canvas": 10.61,
+      "surface": 9.24,
+      "surface2": 7.69
+    },
+    "far": {
+      "canvas": 6.6,
+      "surface": 5.75,
+      "surface2": 4.79
+    },
+    "fall_prevention": {
+      "canvas": 9.86,
+      "surface": 8.59,
+      "surface2": 7.15
+    },
+    "sign_language": {
+      "canvas": 7.77,
+      "surface": 6.76,
+      "surface2": 5.63
+    },
+    "stroke_rehab": {
+      "canvas": 10.84,
+      "surface": 9.44,
+      "surface2": 7.86
+    },
+    "cpr": {
+      "canvas": 7.53,
+      "surface": 6.56,
+      "surface2": 5.46
+    },
+    "kids": {
+      "canvas": 13.13,
+      "surface": 11.44,
+      "surface2": 9.53
+    },
+    "primaryInk_on_primary": 9.49,
+    "primaryInk_on_ok": 10.35
+  }
+}
