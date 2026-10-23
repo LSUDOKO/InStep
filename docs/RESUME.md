@@ -29,15 +29,16 @@ The recorder needs a profile on the hosted server (after a deploy, create one on
 profile → type a name → Right ×7 → Down ×2 → Select). `record-all.sh` assumes the profile exists and that the
 first Select on the Profiles screen opens Home.
 
-## Still to do
+## Still to do (as of Oct 23, 21:40 IST)
 
-1. (done 02:35) All seven lessons recorded on the device; GIFs committed in `docs/screenshots/tv/gif/`; README
-   embeds them; loop-aware placeholder videos deployed to Render; step-rail TV build installed on the device.
-2. (done, Oct 22) tvOS-style redesign of every TV screen, installed on the device and checked (solo, Together
-   mode, "Over the video"). The README GIFs still show the old design: re-run `scripts/device/record-all.sh`
-   after the real videos are in. Render still serves the pre-redesign posters until the next deploy (a deploy
-   wipes profiles; recreate one on the TV).
-3. Record real people for the two hero channels (consent in `content/CREDITS.md`), replace the placeholder
-   `video.mp4` files, re-run `pnpm dryrun-lessons` and the device recording for those two.
-4. Phone fps check, AWS probe when the daily quota resets (`pnpm aws:check --probe`), demo video, Devpost form
-   (`docs/SUBMISSION.md`, `docs/12-submission-kit.md`).
+Done today: Blue Hour brand + new logo (TV launcher icon too), illustrated + narrated videos for every lesson
+(`scripts/motion/`, `scripts/audio/`), iOS-style companion with sounds, architecture diagram
+(`docs/architecture/`), demo film v1 (`docs/video/instep-demo.mp4`, 2:41), 3 of 7 README GIFs re-recorded in the new
+design (heel raises, single-leg stand, fingerspelling).
+
+1. Upload `docs/video/instep-demo.mp4` to YouTube (public or unlisted) and paste the link in Devpost.
+2. Paste the Devpost text from `docs/SUBMISSION.md` (product feedback, friction logs F-01…F-10, feature requests).
+3. Optional: re-record the other four GIFs (`scripts/device/record-all.sh`, needs a profile on the hosted server),
+   and swap a real phone-camera clip of yourself into the film's "Simulated learner" shots.
+4. Owner decision: the ASL track disclaimer says "created with Deaf signers"; the illustrated hands are not yet
+   reviewed by Deaf signers.

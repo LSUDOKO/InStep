@@ -115,10 +115,10 @@ manual repairs), F-06 (media player refuses `http://` sources), F-07 (VVD hangs 
 
 - [x] Repo **public**, MIT `LICENSE` at root
 - [x] README: setup, `.env.example`, mock mode, budget alert
-- [ ] Demo video < 3:00, public, English, shows the app on the Vega Virtual Device
+- [x] Demo video < 3:00, English, shows the app on the Vega Virtual Device (`docs/video/instep-demo.mp4`, 2:41) — upload to YouTube
 - [x] Only third-party footage is one credited Pexels CPR clip; no music; the rest is original (`content/CREDITS.md`)
 - [x] No recorded people of our own yet, so no consent forms needed (`content/CREDITS.md`)
 - [ ] Product feedback for every tool, incl. AWS
-- [ ] Friction logs (4–6) and feature requests added on Devpost
+- [ ] Friction logs (F-01…F-10 in `docs/FRICTION_LOG.md`) and feature requests added on Devpost
 - [x] Every statistic in README appears in `SOURCES.md`
 - [ ] Submitted ≥ 2 h before 12:00 PM PDT, Oct 23
