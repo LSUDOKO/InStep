@@ -167,17 +167,17 @@ export function StepRail({ labels, current }: { labels: string[]; current: numbe
                 borderRadius: px(17),
                 alignItems: 'center',
                 justifyContent: 'center',
-                backgroundColor: done ? c.ok : now ? '#04201D' : c.surface,
+                backgroundColor: done ? c.ok : now ? '#0D0E2C' : c.surface,
               }}
             >
-              <T size="caption" weight="700" color={done ? '#04201D' : now ? c.brand : c.muted}>
+              <T size="caption" weight="700" color={done ? '#0D0E2C' : now ? c.brand : c.muted}>
                 {done ? '✓' : String(i + 1)}
               </T>
             </View>
             <T
               size="caption"
               weight={now ? '700' : '600'}
-              color={now ? '#04201D' : done ? c.text : c.muted}
+              color={now ? '#0D0E2C' : done ? c.text : c.muted}
               lines={1}
             >
               {l}
@@ -203,7 +203,7 @@ export function Steps({ labels, current }: { labels: string[]; current: number }
             backgroundColor: i < current ? c.ok : i === current ? c.brand : c.surface2,
           }}
         >
-          <T size="h2" color={i <= current ? '#04201D' : c.muted}>
+          <T size="h2" color={i <= current ? '#0D0E2C' : c.muted}>
             {i < current ? `✓ ${l}` : l}
           </T>
         </View>
