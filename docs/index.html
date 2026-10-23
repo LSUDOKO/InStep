@@ -1,0 +1,1201 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>InStep — the video that waits for you</title>
+    <meta
+      name="description"
+      content="How-to videos on Fire TV (Vega OS) that pause at each key moment and continue only when your pose, hand shape, rhythm or hold is right — using your phone as the camera. Only body points leave the phone, never video."
+    />
+    <meta name="theme-color" content="#0D0E2C" />
+    <link rel="icon" href="site/logo.svg" type="image/svg+xml" />
+    <meta property="og:title" content="InStep — the video that waits for you" />
+    <meta
+      property="og:description"
+      content="Guided practice on Fire TV that waits until your movement is right."
+    />
+    <meta property="og:image" content="video/poster.jpg" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      :root {
+        --canvas: #0d0e2c;
+        --surface: #1a1c3f;
+        --surface2: #272a52;
+        --line: rgba(181, 188, 213, 0.16);
+        --text: #f5f6fe;
+        --muted: #b8bcd5;
+        --faint: #a1a6c1;
+        --sky: #5fc6ff;
+        --sky-ink: #021630;
+        --sun: #f6d653;
+        --lilac: #ae97ff;
+        --aqua: #5bd7d3;
+        --rose: #f87baa;
+        --ok: #49de78;
+        --near: #ffb439;
+        --cream: #fbf7ef;
+        --cream-ink: #1a1b33;
+        --r: 20px;
+        --max: 1180px;
+      }
+      * {
+        box-sizing: border-box;
+      }
+      html {
+        scroll-behavior: smooth;
+      }
+      @media (prefers-reduced-motion: reduce) {
+        html {
+          scroll-behavior: auto;
+        }
+        * {
+          animation: none !important;
+          transition: none !important;
+        }
+      }
+      body {
+        margin: 0;
+        background: var(--canvas);
+        color: var(--text);
+        font-family:
+          Inter,
+          -apple-system,
+          BlinkMacSystemFont,
+          'Segoe UI',
+          sans-serif;
+        font-size: 17px;
+        line-height: 1.6;
+        -webkit-font-smoothing: antialiased;
+      }
+      a {
+        color: var(--sky);
+        text-decoration: none;
+      }
+      a:hover {
+        text-decoration: underline;
+      }
+      img,
+      video {
+        display: block;
+        max-width: 100%;
+      }
+      .wrap {
+        max-width: var(--max);
+        margin: 0 auto;
+        padding: 0 24px;
+      }
+      code,
+      .mono {
+        font-family: 'JetBrains Mono', ui-monospace, monospace;
+        font-size: 0.88em;
+      }
+
+      /* nav */
+      nav {
+        position: sticky;
+        top: 0;
+        z-index: 10;
+        background: rgba(13, 14, 44, 0.78);
+        backdrop-filter: saturate(160%) blur(14px);
+        -webkit-backdrop-filter: saturate(160%) blur(14px);
+        border-bottom: 1px solid var(--line);
+      }
+      nav .wrap {
+        display: flex;
+        align-items: center;
+        gap: 28px;
+        height: 64px;
+      }
+      .brand {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        font-weight: 800;
+        font-size: 19px;
+        letter-spacing: -0.02em;
+        color: var(--text);
+      }
+      .brand img {
+        width: 32px;
+        height: 32px;
+        border-radius: 8px;
+      }
+      nav .links {
+        display: flex;
+        gap: 22px;
+        margin-left: auto;
+        font-size: 15px;
+      }
+      nav .links a {
+        color: var(--muted);
+      }
+      nav .links a:hover {
+        color: var(--text);
+        text-decoration: none;
+      }
+      @media (max-width: 860px) {
+        nav .links a:not(.cta) {
+          display: none;
+        }
+      }
+
+      /* buttons */
+      .btn {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        height: 48px;
+        padding: 0 22px;
+        border-radius: 14px;
+        font-weight: 600;
+        font-size: 16px;
+        transition: transform 0.15s ease;
+      }
+      .btn:hover {
+        text-decoration: none;
+        transform: translateY(-1px);
+      }
+      .btn.primary {
+        background: var(--sky);
+        color: var(--sky-ink);
+      }
+      .btn.ghost {
+        background: rgba(120, 120, 160, 0.18);
+        color: var(--text);
+      }
+      nav .cta {
+        height: 38px;
+        padding: 0 16px;
+        border-radius: 11px;
+        background: var(--sky);
+        color: var(--sky-ink) !important;
+        font-weight: 600;
+        display: inline-flex;
+        align-items: center;
+      }
+
+      /* hero */
+      .hero {
+        position: relative;
+        overflow: hidden;
+        padding: 96px 0 72px;
+        text-align: center;
+      }
+      .hero::before {
+        content: '';
+        position: absolute;
+        inset: -30% -10% auto;
+        height: 120%;
+        background:
+          radial-gradient(40% 50% at 30% 30%, rgba(95, 198, 255, 0.22), transparent 70%),
+          radial-gradient(35% 45% at 75% 25%, rgba(174, 151, 255, 0.2), transparent 70%),
+          radial-gradient(30% 40% at 55% 70%, rgba(246, 214, 83, 0.1), transparent 70%);
+        pointer-events: none;
+      }
+      .hero .mark {
+        width: 96px;
+        height: 96px;
+        margin: 0 auto 28px;
+        border-radius: 24px;
+        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.45);
+        position: relative;
+      }
+      .eyebrow {
+        font-size: 13px;
+        font-weight: 700;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+        color: var(--sky);
+      }
+      h1 {
+        position: relative;
+        font-size: clamp(44px, 7vw, 84px);
+        line-height: 1.02;
+        letter-spacing: -0.045em;
+        font-weight: 800;
+        margin: 16px auto 22px;
+        max-width: 900px;
+      }
+      h1 span {
+        background: linear-gradient(92deg, var(--sky), var(--lilac) 55%, var(--sun));
+        -webkit-background-clip: text;
+        background-clip: text;
+        color: transparent;
+      }
+      .lede {
+        position: relative;
+        font-size: clamp(18px, 2.1vw, 22px);
+        color: var(--muted);
+        max-width: 760px;
+        margin: 0 auto 34px;
+      }
+      .actions {
+        position: relative;
+        display: flex;
+        gap: 12px;
+        justify-content: center;
+        flex-wrap: wrap;
+      }
+      .pills {
+        position: relative;
+        display: flex;
+        gap: 10px;
+        justify-content: center;
+        flex-wrap: wrap;
+        margin-top: 30px;
+      }
+      .pill {
+        font-size: 13px;
+        font-weight: 600;
+        padding: 6px 12px;
+        border-radius: 999px;
+        background: rgba(255, 255, 255, 0.06);
+        border: 1px solid var(--line);
+        color: var(--muted);
+      }
+      .pill b {
+        color: var(--ok);
+        font-weight: 700;
+      }
+
+      /* film */
+      .film {
+        margin: 8px auto 0;
+        max-width: 1040px;
+        border-radius: 24px;
+        overflow: hidden;
+        border: 1px solid var(--line);
+        box-shadow: 0 40px 120px rgba(0, 0, 0, 0.55);
+        background: #000;
+      }
+      .film video {
+        width: 100%;
+        aspect-ratio: 16 / 9;
+      }
+      .caption {
+        text-align: center;
+        color: var(--faint);
+        font-size: 14px;
+        margin-top: 14px;
+      }
+
+      /* sections */
+      section {
+        padding: 96px 0;
+      }
+      .head {
+        max-width: 780px;
+        margin-bottom: 48px;
+      }
+      .head.center {
+        text-align: center;
+        margin-left: auto;
+        margin-right: auto;
+      }
+      h2 {
+        font-size: clamp(32px, 4.4vw, 52px);
+        line-height: 1.08;
+        letter-spacing: -0.035em;
+        font-weight: 800;
+        margin: 12px 0 16px;
+      }
+      h3 {
+        font-size: 21px;
+        letter-spacing: -0.015em;
+        margin: 0 0 8px;
+      }
+      .head p {
+        color: var(--muted);
+        font-size: 19px;
+        margin: 0;
+      }
+
+      /* light section (problem) */
+      .light {
+        background: var(--cream);
+        color: var(--cream-ink);
+      }
+      .light .head p {
+        color: #4a4c68;
+      }
+      .light .eyebrow {
+        color: #2fa8ea;
+      }
+      .stats {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 18px;
+      }
+      @media (max-width: 960px) {
+        .stats {
+          grid-template-columns: repeat(2, 1fr);
+        }
+      }
+      @media (max-width: 560px) {
+        .stats {
+          grid-template-columns: 1fr;
+        }
+      }
+      .stat {
+        background: #fff;
+        border: 1px solid #ece7dc;
+        border-radius: var(--r);
+        padding: 26px 24px;
+        box-shadow: 0 10px 30px rgba(26, 27, 51, 0.06);
+      }
+      .stat .n {
+        font-size: 46px;
+        font-weight: 800;
+        letter-spacing: -0.04em;
+        line-height: 1;
+      }
+      .stat p {
+        margin: 12px 0 14px;
+        font-size: 16px;
+        color: #33354f;
+      }
+      .stat a {
+        font-size: 13px;
+        color: #6a6c86;
+      }
+
+      /* steps */
+      .steps {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 18px;
+      }
+      @media (max-width: 860px) {
+        .steps {
+          grid-template-columns: 1fr;
+        }
+      }
+      .card {
+        background: var(--surface);
+        border: 1px solid var(--line);
+        border-radius: var(--r);
+        padding: 26px;
+      }
+      .card p {
+        color: var(--muted);
+        margin: 0;
+        font-size: 16px;
+      }
+      .num {
+        width: 34px;
+        height: 34px;
+        border-radius: 10px;
+        display: grid;
+        place-items: center;
+        font-weight: 800;
+        background: rgba(95, 198, 255, 0.16);
+        color: var(--sky);
+        margin-bottom: 16px;
+      }
+      .shot {
+        border-radius: 18px;
+        overflow: hidden;
+        border: 1px solid var(--line);
+        background: #000;
+      }
+      .duo {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 18px;
+        margin-top: 18px;
+      }
+      @media (max-width: 760px) {
+        .duo {
+          grid-template-columns: 1fr;
+        }
+      }
+      figure {
+        margin: 0;
+      }
+      figcaption {
+        font-size: 14px;
+        color: var(--faint);
+        margin-top: 10px;
+      }
+
+      /* channels */
+      .chan {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 22px;
+      }
+      @media (max-width: 860px) {
+        .chan {
+          grid-template-columns: 1fr;
+        }
+      }
+      .lesson {
+        background: var(--surface);
+        border: 1px solid var(--line);
+        border-radius: 22px;
+        overflow: hidden;
+        display: flex;
+        flex-direction: column;
+      }
+      .lesson img {
+        width: 100%;
+        aspect-ratio: 16 / 9;
+        object-fit: cover;
+        background: #000;
+      }
+      .lesson .body {
+        padding: 22px 24px 24px;
+      }
+      .tag {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        font-size: 13px;
+        font-weight: 700;
+        margin-bottom: 8px;
+      }
+      .tag::before {
+        content: '';
+        width: 9px;
+        height: 9px;
+        border-radius: 50%;
+        background: currentColor;
+      }
+      .lesson p {
+        margin: 0;
+        color: var(--muted);
+        font-size: 15.5px;
+      }
+      .note {
+        margin-top: 12px !important;
+        font-size: 13.5px !important;
+        color: var(--faint) !important;
+      }
+
+      /* phones */
+      .phones {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 18px;
+        align-items: start;
+      }
+      @media (max-width: 960px) {
+        .phones {
+          grid-template-columns: repeat(2, 1fr);
+        }
+      }
+      .phone {
+        border-radius: 28px;
+        padding: 8px;
+        background: #05061a;
+        border: 1px solid var(--line);
+        box-shadow: 0 24px 60px rgba(0, 0, 0, 0.4);
+      }
+      .phone img {
+        border-radius: 22px;
+        width: 100%;
+      }
+
+      /* privacy */
+      .privacy {
+        display: grid;
+        grid-template-columns: 1.1fr 1fr;
+        gap: 40px;
+        align-items: center;
+      }
+      @media (max-width: 860px) {
+        .privacy {
+          grid-template-columns: 1fr;
+        }
+      }
+      .meter {
+        background: var(--surface);
+        border: 1px solid var(--line);
+        border-radius: 24px;
+        padding: 30px;
+      }
+      .meter .big {
+        font-size: 64px;
+        font-weight: 800;
+        letter-spacing: -0.04em;
+        color: var(--ok);
+        line-height: 1;
+      }
+      ul.ticks {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+        display: grid;
+        gap: 14px;
+      }
+      ul.ticks li {
+        padding-left: 30px;
+        position: relative;
+        color: var(--muted);
+      }
+      ul.ticks li::before {
+        content: '';
+        position: absolute;
+        left: 0;
+        top: 7px;
+        width: 14px;
+        height: 14px;
+        border-radius: 4px;
+        background: var(--sky);
+        opacity: 0.85;
+      }
+      ul.ticks b {
+        color: var(--text);
+      }
+
+      /* code */
+      .code {
+        background: #070821;
+        border: 1px solid var(--line);
+        border-radius: 18px;
+        padding: 22px 24px;
+        overflow: auto;
+        font-family: 'JetBrains Mono', ui-monospace, monospace;
+        font-size: 13.5px;
+        line-height: 1.7;
+        color: #cfd3f0;
+      }
+      .code .k {
+        color: var(--lilac);
+      }
+      .code .s {
+        color: var(--sun);
+      }
+      .code .n {
+        color: var(--aqua);
+      }
+
+      /* stack */
+      .stack {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 18px;
+      }
+      @media (max-width: 860px) {
+        .stack {
+          grid-template-columns: 1fr;
+        }
+      }
+      .stack .card ul {
+        margin: 10px 0 0;
+        padding-left: 18px;
+        color: var(--muted);
+        font-size: 15px;
+      }
+
+      /* honesty */
+      .honest {
+        background: var(--surface);
+        border: 1px solid var(--line);
+        border-radius: 24px;
+        padding: 34px;
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 18px 40px;
+      }
+      @media (max-width: 760px) {
+        .honest {
+          grid-template-columns: 1fr;
+        }
+      }
+      .honest p {
+        margin: 0;
+        color: var(--muted);
+        font-size: 15.5px;
+      }
+      .honest b {
+        color: var(--text);
+      }
+
+      footer {
+        border-top: 1px solid var(--line);
+        padding: 48px 0 64px;
+        color: var(--faint);
+        font-size: 14px;
+      }
+      footer .wrap {
+        display: flex;
+        gap: 24px;
+        justify-content: space-between;
+        flex-wrap: wrap;
+        align-items: center;
+      }
+
+      /* reveal */
+      .rv {
+        opacity: 0;
+        transform: translateY(18px);
+        transition:
+          opacity 0.7s ease,
+          transform 0.7s cubic-bezier(0.2, 0.7, 0.2, 1);
+      }
+      .rv.in {
+        opacity: 1;
+        transform: none;
+      }
+    </style>
+  </head>
+  <body>
+    <nav>
+      <div class="wrap">
+        <a class="brand" href="#top"><img src="site/logo.svg" alt="" />InStep</a>
+        <div class="links">
+          <a href="#film">Film</a>
+          <a href="#how">How it works</a>
+          <a href="#lessons">Lessons</a>
+          <a href="#privacy">Privacy</a>
+          <a href="#architecture">Architecture</a>
+          <a class="cta" href="https://github.com/LSUDOKO/InStep">GitHub</a>
+        </div>
+      </div>
+    </nav>
+
+    <header class="hero" id="top">
+      <div class="wrap">
+        <img
+          class="mark"
+          src="site/logo.svg"
+          alt="InStep logo: a footprint that is also a pause bar, beside a play button"
+        />
+        <div class="eyebrow">Fire TV · Vega OS</div>
+        <h1>The video that <span>waits for you.</span></h1>
+        <p class="lede">
+          How-to videos on Fire TV that pause at each key moment and continue only when your pose, hand shape,
+          rhythm or hold is right — using the phone or laptop you already own as the camera.
+        </p>
+        <div class="actions">
+          <a class="btn primary" href="#film">▶ Watch the film</a>
+          <a class="btn ghost" href="https://instep-wfcr.onrender.com/c/">Try the phone camera</a>
+          <a class="btn ghost" href="https://github.com/LSUDOKO/InStep">Source on GitHub</a>
+        </div>
+        <div class="pills">
+          <span class="pill"><b>0.0 KB/s</b> of video sent — measured</span>
+          <span class="pill">5 channels · 7 lessons</span>
+          <span class="pill">241 unit + 6 e2e tests</span>
+          <span class="pill">Open source · MIT</span>
+        </div>
+      </div>
+    </header>
+
+    <section id="film" style="padding-top: 0">
+      <div class="wrap">
+        <div class="film rv">
+          <video controls preload="none" poster="video/poster.jpg" playsinline>
+            <source src="video/instep-demo.mp4" type="video/mp4" />
+          </video>
+        </div>
+        <p class="caption">
+          Demo film, 4:04 — TV shots recorded on the Vega Virtual Device; learner simulated where labelled;
+          narration by a local synthetic voice.
+        </p>
+      </div>
+    </section>
+
+    <section class="light" id="problem">
+      <div class="wrap">
+        <div class="head rv">
+          <div class="eyebrow">The problem</div>
+          <h2>Every how-to video plays at the same speed — whether you keep up or not.</h2>
+          <p>
+            For people doing prescribed home exercises, parents learning to sign, or anyone practising CPR, a
+            video that can't see you means practising it wrong, or giving up.
+          </p>
+        </div>
+        <div class="stats">
+          <div class="stat rv">
+            <div class="n">684,000</div>
+            <p>
+              people die from falls each year — the second leading cause of unintentional injury death
+              worldwide.
+            </p>
+            <a href="https://www.who.int/news-room/fact-sheets/detail/falls">WHO · Falls fact sheet</a>
+          </div>
+          <div class="stat rv">
+            <div class="n">76%</div>
+            <p>
+              of Americans surveyed did not complete all of their assigned at-home physical therapy exercises.
+            </p>
+            <a
+              href="https://www.medicaleconomics.com/view/patients-aren-t-doing-their-physical-therapy-homework"
+              >Ohio State Wexner survey · Medical Economics</a
+            >
+          </div>
+          <div class="stat rv">
+            <div class="n">90%</div>
+            <p>of deaf children are born to hearing parents — who have to learn to sign.</p>
+            <a href="https://en.wikipedia.org/wiki/Language_acquisition_by_deaf_children"
+              >Mitchell &amp; Karchmer (2004)</a
+            >
+          </div>
+          <div class="stat rv">
+            <div class="n">73%</div>
+            <p>
+              of out-of-hospital cardiac arrests happen in homes. Immediate CPR can double or triple survival.
+            </p>
+            <a href="https://cpr.heart.org/en/resources/cpr-facts-and-stats">American Heart Association</a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="how">
+      <div class="wrap">
+        <div class="head rv">
+          <div class="eyebrow">How it works</div>
+          <h2>Your phone sees. Your TV waits.</h2>
+          <p>
+            No new hardware: the TV you have, and a phone or laptop propped up as an external camera. Pose
+            tracking runs in the phone's browser; only body points travel to the TV.
+          </p>
+        </div>
+        <div class="steps">
+          <div class="card rv">
+            <div class="num">1</div>
+            <h3>Pick a lesson on the TV</h3>
+            <p>
+              Five channels, built for the 10-foot screen with the Fire TV remote. Each profile keeps its
+              progress.
+            </p>
+          </div>
+          <div class="card rv">
+            <div class="num">2</div>
+            <h3>Pair your phone in seconds</h3>
+            <p>
+              Scan the QR code or type the 4-digit room code. The phone becomes the camera — frames stay on
+              it.
+            </p>
+          </div>
+          <div class="card rv">
+            <div class="num">3</div>
+            <h3>The lesson waits for you</h3>
+            <p>
+              At each key moment the video pauses and continues only when you've got it right — counting reps,
+              timing holds, and giving one short, kind tip when you're stuck.
+            </p>
+          </div>
+        </div>
+        <div class="duo">
+          <figure class="rv">
+            <div class="shot">
+              <img
+                src="site/tv-pair.jpg"
+                alt="TV pairing screen with a QR code and room code 0393"
+                loading="lazy"
+              />
+            </div>
+            <figcaption>Pairing on the TV — recorded on the Vega Virtual Device.</figcaption>
+          </figure>
+          <figure class="rv">
+            <div class="shot">
+              <img
+                src="site/tv-player.jpg"
+                alt="Heel raises lesson on the TV: animated teacher, raise 5 of 5, live skeleton beside it and the step rail below"
+                loading="lazy"
+              />
+            </div>
+            <figcaption>
+              Heel raises: the teacher video, your live skeleton, and the steps you've passed.
+            </figcaption>
+          </figure>
+        </div>
+      </div>
+    </section>
+
+    <section id="lessons" style="padding-top: 24px">
+      <div class="wrap">
+        <div class="head rv">
+          <div class="eyebrow">Lessons</div>
+          <h2>One engine. Five ways to practise.</h2>
+          <p>
+            Every GIF below is a real screen recording of the TV app (played 3× faster) with a simulated
+            learner passing each step. Each teacher video says on screen what it is.
+          </p>
+        </div>
+        <div class="chan">
+          <article class="lesson rv">
+            <img
+              src="screenshots/tv/gif/fall-heel-raise.gif"
+              alt="Heel raises on the TV: chair safety check, posture, five reps, final hold, summary"
+              loading="lazy"
+            />
+            <div class="body">
+              <div class="tag" style="color: var(--sky)">Fall Prevention · hero</div>
+              <h3>Heel raises (with chair)</h3>
+              <p>
+                No balance work until a chair is beside you. Posture check, five counted heel raises, a held
+                rise onto your toes, and an automatic sway stop.
+              </p>
+            </div>
+          </article>
+          <article class="lesson rv">
+            <img
+              src="screenshots/tv/gif/fall-single-leg-stand.gif"
+              alt="Single-leg stand: chair check, then a 5 second hold on each foot"
+              loading="lazy"
+            />
+            <div class="body">
+              <div class="tag" style="color: var(--sky)">Fall Prevention</div>
+              <h3>Single-leg stand (with chair)</h3>
+              <p>A five-second hold on each foot with a countdown ring, right then left.</p>
+            </div>
+          </article>
+          <article class="lesson rv">
+            <img
+              src="screenshots/tv/gif/asl-fingerspell-abc.gif"
+              alt="Fingerspelling A B C L Y with finger-level feedback, then the word C A B"
+              loading="lazy"
+            />
+            <div class="body">
+              <div class="tag" style="color: var(--lilac)">Sign Language for Families · hero</div>
+              <h3>Fingerspelling: A B C L Y</h3>
+              <p>
+                Hand shapes checked finger by finger with Delta Glow — no sound needed — then spell a word.
+              </p>
+              <p class="note">
+                Illustrated handshapes, not yet reviewed by Deaf signers. Learn with Deaf teachers and
+                community too.
+              </p>
+            </div>
+          </article>
+          <article class="lesson rv">
+            <img
+              src="screenshots/tv/gif/asl-i-love-you.gif"
+              alt="The I-love-you handshape matched on the TV"
+              loading="lazy"
+            />
+            <div class="body">
+              <div class="tag" style="color: var(--lilac)">Sign Language for Families</div>
+              <h3>Your first sign: I love you</h3>
+              <p>Thumb, index and little finger up — matched by finger curls.</p>
+            </div>
+          </article>
+          <article class="lesson rv">
+            <img
+              src="screenshots/tv/gif/rehab-hand-open-close.gif"
+              alt="Hand rehab: open and close your hand, rep counter rising to 20"
+              loading="lazy"
+            />
+            <div class="body">
+              <div class="tag" style="color: var(--aqua)">Stroke Hand Rehab</div>
+              <h3>Open and close your hand — 20 reps</h3>
+              <p>Only full-range reps count, and the video slows to the learner's pace.</p>
+              <p class="note">Use exercises prescribed or approved by your physiotherapist.</p>
+            </div>
+          </article>
+          <article class="lesson rv">
+            <img
+              src="screenshots/tv/gif/cpr-rhythm.gif"
+              alt="CPR rhythm: compressions counted with a BPM meter and an arms-straight check"
+              loading="lazy"
+            />
+            <div class="body">
+              <div class="tag" style="color: var(--rose)">CPR Practice</div>
+              <h3>Hands-only CPR rhythm</h3>
+              <p>Compressions at 100–120 a minute with straight arms, following a metronome.</p>
+              <p class="note">
+                Practice aid for rhythm and straight arms only. It does not measure compression depth and is
+                not certification. Take a certified CPR course.
+              </p>
+            </div>
+          </article>
+          <article class="lesson rv">
+            <img
+              src="screenshots/tv/gif/kids-forest-walk.gif"
+              alt="The Forest Walk: a child stretches like a tree, crouches like a mouse, balances like a flamingo"
+              loading="lazy"
+            />
+            <div class="body">
+              <div class="tag" style="color: var(--sun)">Kids' Active Storytime</div>
+              <h3>The Forest Walk</h3>
+              <p>
+                Act out a story to move it forward — tree, mouse, flamingo and wave, with a star burst after
+                each.
+              </p>
+            </div>
+          </article>
+          <article class="lesson rv">
+            <img
+              src="screenshots/lesson-videos.jpg"
+              alt="Frames from all seven narrated lesson videos"
+              loading="lazy"
+            />
+            <div class="body">
+              <div class="tag" style="color: var(--peach, #f9bb99)">Teacher videos</div>
+              <h3>Illustrated, narrated, honest</h3>
+              <p>
+                Flat illustrations drawn in code and timed to every gate, a real CPR clip (Pexels, credited),
+                and a local synthetic voice that never talks over a pause. Together mode lets two people
+                practise at once.
+              </p>
+            </div>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section id="phone">
+      <div class="wrap">
+        <div class="head rv">
+          <div class="eyebrow">The phone</div>
+          <h2>A camera, a coach, and a creator studio.</h2>
+          <p>
+            The companion is a web app — nothing to install. It runs MediaPipe in the browser, speaks tips,
+            and lets a physiotherapist or teacher record a lesson once and publish it to every TV.
+          </p>
+        </div>
+        <div class="phones">
+          <figure class="rv">
+            <div class="phone">
+              <img src="screenshots/companion-join.png" alt="Join by room code" loading="lazy" />
+            </div>
+            <figcaption>Join with the room code</figcaption>
+          </figure>
+          <figure class="rv">
+            <div class="phone">
+              <img src="screenshots/companion-live.png" alt="Live camera with step feedback" loading="lazy" />
+            </div>
+            <figcaption>Live feedback and hands-free control</figcaption>
+          </figure>
+          <figure class="rv">
+            <div class="phone">
+              <img src="screenshots/creator-lessons.png" alt="Creator Studio lesson list" loading="lazy" />
+            </div>
+            <figcaption>Creator Studio</figcaption>
+          </figure>
+          <figure class="rv">
+            <div class="phone">
+              <img
+                src="screenshots/creator-editor.png"
+                alt="Creator Studio step editor with suggested steps"
+                loading="lazy"
+              />
+            </div>
+            <figcaption>Steps suggested from still moments</figcaption>
+          </figure>
+        </div>
+      </div>
+    </section>
+
+    <section id="privacy">
+      <div class="wrap privacy">
+        <div class="rv">
+          <div class="eyebrow">Privacy, measured</div>
+          <h2>Only body points leave the phone. Never video.</h2>
+          <ul class="ticks">
+            <li>
+              <b>Frames stay in the browser.</b> Pose and hand landmarks are computed on the phone; only
+              normalised numbers are sent.
+            </li>
+            <li>
+              <b>The privacy pill counts every byte</b> the page actually sends — video is measured at 0, not
+              hard-coded.
+            </li>
+            <li>
+              <b>Strict content security policy</b> blocks third-party calls (including the vision SDK's
+              telemetry), checked by an end-to-end test on every push.
+            </li>
+            <li>
+              <b>Only the instructor's demo is ever recorded</b>, after an explicit "Record demonstration"
+              action with a visible indicator.
+            </li>
+          </ul>
+        </div>
+        <div class="meter rv">
+          <div class="eyebrow" style="color: var(--faint)">Video sent</div>
+          <div class="big">0.0 KB/s</div>
+          <p style="color: var(--muted); margin: 14px 0 22px">
+            Measured on the phone, live, for every lesson.
+          </p>
+          <img
+            src="screenshots/companion-privacy.png"
+            alt="Phone sheet: what leaves this phone, video 0.0 KB/s"
+            style="border-radius: 16px; max-height: 360px; margin: 0 auto"
+            loading="lazy"
+          />
+        </div>
+      </div>
+    </section>
+
+    <section id="architecture">
+      <div class="wrap">
+        <div class="head rv">
+          <div class="eyebrow">Architecture</div>
+          <h2>One gate engine — on the phone, the server and the TV.</h2>
+          <p>
+            A pure TypeScript engine and an open lesson format, <code>.istep</code>, shared by every part of
+            the system. The TV pauses its W3C media player at each gate and resumes when the engine says you
+            passed.
+          </p>
+        </div>
+        <figure class="rv">
+          <div class="shot" style="background: #f8f9fb">
+            <img
+              src="architecture/system-diagram.png"
+              alt="System diagram: learner's phone, InStep server on Render, Fire TV app, Creator Studio, shared packages, content, and AWS switched off"
+              loading="lazy"
+            />
+          </div>
+          <figcaption>
+            Full walk-through with file paths in
+            <a href="https://github.com/LSUDOKO/InStep/blob/main/docs/02-architecture.md"
+              >docs/02-architecture.md</a
+            >.
+          </figcaption>
+        </figure>
+        <div class="duo">
+          <div class="rv">
+            <h3 style="margin-top: 8px">.istep — captions for movement</h3>
+            <p style="color: var(--muted)">
+              Like a WebVTT file for a video, but each cue is a gate: what must be true before the video
+              continues. Seven gate types: pose, hold, reps, rhythm, hand shape, sequence and safety checks.
+            </p>
+            <pre class="code"><span class="k">{</span>
+  <span class="s">"id"</span>: <span class="s">"raises"</span>, <span class="s">"t"</span>: <span class="n">22</span>,
+  <span class="s">"type"</span>: <span class="s">"rep_count"</span>,
+  <span class="s">"label"</span>: <span class="s">"Heel raises — five times"</span>,
+  <span class="s">"metric"</span>: { <span class="s">"kind"</span>: <span class="s">"heel_lift"</span> },
+  <span class="s">"reps"</span>: <span class="n">5</span>, <span class="s">"rewindTo"</span>: <span class="n">12</span>,
+  <span class="s">"then"</span>: <span class="s">"loop_segment"</span>
+<span class="k">}</span></pre>
+          </div>
+          <div class="rv">
+            <img
+              src="architecture/architecture.png"
+              alt="Architecture poster in the Blue Hour brand with a one-gate step-by-step panel"
+              style="border-radius: 18px; border: 1px solid var(--line)"
+              loading="lazy"
+            />
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="stack" style="padding-top: 24px">
+      <div class="wrap">
+        <div class="head rv">
+          <div class="eyebrow">Built with</div>
+          <h2>Built for Vega OS, end to end.</h2>
+        </div>
+        <div class="stack">
+          <div class="card rv">
+            <h3>Fire TV app</h3>
+            <ul>
+              <li>React Native for Vega (Vega SDK 0.24)</li>
+              <li>W3C media player, react-tv-space-navigation</li>
+              <li>react-native-svg skeleton overlays, tvOS-grade 10-foot UI</li>
+            </ul>
+          </div>
+          <div class="card rv">
+            <h3>Phone &amp; server</h3>
+            <ul>
+              <li>React + MediaPipe Tasks in the browser</li>
+              <li>Node 22, Fastify, WebSocket relay, SQLite — hosted on Render</li>
+              <li>Coach on Amazon Bedrock + Polly (built; switched off on the demo)</li>
+            </ul>
+          </div>
+          <div class="card rv">
+            <h3>Open source</h3>
+            <ul>
+              <li>
+                <a href="https://github.com/LSUDOKO/vega-gated-video-player">vega-gated-video-player</a> — the
+                format, engine and player for any Vega app
+              </li>
+              <li>zod-validated protocol, JSON Schema</li>
+              <li>Vitest, Playwright, GitHub Actions</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="honest" style="padding-top: 24px">
+      <div class="wrap">
+        <div class="head rv">
+          <div class="eyebrow">Honest by design</div>
+          <h2>What InStep is — and isn't.</h2>
+        </div>
+        <div class="honest rv">
+          <p>
+            <b>The camera is external.</b> Your phone or laptop is the camera; the TV has no camera of its
+            own.
+          </p>
+          <p>
+            <b>A practice aid, not treatment.</b> InStep has not been clinically tested and never diagnoses.
+          </p>
+          <p><b>CPR is rhythm only.</b> It does not measure compression depth and is not certification.</p>
+          <p>
+            <b>Sign language with Deaf teachers.</b> The illustrated handshapes have not yet been reviewed by
+            Deaf signers.
+          </p>
+          <p>
+            <b>The coach is templated on the demo.</b> Bedrock and Polly are integrated and tested, but
+            switched off — no AWS credits are spent.
+          </p>
+          <p><b>Every number is sourced.</b> Statistics come only from the cited sources above.</p>
+        </div>
+      </div>
+    </section>
+
+    <section id="brand" style="padding-top: 24px">
+      <div class="wrap">
+        <div class="head rv">
+          <div class="eyebrow">Brand</div>
+          <h2>Blue Hour.</h2>
+          <p>
+            Night-indigo for the living room, sky for the brand, sun for warmth — flat illustration without
+            outlines.
+          </p>
+        </div>
+        <img
+          class="rv"
+          src="brand/brand-board.png"
+          alt="InStep brand sheet: logo, colours, channels, type, controls and voice"
+          style="border-radius: 22px; border: 1px solid var(--line)"
+          loading="lazy"
+        />
+      </div>
+    </section>
+
+    <footer>
+      <div class="wrap">
+        <a class="brand" href="#top"><img src="site/logo.svg" alt="" />InStep</a>
+        <span>Built for the Build, Ship, Shape: Amazon Developer Hackathon · MIT licence</span>
+        <span>
+          <a href="https://github.com/LSUDOKO/InStep">GitHub</a> ·
+          <a href="https://instep-wfcr.onrender.com/c/">Live companion</a> ·
+          <a href="https://github.com/LSUDOKO/InStep/blob/main/content/CREDITS.md">Credits</a>
+        </span>
+      </div>
+    </footer>
+
+    <script>
+      // reveal on scroll; content stays visible if IntersectionObserver is missing
+      const els = document.querySelectorAll('.rv');
+      if (!('IntersectionObserver' in window)) els.forEach((e) => e.classList.add('in'));
+      else {
+        const io = new IntersectionObserver(
+          (entries) =>
+            entries.forEach((e) => {
+              if (e.isIntersecting) {
+                e.target.classList.add('in');
+                io.unobserve(e.target);
+              }
+            }),
+          { rootMargin: '0px 0px -8% 0px' },
+        );
+        els.forEach((e) => io.observe(e));
+      }
+    </script>
+  </body>
+</html>
