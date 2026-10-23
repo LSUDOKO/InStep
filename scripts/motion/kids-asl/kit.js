@@ -127,7 +127,7 @@
     c.arc(x, y, R * 0.3 + R * 0.9 * ring, 0, Math.PI * 2);
     c.stroke();
     for (let i = 0; i < n; i++) {
-      const a = (i / n) * Math.PI * 2 + rnd() * 0.4, d = R * (0.35 + 0.75 * rnd()) * K.backOut(k * 1.4, 1.2);
+      const a = (i / n) * Math.PI * 2 + rnd() * 0.4, d = R * (0.35 + 0.75 * rnd()) * (0.4 + 0.6 * K.backOut(k * 1.4, 1.2)); // start from a ring, never a clump over the face
       const s = (16 + 22 * rnd()) * (1 - 0.6 * k), col = colors[i % colors.length];
       K.fill(c, K.star(x + Math.cos(a) * d, y + Math.sin(a) * d - 60 * k * k, s, s * 0.45, 5, k * 3 + i), col);
     }
