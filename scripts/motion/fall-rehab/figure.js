@@ -1,5 +1,5 @@
 // The teacher for the fall-prevention lessons: an older woman in side view, facing right, hands on a chair back.
-// Kinematics are ported from scripts/make-animated-lesson.py (same lengths, same joint logic) so the timed moves the
+// Kinematics are ported from the earlier pycairo generator (git history of scripts/make-animated-lesson.py) so the timed moves the
 // gates check stay the same; only the drawing is new (flat shapes, no outlines, one light from the upper left).
 (() => {
   const { form, fill, rrect, circle, ellipse, poly, blob, limb, shade, rgba, mix } = K;
