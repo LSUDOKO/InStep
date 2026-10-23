@@ -1,51 +1,53 @@
-# InStep — demo film script (v1)
+# InStep — demo film script (v2, final cut)
 
-Target length **2:45** (hard limit 3:00). 1920×1080, 30 fps. English voice-over, captions burned in.
-Look: the reference launch film (`~/Downloads/install.mp4`) — centred kinetic type, soft glow backgrounds, UI cards
-that slide and settle, logo lockup end card — in the **Blue Hour** brand (`docs/brand/palette.json`: night-indigo
-canvas, sky brand, sun accent; Inter / SF-style type). Motion: ease-out springs, 0.4–0.8 s, no bounce gimmicks;
-one idea per shot; cross-blurs and push transitions between scenes.
+**4:04**, 1920×1080, 30 fps, H.264 High (`-tune animation`), AAC 48 kHz, −16 LUFS. English voice-over
+(Kokoro-82M `af_heart`, synthetic, made locally), captions burned in (one at a time) and in `captions.srt`.
+Look: the reference films (`~/Downloads/install.mp4`, `demo3.mp4`) — cream ↔ night scene alternation, centred light
+kinetic type, real source pages with a highlighter, fanned cards, terminal card, ease-out moves with soft blur in/out,
+blur-push transitions, logo lockup end card — in the **Blue Hour** brand (`docs/brand/palette.json`, Inter).
 
-**Honesty rules for the film** (AGENTS.md):
+**Honesty rules for the film** (AGENTS.md, `docs/SOURCES.md`):
 
-- Every TV shot is a real screen recording of the app on the **Vega Virtual Device**; label it once, small:
-  "Recorded on the Vega Virtual Device".
-- Learner shots driven by the synthetic learner are labelled "Simulated learner" when they appear.
-- Say clearly: "The camera is your phone or laptop — an external camera." CPR: "practice for rhythm only, not
-  certification". Numbers only from `docs/SOURCES.md` (S1, S3, S5, S6) and shown with their source on screen.
-- No Amazon logo artwork is recreated or faked; the TV is shown through real emulator footage (its own launcher)
-  and the words "Fire TV · Vega OS". The remote is a generic illustrated remote.
+- Every TV shot is a real screen recording of the app on the **Vega Virtual Device** (`~/instep-capture/film/`),
+  labelled "Recorded on the Vega Virtual Device"; the opening boot (Fire TV logo) is Amazon's own boot screen, recorded,
+  not recreated. Sped-up footage says so ("6× speed").
+- Learner shots are driven by the synthetic learner and labelled "Simulated learner". The camera is said to be the
+  user's own phone or laptop — an external camera.
+- Numbers only from SOURCES (S1, S3, S5, S6), each with its source page and URL on screen.
+- "Only body points — numbers, never video." No bandwidth figure is claimed.
+- Coach: templated tips; the AWS Bedrock/Polly coach is built but switched off (said in VO and on screen).
+- ASL hands: illustrated, not yet reviewed by Deaf signers. CPR: practice for rhythm only, not certification.
+- **"TV:" captions** are the TV's own narration, taken from the device recording (same Kokoro narration + music bed
+  as `content/lessons/<id>/video.mp4`), or from the lesson video for the full-frame insert. The film voice pauses.
 
-## Voice-over and shots
+## Shots
 
-| #   | Time      | Picture                                                                                                                                                                                                                                                                                                                                                 | Voice-over (Kokoro `af_heart`)                                                                                                                                                                           |
-| --- | --------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| 1   | 0:00–0:06 | Black → a living-room TV (illustrated, Blue Hour) wakes; a generic remote presses Select; the real Vega launcher fades in with the **InStep** tile focused. Caption: "Fire TV · Vega OS".                                                                                                                                                               | — (music only, soft rise)                                                                                                                                                                                |
-| 2   | 0:06–0:14 | Kinetic type, centred: "Videos play." → "Whether you keep up" → "or not." The word "not" stays, everything else blurs away.                                                                                                                                                                                                                             | "Every how-to video plays at the same speed — whether you keep up, or not."                                                                                                                              |
-| 3   | 0:14–0:32 | Three real web pages (WHO falls fact sheet; Wexner/Medical Economics PT survey; AHA CPR facts) slide in as glass cards; a sun-yellow highlighter sweeps the key line on each: **684,000 deaths from falls a year** (S1) · **76% don't finish their home exercises** (S3) · **73% of cardiac arrests happen at home** (S6). Source URL under each card.  | "Falls kill six hundred and eighty-four thousand people a year. Three in four patients don't finish their home exercises. And most cardiac arrests happen at home — where nobody is checking your form." |
-| 4   | 0:32–0:38 | Fourth card: the deaf-children source (S5) highlighting **90% born to hearing parents**.                                                                                                                                                                                                                                                                | "Nine in ten deaf children are born to hearing parents, learning to sign from videos that can't see them."                                                                                               |
-| 5   | 0:38–0:46 | Logo lockup: the InStep mark draws on (footprint → pause bar → play triangle), wordmark types in, tagline: "The video that waits for you."                                                                                                                                                                                                              | "InStep is the video that waits for you."                                                                                                                                                                |
-| 6   | 0:46–1:00 | Split: phone (iOS frame, real companion screenshot `companion-live.png`) on a stand + TV. A dotted line of body points flows phone → TV. Privacy pill zooms: "Video sent 0.0 KB/s". Caption: "The camera is your phone or laptop."                                                                                                                      | "Prop up your phone. It becomes the camera — an external camera, not the TV. Pose tracking runs in the phone's browser, and only body points travel to the TV. Never video."                             |
-| 7   | 1:00–1:28 | Real TV recording, heel raises: lesson plays → **pauses** at the gate (ring + "Stand tall, hand on chair") → skeleton turns green → video continues; rep counter "3 of 5"; coach tip as a subtitle. Label "Simulated learner".                                                                                                                          | "At each key moment the lesson pauses, and continues only when your pose is right. It counts your reps, holds your balance — and if you're stuck, a coach gives one short, kind tip."                    |
-| 8   | 1:28–1:36 | Real TV: chair safety check frame; then "Camera disconnected" frame.                                                                                                                                                                                                                                                                                    | "Safety comes first: no balance work until a chair is beside you, and if the camera drops, the lesson stops."                                                                                            |
-| 9   | 1:36–2:00 | Channel montage, 4 s each, each a real TV recording with its channel colour wash: Sign Language (letter L, finger glow) · Hand Rehab (open/close reps) · CPR (metronome, BPM meter; caption "Practice for rhythm only — not certification") · Kids' Forest Walk (flamingo + star burst) · Together mode (two learner chips).                            | "The same engine teaches sign language hand shapes, stroke-hand rehab, CPR rhythm — practice only, not certification — and a story that kids act out. Two people can even practise together."            |
-| 10  | 2:00–2:10 | Creator Studio phone screens (real screenshots) stacking: record → suggested steps → publish → appears on TV.                                                                                                                                                                                                                                           | "A physiotherapist or teacher records a lesson once on a phone. InStep finds the still moments, suggests the steps, and publishes it to every TV."                                                       |
-| 11  | 2:10–2:32 | Animated architecture: Phone (MediaPipe in the browser) → WebSocket relay (Node, Fastify, on Render) → Fire TV (React Native for Vega; gate engine; W3C media player). Side nodes: `.istep` open format, Creator Studio, coach (Amazon Bedrock + Polly, mock mode), open-source `vega-gated-video-player`. Packets animate along edges; labels type in. | "Under the hood: an open lesson format called dot-i-step, one pure TypeScript gate engine shared by the phone, the server and the TV, and an open-source Vega player any app can use."                   |
-| 12  | 2:32–2:45 | End card (cream→indigo glow like the reference): logo, tagline, pills: "Fire TV · Vega OS" · "0 bytes of video uploaded" · "Open source · MIT" · "Built for the Amazon Developer Hackathon". URL `github.com/LSUDOKO/InStep`.                                                                                                                           | "InStep. The video that waits for you."                                                                                                                                                                  |
-
-Word count ≈ 300 → ~2:30 of speech at ~125 wpm, leaving breathing room.
+| Time | Section | Picture | Voice-over / TV |
+| --- | --- | --- | --- |
+| 0:00–0:14 | Opening | Real Vega Virtual Device recording in an illustrated TV frame, generic remote: Fire TV boot logo (Amazon's own boot screen, recorded) → "Vega Virtual Device is ready" → Your apps, InStep tile → InStep splash → profile keyboard (6× speed, labelled) → Home → pair screen with QR + room code. Label "Recorded on the Vega Virtual Device". | — (score only) |
+| 0:14–0:21 | Problem | Cream, centred kinetic type that says the line word for word (no burned caption). | Every how-to video plays at the same speed, whether you keep up, or not. |
+| 0:21–0:43 | Why it matters | Real source pages (S1 WHO, S3 Medical Economics/Wexner, S6 AHA) slide in, highlighter sweeps the quoted line, source title + URL on screen. | Falls are the second-leading cause of unintentional injury death worldwide. In one survey, three in four people didn't finish their home physical therapy exercises. And most cardiac arrests outside hospital happen at home, where nobody is checking your form. |
+| 0:43–0:51 | Deaf families | S5 Wikipedia page (Mitchell & Karchmer 2004), then kinetic type "And a video can't see / whether your hands are right." (no burned caption: one text on screen). | At least nine in ten deaf children are born to hearing parents. And a video can't see whether your hands are right. |
+| 0:51–0:59 | Logo | Mark draws on, wordmark blurs in, tagline. | InStep is the video that waits for you. |
+| 0:59–1:16 | The phone is the camera | Phone (real companion screen) + TV, body points flow phone → TV, "The camera is your phone or laptop.", measured VIDEO SENT box from the real privacy sheet. | Prop up your phone or laptop. It becomes the camera: an external camera, not the TV. Pose tracking runs in its browser. Only body points travel to the TV: numbers, never video. |
+| 1:16–1:51 | Fall Prevention (hero) | Real TV recording: lesson plays and pauses at its steps → the TV's own narration "Up, and down." (TV caption) → rep counter 0/5 → 3/5 and a templated tip ("Tips are templated · the AWS Bedrock coach is built, switched off") → real end-of-lesson summary. Labels: Recorded on the Vega Virtual Device, Simulated learner. | This is Fall Prevention, on the Vega Virtual Device. At each key moment, the lesson pauses, and continues only when your pose is right. [TV: "Up, and down."] It counts your reps and times your balance. If you're stuck, it offers one short, kind tip. |
+| 1:51–2:02 | Safety | Chair check gate (sturdy chair / whole body / standing steady), "Safety gates use fixed values — never loosened"; then the camera drops: real "Camera disconnected" countdown and resume, "No body points for 2 s → the lesson pauses". | Safety comes first. No balance work until a chair is beside you. And if the camera drops, the lesson stops, and waits. |
+| 2:02–2:21 | Sign Language for Families (hero) | Launcher row → Letter A, the TV says "Letter A. A fist, thumb resting at the side." (TV caption) → Letter B with the live hand overlay and a tip. Pill "Illustrated hands · not yet reviewed by Deaf signers". | Sign Language for Families teaches hand shapes, letter by letter. [TV: "Letter A…"] The hands are illustrated, and not yet reviewed by Deaf signers. Learn with Deaf teachers, too. |
+| 2:21–2:40 | Kids' Forest Walk | Launcher tile → TV recording: "Stretch tall like a tree!" with the TV's narration "Look at the tall trees. Stretch up tall like a tree!" → step 1 of 4 waits for the arms → full-frame lesson video (what the TV plays): flamingo, "Here's a flamingo. Can you stand on one foot?", "Amazing balancing!". | For kids, the lesson is a story. [TV] The forest waits until they're a tree, a mouse, and a flamingo. [TV] |
+| 2:40–2:54 | Every channel | Fan of the seven real lesson posters → Hand Rehab and CPR lesson videos with their required disclaimers on screen ("CPR: practice for rhythm only — not certification") → the TV lesson page, "Practise together" ringed: "Together mode: two phones, one TV". | The same engine runs hand rehab, and CPR rhythm: practice only, not certification. And two people can practise together, each with their own phone. |
+| 2:54–3:07 | Creator Studio | Stack of real Creator Studio phone screens: name → record once → steps suggested → published to the TV (launcher recording). | A physiotherapist or teacher records a lesson once, on a phone. InStep finds the still moments, suggests the steps, and publishes it to the TV. |
+| 3:07–3:18 | The open format | Terminal card types `cat …/track.istep` and prints a real excerpt of the Forest Walk lesson (gate "tree", pose_match, angles). "Open format · validated with zod · the same file on phone, server and TV". | Every lesson is an open file, called .istep: a video, plus the poses it waits for. |
+| 3:18–3:41 | Architecture | `docs/architecture/system-diagram.html` (draw.io style) builds itself; the camera follows the data: phone lane → WebSocket relay → Fire TV → shared TypeScript packages (gate-engine) → gated-player (open source). | The phone sends body points over a WebSocket. A small server relays them to the TV. One pure TypeScript gate engine, shared by the phone, the server and the TV, decides when to move on. And the gated video player is open source, for any Vega app. |
+| 3:41–3:53 | Honest limits | Cream, centred: Only body points leave the phone · The voices are synthetic (Kokoro-82M, local) · Coach tips are templated (AWS Bedrock + Polly built, switched off) · Every TV shot: a simulated learner; the camera is an external phone or laptop. | No learner video leaves the phone. The voices are synthetic, made on this machine. And the AWS coach is built, but switched off. |
+| 3:53–4:04 | End card | Logo lockup, tagline, pills: Fire TV · Vega OS / Only body points leave the phone / Open source · MIT / Built for the Amazon Developer Hackathon; github.com/LSUDOKO/InStep. | InStep. The video that waits for you. |
 
 ## Music and sound
 
-Original, code-synthesised (no samples, no copyrighted music): a warm pad + soft pluck motif at ~96 BPM, building at
-shot 5 (logo) and shot 9 (montage), resolving on the end card. Ducks 8 dB under speech. Subtle UI ticks when cards
-land and a soft chime when a gate passes in shot 7. Loudness −16 LUFS, true peak ≤ −1.5 dBTP.
+Original, code-synthesised (`src/music.py`; no samples, no third-party music): warm pad + soft pluck motif at 96 BPM in
+D. Quiet under the problem, lifts at the logo and again for the channels, settles for the honest close, resolves on the
+end card. Ducks 8 dB under the voice-over and 12 dB under the TV's narration. Subtle UI ticks (cards, file lines) and
+remote clicks. Loudness −16 LUFS integrated, true peak ≤ −1.5 dBTP.
 
-## Assets
+## Build
 
-- Real TV recordings (new design, Blue Hour, narrated lesson videos): `~/instep-capture/film/*.webm` (device capture
-  agent).
-- Phone screens: `docs/screenshots/companion-*.png`, `creator-*.png`.
-- Web pages: Playwright screenshots of the S1/S3/S5/S6 URLs at 1440 px, saved in `docs/video/assets/web/`.
-- Architecture diagram: `docs/architecture/` (also used in the README).
-- Output: `docs/video/instep-demo.mp4` (≤ 3:00) + `docs/video/captions.srt`.
+See `src/README.md`. Sources: `src/timeline.py` (shots, reels, VO and TV lines), `src/vo.json`, `src/film.js`.

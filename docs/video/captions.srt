@@ -1,104 +1,172 @@
 1
-00:00:06,900 --> 00:00:12,166
+00:00:14,500 --> 00:00:19,766
 Every how-to video plays at the same speed, whether you keep up, or not.
 
 2
-00:00:14,000 --> 00:00:19,606
+00:00:21,600 --> 00:00:27,206
 Falls are the second-leading cause of unintentional injury death worldwide.
 
 3
-00:00:20,600 --> 00:00:27,377
+00:00:28,200 --> 00:00:34,977
 In one survey, three in four people didn't finish their home physical therapy exercises.
 
 4
-00:00:28,100 --> 00:00:32,198
+00:00:35,700 --> 00:00:39,798
 And most cardiac arrests outside hospital happen at home,
 
 5
-00:00:32,198 --> 00:00:34,864
+00:00:39,798 --> 00:00:42,464
 where nobody is checking your form.
 
 6
-00:00:36,200 --> 00:00:40,836
+00:00:43,800 --> 00:00:48,436
 At least nine in ten deaf children are born to hearing parents.
 
 7
-00:00:41,000 --> 00:00:44,050
+00:00:48,600 --> 00:00:51,650
 And a video can't see whether your hands are right.
 
 8
-00:00:47,600 --> 00:00:50,408
+00:00:55,200 --> 00:00:58,008
 InStep is the video that waits for you.
 
 9
-00:00:52,800 --> 00:00:58,667
-Prop up your phone. It becomes the camera: an external camera, not the TV.
+00:01:00,400 --> 00:01:06,265
+Prop up your phone or laptop. It becomes the camera: an external camera,
 
 10
-00:00:59,000 --> 00:01:05,620
-Pose tracking runs in the phone's browser. Only body points travel to the TV,
+00:01:06,265 --> 00:01:07,311
+not the TV.
 
 11
-00:01:05,620 --> 00:01:06,802
-never video.
+00:01:07,700 --> 00:01:14,656
+Pose tracking runs in its browser. Only body points travel to the TV: numbers,
 
 12
-00:01:09,000 --> 00:01:11,781
-At each key moment, the lesson pauses,
+00:01:14,656 --> 00:01:15,876
+never video.
 
 13
-00:01:11,781 --> 00:01:15,078
-and continues only when your pose is right.
+00:01:16,700 --> 00:01:22,542
+This is Fall Prevention, on the Vega Virtual Device. At each key moment,
 
 14
-00:01:17,000 --> 00:01:21,093
-It counts your reps, times your balance, and if you're stuck,
+00:01:22,542 --> 00:01:27,723
+the lesson pauses, and continues only when your pose is right.
 
 15
-00:01:21,093 --> 00:01:23,524
-a coach gives one short, kind tip.
+00:01:28,300 --> 00:01:34,700
+TV: Up, and down.
 
 16
-00:01:28,600 --> 00:01:33,682
-Safety comes first: no balance work until a chair is beside you.
+00:01:37,400 --> 00:01:41,607
+It counts your reps and times your balance. If you're stuck,
 
 17
-00:01:33,682 --> 00:01:37,167
-And if the camera drops, the lesson stops.
+00:01:41,607 --> 00:01:43,861
+it offers one short, kind tip.
 
 18
-00:01:39,400 --> 00:01:46,129
-The same engine teaches sign-language hand shapes, hand rehab, and CPR rhythm:
+00:01:51,900 --> 00:01:56,984
+Safety comes first. No balance work until a chair is beside you.
 
 19
-00:01:46,129 --> 00:01:49,126
-practice only, not certification.
+00:01:56,984 --> 00:02:01,345
+And if the camera drops, the lesson stops, and waits.
 
 20
-00:01:50,400 --> 00:01:54,815
-Kids act out a story. And two people can practise together.
+00:02:02,600 --> 00:02:07,037
+Sign Language for Families teaches hand shapes, letter by letter.
 
 21
-00:01:58,100 --> 00:02:02,909
-A physiotherapist or teacher records a lesson once, on a phone.
+00:02:07,350 --> 00:02:11,200
+TV: Letter A. A fist, thumb resting at the side.
 
 22
-00:02:03,400 --> 00:02:09,808
-InStep finds the still moments, suggests the steps, and publishes it to the TV.
+00:02:11,900 --> 00:02:16,675
+The hands are illustrated, and not yet reviewed by Deaf signers.
 
 23
-00:02:11,400 --> 00:02:16,007
-Under the hood: an open lesson format called .istep,
+00:02:16,675 --> 00:02:19,063
+Learn with Deaf teachers, too.
 
 24
-00:02:16,400 --> 00:02:22,355
-one pure TypeScript gate engine, shared by the phone, the server and the TV,
+00:02:21,350 --> 00:02:23,840
+For kids, the lesson is a story.
 
 25
-00:02:22,700 --> 00:02:26,430
-and an open-source Vega player that any app can use.
+00:02:25,300 --> 00:02:29,900
+TV: Look at the tall trees. Stretch up tall like a tree!
 
 26
-00:02:31,800 --> 00:02:34,430
+00:02:30,300 --> 00:02:34,945
+The forest waits until they're a tree, a mouse, and a flamingo.
+
+27
+00:02:35,200 --> 00:02:38,400
+TV: Here’s a flamingo. Can you stand on one foot?
+
+28
+00:02:39,800 --> 00:02:40,850
+TV: Amazing balancing!
+
+29
+00:02:41,400 --> 00:02:47,033
+The same engine runs hand rehab, and CPR rhythm: practice only,
+
+30
+00:02:47,033 --> 00:02:48,793
+not certification.
+
+31
+00:02:49,500 --> 00:02:53,804
+And two people can practise together, each with their own phone.
+
+32
+00:02:55,300 --> 00:03:00,109
+A physiotherapist or teacher records a lesson once, on a phone.
+
+33
+00:03:00,600 --> 00:03:07,008
+InStep finds the still moments, suggests the steps, and publishes it to the TV.
+
+34
+00:03:08,300 --> 00:03:12,981
+Every lesson is an open file, called .istep: a video,
+
+35
+00:03:12,981 --> 00:03:15,604
+plus the poses it waits for.
+
+36
+00:03:19,100 --> 00:03:22,949
+The phone sends body points over a WebSocket.
+
+37
+00:03:22,949 --> 00:03:26,263
+A small server relays them to the TV.
+
+38
+00:03:26,700 --> 00:03:32,826
+One pure TypeScript gate engine, shared by the phone, the server and the TV,
+
+39
+00:03:32,826 --> 00:03:34,911
+decides when to move on.
+
+40
+00:03:35,200 --> 00:03:39,633
+And the gated video player is open source, for any Vega app.
+
+41
+00:03:41,800 --> 00:03:46,666
+No learner video leaves the phone. The voices are synthetic,
+
+42
+00:03:46,666 --> 00:03:52,250
+made on this machine. And the AWS coach is built, but switched off.
+
+43
+00:03:55,200 --> 00:03:57,830
 InStep. The video that waits for you.
 
