@@ -18,7 +18,7 @@ hand shape, rhythm or hold is right — using the phone or laptop you already ow
 
 </div>
 
-**Demo film (2:41):** [`docs/video/instep-demo.mp4`](docs/video/instep-demo.mp4) — narrated, original score,
+**Demo film (4:04):** [`docs/video/instep-demo.mp4`](docs/video/instep-demo.mp4) — narrated, original score,
 captions; TV shots recorded on the Vega Virtual Device, learner simulated where labelled. Script:
 [`docs/video/script.md`](docs/video/script.md).
 
