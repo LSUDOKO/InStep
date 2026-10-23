@@ -1,5 +1,5 @@
 // Generates palette.json from OKLCH values (hue families frozen; tweak L/C only):  node docs/brand/palette.mjs > docs/brand/palette.json
-import { toHex as t, cr } from './oklch.mjs';
+import { toHex as t, cr, over } from './oklch.mjs';
 const P = {
   canvas: t(0.185, 0.06, 278),
   surface: t(0.245, 0.065, 278),
@@ -8,6 +8,10 @@ const P = {
   textMuted: t(0.8, 0.035, 278),
   primary: t(0.79, 0.13, 238),
   primaryInk: t(0.2, 0.06, 255),
+  /** tertiary text (TV faint), neutral info chips, unused skeleton joints */
+  textFaint: t(0.73, 0.04, 278),
+  info: t(0.8, 0.08, 282),
+  neutral: t(0.56, 0.035, 278),
 };
 const accents = {
   sky: P.primary,
@@ -36,7 +40,11 @@ const skin = [
 const illustration = {
   shadow: t(0.13, 0.05, 278),
   longShadow: 'rgba(5,6,26,0.45)',
+  longShadowHex: '#05061A',
+  longShadowOpacity: 0.45,
   highlight: 'rgba(255,255,255,0.22)',
+  highlightHex: '#FFFFFF',
+  highlightOpacity: 0.22,
   rimLight: t(0.88, 0.07, 238),
   skyTop: t(0.24, 0.08, 278),
   skyBottom: t(0.34, 0.09, 290),
@@ -65,13 +73,31 @@ const contrast = {};
 for (const [k, v] of Object.entries({
   text: P.text,
   textMuted: P.textMuted,
+  textFaint: P.textFaint,
   primary: P.primary,
+  info: P.info,
   ...status,
   ...channels,
 }))
   contrast[k] = { canvas: cr(v, P.canvas), surface: cr(v, P.surface), surface2: cr(v, P.surface2) };
 contrast.primaryInk_on_primary = cr(P.primaryInk, P.primary);
 contrast.primaryInk_on_ok = cr(P.primaryInk, status.ok);
+/** Translucent UI tokens, composited over the canvas / surfaces they sit on. */
+const ui = {
+  tvGlass: [0.1, 0.16, 0.24].map((a) => `rgba(170,176,255,${a})`),
+  companionLabel2: 'rgba(226,229,255,0.64)',
+  companionLabel3: 'rgba(226,229,255,0.5)',
+};
+const glass = [0.1, 0.16, 0.24].map((a) => over([170, 176, 255, a], P.canvas));
+contrast.tv_text_on_glass = glass.map((g) => cr(P.text, g));
+contrast.tv_muted_on_glass = glass.map((g) => cr(P.textMuted, g));
+contrast.tv_faint_on_glass = glass.map((g) => cr(P.textFaint, g));
+contrast.companion_label2 = [P.canvas, P.surface, P.surface2].map((b) =>
+  cr(over([226, 229, 255, 0.64], b), b),
+);
+contrast.companion_label3_nonText = [P.canvas, P.surface, P.surface2].map((b) =>
+  cr(over([226, 229, 255, 0.5], b), b),
+);
 const out = {
   name: 'InStep — Blue Hour',
   version: 1,
@@ -91,6 +117,7 @@ const out = {
     'Figures: skin from skin[], clothes from illustration.clothes; the teaching figure wears the lesson channel colour.',
     'Text over illustration: text colour on canvas/surface only (contrast table below), never on accents.',
   ],
+  ui,
   contrast,
 };
 console.log(JSON.stringify(out, null, 2));

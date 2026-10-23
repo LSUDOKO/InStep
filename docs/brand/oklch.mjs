@@ -32,3 +32,10 @@ export const cr = (a, b) => {
   const [x, y] = [lum(a), lum(b)].sort((p, q) => q - p);
   return +((x + 0.05) / (y + 0.05)).toFixed(2);
 };
+
+/** Alpha-composite rgba(r,g,b,a) over an opaque hex background; returns hex. */
+export const over = ([r, g, b, a], bg) => {
+  const c = [1, 3, 5].map((i) => parseInt(bg.slice(i, i + 2), 16));
+  const mix = [r, g, b].map((v, i) => Math.round(v * a + c[i] * (1 - a)));
+  return ('#' + mix.map((v) => v.toString(16).padStart(2, '0')).join('')).toUpperCase();
+};

@@ -9,6 +9,9 @@
   "textMuted": "#B8BCD5",
   "primary": "#5FC6FF",
   "primaryInk": "#021630",
+  "textFaint": "#A1A6C1",
+  "info": "#B5B8F1",
+  "neutral": "#6F7389",
   "accents": {
     "sky": "#5FC6FF",
     "iris": "#AE97FF",
@@ -40,7 +43,11 @@
   "illustration": {
     "shadow": "#05041B",
     "longShadow": "rgba(5,6,26,0.45)",
+    "longShadowHex": "#05061A",
+    "longShadowOpacity": 0.45,
     "highlight": "rgba(255,255,255,0.22)",
+    "highlightHex": "#FFFFFF",
+    "highlightOpacity": 0.22,
     "rimLight": "#ADDFFF",
     "skyTop": "#181844",
     "skyBottom": "#382E63",
@@ -82,6 +89,15 @@
     "Figures: skin from skin[], clothes from illustration.clothes; the teaching figure wears the lesson channel colour.",
     "Text over illustration: text colour on canvas/surface only (contrast table below), never on accents."
   ],
+  "ui": {
+    "tvGlass": [
+      "rgba(170,176,255,0.1)",
+      "rgba(170,176,255,0.16)",
+      "rgba(170,176,255,0.24)"
+    ],
+    "companionLabel2": "rgba(226,229,255,0.64)",
+    "companionLabel3": "rgba(226,229,255,0.5)"
+  },
   "contrast": {
     "text": {
       "canvas": 17.46,
@@ -93,10 +109,20 @@
       "surface": 8.73,
       "surface2": 7.27
     },
+    "textFaint": {
+      "canvas": 7.83,
+      "surface": 6.82,
+      "surface2": 5.68
+    },
     "primary": {
       "canvas": 9.86,
       "surface": 8.59,
       "surface2": 7.15
+    },
+    "info": {
+      "canvas": 9.94,
+      "surface": 8.65,
+      "surface2": 7.21
     },
     "ok": {
       "canvas": 10.75,
@@ -139,6 +165,31 @@
       "surface2": 9.53
     },
     "primaryInk_on_primary": 9.49,
-    "primaryInk_on_ok": 10.35
+    "primaryInk_on_ok": 10.35,
+    "tv_text_on_glass": [
+      14.83,
+      13.03,
+      10.74
+    ],
+    "tv_muted_on_glass": [
+      8.52,
+      7.48,
+      6.17
+    ],
+    "tv_faint_on_glass": [
+      6.65,
+      5.84,
+      4.81
+    ],
+    "companion_label2": [
+      6.65,
+      6.17,
+      5.47
+    ],
+    "companion_label3_nonText": [
+      4.5,
+      4.31,
+      3.96
+    ]
   }
 }
