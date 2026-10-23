@@ -50,6 +50,7 @@ describe('MCP server', () => {
     const r = await rpc(3, 'tools/call', { name: 'list_lessons', arguments: { channel: 'fall_prevention' } });
     expect(r.body.result.structuredContent.lessons.map((l: { id: string }) => l.id)).toEqual([
       'fall-heel-raise-v1',
+      'fall-single-leg-stand-v1',
     ]);
   });
   it('get_progress_report aggregates a learner by name and never includes media', async () => {
