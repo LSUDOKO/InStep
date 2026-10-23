@@ -13,7 +13,7 @@ Every person who appears in a demo lesson must give written permission before th
 | Your first sign: I love you   | Illustrated handshape: one drawn hand, no real person, `scripts/motion/kids-asl/`                                                              | not yet reviewed by Deaf signers | n/a (no people)                                                    | CC-BY-4.0      |
 
 Animated demonstrations say so on every frame. The two sign-language lessons show illustrated handshapes drawn from
-standard ASL fingerspelling descriptions; every frame says "Illustrated handshape · not yet reviewed by Deaf signers".
+standard ASL handshape descriptions (type: Inter, SIL OFL); every frame says "Illustrated handshape · not yet reviewed by Deaf signers".
 No Deaf signer has reviewed them yet. A recording by Deaf signers should replace them, and its row will name the reviewers.
 
 The only third-party footage is the Pexels stock clip above. No AI-generated people or copyrighted music is used.
