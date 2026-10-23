@@ -4,7 +4,7 @@
 
 The diagram is [`architecture/architecture.html`](architecture/architecture.html) (1920×1080, Blue Hour). It is also the
 animated architecture shot in the demo film: `window.seek(seconds)` draws the build-up deterministically and the
-diagram settles at 14 s. `node docs/architecture/render.mjs` re-renders `architecture.png` and the close-up
+diagram settles at 14 s. `node docs/architecture/render.mjs` (Playwright + ImageMagick 7) re-renders `architecture.png` and the close-up
 [`gate-sequence.png`](architecture/gate-sequence.png).
 
 ## How it works, step by step (as built)

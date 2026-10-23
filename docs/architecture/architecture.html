@@ -592,27 +592,27 @@
         <div class="title" style="font-size: 24px">One gate, step by step</div>
       </div>
       <div class="steps" style="gap: 4px; margin-top: 12px">
-        <div class="step" data-at="11.8" data-hl="0">
+        <div class="step" data-at="11.7" data-hl="0">
           <div class="num" style="background: var(--sun)">1</div>
           <div><b>Video reaches the gate → pause</b><small>controller tick ≤ 100 ms</small></div>
         </div>
-        <div class="step" data-at="12.2" data-hl="1">
+        <div class="step" data-at="12.05" data-hl="1">
           <div class="num" style="background: var(--sky)">2</div>
           <div><b>Phone streams body points</b><small>relay → TV, ≤ 30 a second</small></div>
         </div>
-        <div class="step" data-at="12.6" data-hl="2">
+        <div class="step" data-at="12.4" data-hl="2">
           <div class="num" style="background: var(--sky)">3</div>
           <div><b>Engine scores every frame</b><small>HUD ring, skeleton, Delta Glow</small></div>
         </div>
-        <div class="step" data-at="13.0" data-hl="3">
+        <div class="step" data-at="12.75" data-hl="3">
           <div class="num" style="background: var(--iris)">4</div>
           <div><b>Stuck? One short coach tip</b><small>after coachAfterSec, as a caption</small></div>
         </div>
-        <div class="step" data-at="13.4" data-hl="4">
+        <div class="step" data-at="13.1" data-hl="4">
           <div class="num" style="background: var(--iris)">5</div>
           <div><b>Pass → the video resumes</b><small>gate_result: chime on the phone</small></div>
         </div>
-        <div class="step" data-at="13.8" data-hl="5">
+        <div class="step" data-at="13.45" data-hl="5">
           <div class="num" style="background: var(--neutral); color: var(--text)">6</div>
           <div><b>No body points for 2 s → pause</b><small>"Camera disconnected"</small></div>
         </div>
@@ -625,11 +625,12 @@
       // 3.6 packets start (loop forever) · 4.2 "never video" · 4.8 gate state back (TV→server→phone)
       // 5.4 lesson + .istep (HTTPS) · 5.9 coach/session · 6.9 Creator Studio · 7.5 demo upload edge
       // 7.8 content · 8.1 content edge · 9.0 Bedrock/Polly (off) · 9.3 its dashed edge
-      // 9.6 shared packages (chips 10.0–10.9) · 11.4 gate panel (steps 11.8–13.8) · 14.0 settled
-      // ≥ 16: the gate panel highlights steps 1→6 in turn (1.3 s each) while packets keep flowing.
+      // 9.6 shared packages (chips 10.0–10.9) · 11.4 gate panel (steps 11.7–13.45) · 14.0 settled
+      // ≥ 16: the gate panel highlights steps 1→6 in turn (1.2 s each) while packets keep flowing;
+      // packets (2.4 s and 3.6 s periods) and highlight all repeat every 7.2 s, so [16, 23.2] loops seamlessly.
       const SETTLED = 14;
       const HL_START = 16;
-      const HL_STEP = 1.3;
+      const HL_STEP = 1.2;
       const C = {
         sky: '#5FC6FF',
         iris: '#AE97FF',
@@ -699,7 +700,7 @@
       };
       const FLOWS = [
         { route: ['e1', 'e3'], color: C.sky, n: 5, period: 2.4, start: 3.6 },
-        { route: ['e4', 'e2'], color: C.iris, n: 2, period: 3.4, start: 5.6 },
+        { route: ['e4', 'e2'], color: C.iris, n: 2, period: 3.6, start: 5.6 },
       ].map((f) => ({ ...f, dots: Array.from({ length: f.n }, () => halo(f.color)) }));
 
       const clamp = (x) => Math.max(0, Math.min(1, x));
@@ -765,6 +766,7 @@
         packages: 9.6,
         gatePanel: 11.4,
         settled: SETTLED,
+        loop: [HL_START, HL_START + 7.2],
         highlightLoop: HL_START,
       };
 
