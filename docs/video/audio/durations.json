@@ -1,0 +1,102 @@
+{
+ "s2": {
+  "key": "af_heart|0.8|Every how-to video plays at the same speed, whether you keep up, or not.",
+  "dur": 5.116,
+  "sr": 24000
+ },
+ "s3a": {
+  "key": "af_heart|0.8|Falls are the second-leading cause of unintentional injury death worldwide.",
+  "dur": 5.456,
+  "sr": 24000
+ },
+ "s3b": {
+  "key": "af_heart|0.8|In one survey, three in four people didn't finish their home physical therapy exercises.",
+  "dur": 6.627,
+  "sr": 24000
+ },
+ "s3c": {
+  "key": "af_heart|0.8|And most cardiac arrests outside hospital happen at home, where nobody is checking your form.",
+  "dur": 6.614,
+  "sr": 24000
+ },
+ "s4a": {
+  "key": "af_heart|0.8|At least nine in ten deaf children are born to hearing parents.",
+  "dur": 4.486,
+  "sr": 24000
+ },
+ "s4b": {
+  "key": "af_heart|0.8|And a video can't see whether your hands are right.",
+  "dur": 2.9,
+  "sr": 24000
+ },
+ "s5": {
+  "key": "af_heart|0.8|In Step is the video that waits for you.",
+  "dur": 2.658,
+  "sr": 24000
+ },
+ "s6a": {
+  "key": "af_heart|0.8|Prop up your phone. It becomes the camera: an external camera, not the TV.",
+  "dur": 5.717,
+  "sr": 24000
+ },
+ "s6b": {
+  "key": "af_heart|0.8|Pose tracking runs in the phone's browser. Only body points travel to the TV, never video.",
+  "dur": 7.652,
+  "sr": 24000
+ },
+ "s7a": {
+  "key": "af_heart|0.8|At each key moment, the lesson pauses, and continues only when your pose is right.",
+  "dur": 5.928,
+  "sr": 24000
+ },
+ "s7b": {
+  "key": "af_heart|0.8|It counts your reps, times your balance, and if you're stuck, a coach gives one short, kind tip.",
+  "dur": 6.374,
+  "sr": 24000
+ },
+ "s8": {
+  "key": "af_heart|0.8|Safety comes first: no balance work until a chair is beside you. And if the camera drops, the lesson stops.",
+  "dur": 8.417,
+  "sr": 24000
+ },
+ "s9a": {
+  "key": "af_heart|0.8|The same engine teaches sign-language hand shapes, hand rehab, and CPR rhythm: practice only, not certification.",
+  "dur": 9.576,
+  "sr": 24000
+ },
+ "s9b": {
+  "key": "af_heart|0.8|Kids act out a story. And two people can practise together.",
+  "dur": 4.265,
+  "sr": 24000
+ },
+ "s10a": {
+  "key": "af_heart|0.8|A physiotherapist or teacher records a lesson once, on a phone.",
+  "dur": 4.659,
+  "sr": 24000
+ },
+ "s10b": {
+  "key": "af_heart|0.8|In Step finds the still moments, suggests the steps, and publishes it to the TV.",
+  "dur": 6.258,
+  "sr": 24000
+ },
+ "s11a": {
+  "key": "af_heart|0.8|Under the hood: an open lesson format, called dot eye step,",
+  "dur": 4.457,
+  "sr": 24000
+ },
+ "s11b": {
+  "key": "af_heart|0.8|one pure TypeScript gate engine, shared by the phone, the server, and the TV,",
+  "dur": 5.805,
+  "sr": 24000
+ },
+ "s11c": {
+  "key": "af_heart|0.8|and an open-source Vega player that any app can use.",
+  "dur": 3.58,
+  "sr": 24000
+ },
+ "s12": {
+  "key": "af_heart|0.8|In Step. The video that waits for you.",
+  "dur": 2.48,
+  "sr": 24000
+ }
+}

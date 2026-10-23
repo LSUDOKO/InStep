@@ -1,0 +1,91 @@
+{
+ "voice": "af_heart",
+ "speed": 0.8,
+ "lines": [
+  {
+   "id": "s2",
+   "text": "Every how-to video plays at the same speed, whether you keep up, or not."
+  },
+  {
+   "id": "s3a",
+   "text": "Falls are the second-leading cause of unintentional injury death worldwide."
+  },
+  {
+   "id": "s3b",
+   "text": "In one survey, three in four people didn't finish their home physical therapy exercises."
+  },
+  {
+   "id": "s3c",
+   "text": "And most cardiac arrests outside hospital happen at home, where nobody is checking your form."
+  },
+  {
+   "id": "s4a",
+   "text": "At least nine in ten deaf children are born to hearing parents."
+  },
+  {
+   "id": "s4b",
+   "text": "And a video can't see whether your hands are right."
+  },
+  {
+   "id": "s5",
+   "text": "InStep is the video that waits for you.",
+   "say": "In Step is the video that waits for you."
+  },
+  {
+   "id": "s6a",
+   "text": "Prop up your phone. It becomes the camera: an external camera, not the TV."
+  },
+  {
+   "id": "s6b",
+   "text": "Pose tracking runs in the phone's browser. Only body points travel to the TV, never video."
+  },
+  {
+   "id": "s7a",
+   "text": "At each key moment, the lesson pauses, and continues only when your pose is right."
+  },
+  {
+   "id": "s7b",
+   "text": "It counts your reps, times your balance, and if you're stuck, a coach gives one short, kind tip."
+  },
+  {
+   "id": "s8",
+   "text": "Safety comes first: no balance work until a chair is beside you. And if the camera drops, the lesson stops."
+  },
+  {
+   "id": "s9a",
+   "text": "The same engine teaches sign-language hand shapes, hand rehab, and CPR rhythm: practice only, not certification."
+  },
+  {
+   "id": "s9b",
+   "text": "Kids act out a story. And two people can practise together."
+  },
+  {
+   "id": "s10a",
+   "text": "A physiotherapist or teacher records a lesson once, on a phone."
+  },
+  {
+   "id": "s10b",
+   "text": "InStep finds the still moments, suggests the steps, and publishes it to the TV.",
+   "say": "In Step finds the still moments, suggests the steps, and publishes it to the TV."
+  },
+  {
+   "id": "s11a",
+   "text": "Under the hood: an open lesson format called .istep,",
+   "say": "Under the hood: an open lesson format, called dot eye step,"
+  },
+  {
+   "id": "s11b",
+   "text": "one pure TypeScript gate engine, shared by the phone, the server and the TV,",
+   "say": "one pure TypeScript gate engine, shared by the phone, the server, and the TV,"
+  },
+  {
+   "id": "s11c",
+   "text": "and an open-source Vega player that any app can use."
+  },
+  {
+   "id": "s12",
+   "text": "InStep. The video that waits for you.",
+   "say": "In Step. The video that waits for you."
+  }
+ ]
+}

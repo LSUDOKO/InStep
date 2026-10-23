@@ -1,0 +1,24 @@
+{
+ "id": "S3",
+ "url": "https://www.medicaleconomics.com/view/patients-aren-t-doing-their-physical-therapy-homework",
+ "title": "Patients aren\u2019t doing their physical therapy homework | Medical Economics",
+ "hit": {
+  "text": "The survey of 1,006 Americans found that 76% did not complete all of their assigned at-home physical therapy exercises. Only 24% reported completing all prescribed sessions, while 28% completed 75% to 99%, 27% completed 50% to 74%, 11% completed 25% to 49%, 8% completed 1% to 25%, and 2% said they did none.",
+  "needle": "76% did not complete all of their assigned at-home physical therapy exercises",
+  "rects": [
+   {
+    "x": 474.046875,
+    "y": 377.4375,
+    "w": 179.640625,
+    "h": 24
+   },
+   {
+    "x": 126,
+    "y": 407.34375,
+    "w": 455.09375,
+    "h": 24
+   }
+  ]
+ },
+ "ua": "chrome"
+}

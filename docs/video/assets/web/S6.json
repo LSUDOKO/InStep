@@ -1,0 +1,24 @@
+{
+ "id": "S6",
+ "url": "https://cpr.heart.org/en/resources/cpr-facts-and-stats",
+ "title": "CPR Facts and Stats | American Heart Association CPR & First Aid",
+ "hit": {
+  "text": "The location of Out of Hospital Cardiac Arrests (OHCA) most often occurs in homes/residences (73.4%), followed by public settings (16.3%), and nursing homes (10.3%).",
+  "needle": "most often occurs in homes/residences (73.4%)",
+  "rects": [
+   {
+    "x": 970,
+    "y": 274.703125,
+    "w": 165,
+    "h": 19
+   },
+   {
+    "x": 540,
+    "y": 298.703125,
+    "w": 206,
+    "h": 19
+   }
+  ]
+ },
+ "ua": "chrome"
+}
