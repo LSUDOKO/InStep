@@ -5,6 +5,7 @@ import { route } from '../App';
 import { anatomicalSide, buildLandmarksMessage, RateLimiter, type VisionResult } from './landmarks';
 import { ByteMeter, formatRate } from './meter';
 import { placementAdvice } from './placement';
+import { repTick } from './sounds';
 
 const mpPose = (spec = {}) => makePose(spec).map((p) => ({ x: p.x, y: p.y, z: p.z, visibility: p.v }));
 const mpHand = (curl?: [number, number, number, number, number]) => makeHand(curl ? { curl } : {});
@@ -134,5 +135,27 @@ describe('router', () => {
     expect(route('/c/')).toEqual({ name: 'camera' });
     expect(route('/c')).toEqual({ name: 'camera' });
     expect(route('/c/nope')).toEqual({ name: 'not-found' });
+  });
+});
+
+describe('rep tick', () => {
+  it('ticks only when this learner’s rep count goes up on a rep gate', () => {
+    const last = { gateId: '', progress: 0 };
+    const s = (gateId: string, progress: number, extra = {}) => ({
+      gateId,
+      gateType: 'rep_count',
+      status: 'progress',
+      progress,
+      peerId: 'me',
+      ...extra,
+    });
+    expect(repTick(s('raises', 0), 'me', last)).toBe(false); // new gate: baseline only
+    expect(repTick(s('raises', 0.2), 'me', last)).toBe(true);
+    expect(repTick(s('raises', 0.2), 'me', last)).toBe(false);
+    expect(repTick(s('raises', 0.4, { peerId: 'guest' }), 'me', last)).toBe(false);
+    expect(repTick(s('raises', 0), 'me', last)).toBe(false); // repeat resets the baseline
+    expect(repTick(s('raises', 0.2), 'me', last)).toBe(true);
+    expect(repTick(s('raises', 1, { status: 'passed' }), 'me', last)).toBe(false); // the chime covers it
+    expect(repTick(s('hold', 0.5, { gateType: 'hold_duration' }), 'me', last)).toBe(false);
   });
 });

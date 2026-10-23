@@ -1,5 +1,8 @@
+import { soundOut, unlockSounds } from './sounds';
+
 /**
  * Original metronome click (a short synthesized tick — no recorded or copyrighted audio).
+ * Plays through the shared companion sound output, so the mute toggle silences it too.
  * Created from a user gesture (Start camera) so browsers allow sound.
  */
 export class Metronome {
@@ -8,8 +11,7 @@ export class Metronome {
   bpm = 0;
 
   unlock() {
-    this.ctx ??= new AudioContext();
-    void this.ctx.resume();
+    this.ctx = unlockSounds();
   }
 
   set(bpm: number | null) {
@@ -28,13 +30,14 @@ export class Metronome {
 
   private tick() {
     const ctx = this.ctx;
-    if (!ctx) return;
+    const out = soundOut();
+    if (!ctx || !out) return;
     const o = ctx.createOscillator();
     const g = ctx.createGain();
     o.frequency.value = 1000;
     g.gain.setValueAtTime(0.25, ctx.currentTime);
     g.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.05);
-    o.connect(g).connect(ctx.destination);
+    o.connect(g).connect(out);
     o.start();
     o.stop(ctx.currentTime + 0.06);
   }
