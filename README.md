@@ -24,7 +24,7 @@ captions; TV shots recorded on the Vega Virtual Device, learner simulated where 
 
 <p align="center"><a href="docs/video/instep-demo.mp4"><img src="docs/video/poster.jpg" width="720" alt="InStep demo film — logo lockup: The video that waits for you. Click to play." /></a></p>
 
-**Live:** [instep-wfcr.onrender.com/c](https://instep-wfcr.onrender.com/c/) — open it on a phone to use it as a camera
+**Website:** [lsudoko.github.io/InStep](https://lsudoko.github.io/InStep/) · **Live:** [instep-wfcr.onrender.com/c](https://instep-wfcr.onrender.com/c/) — open it on a phone to use it as a camera
 (free Render instance: the first request after idle takes about a minute to wake).
 
 > Built for the **Build, Ship, Shape: Amazon Developer Hackathon** — Fire TV track, AWS Builder and Open Source
