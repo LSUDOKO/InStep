@@ -275,6 +275,12 @@ for (const id of ids) {
     console.log(`[mux] ${id}: timing contract broken — not muxed`);
     continue;
   }
-  if (!checkOnly) mux(plan);
+  if (checkOnly) continue;
+  try {
+    mux(plan);
+  } catch (e) {
+    bad++; // e.g. a video still being rendered (no moov atom yet): report it and go on with the others
+    console.log(`[mux] ${id}: FAILED — ${e.message.split('\n')[0]}`);
+  }
 }
 if (bad) process.exit(1);
