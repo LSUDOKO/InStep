@@ -199,6 +199,25 @@ Safety notes shown in the app: exercises should be prescribed or approved by a p
 practice aid for rhythm and straight arms only; sign lessons are a practice aid — learn with Deaf teachers and
 community too. The coach gives movement tips, never diagnoses.
 
+## Sound and voice
+
+Every lesson video carries a spoken coach, a quiet original music bed and small sound cues, all made offline at
+zero cost — no cloud call, no recording of anyone:
+
+- **Narration:** [Kokoro-82M](https://huggingface.co/hexgrad/Kokoro-82M) (Apache-2.0) run locally through
+  `kokoro-onnx`. Each line is timed to the gates: it ends at least 0.3 s before the video pauses, never runs across a
+  pause, and lines inside a looped segment ("Up… and down.") repeat cleanly. Praise comes only after a step passes.
+  The script checks all of this: `node scripts/audio/mux.mjs --check`.
+- **Music and sparkles:** synthesised in code per channel (calm pads for fall prevention and rehab, plucks for kids,
+  none for CPR so the metronome leads). The bed fades out around every pause and loop point and ducks under speech.
+- **Mix:** −16 LUFS, true peak ≤ −1.5 dBTP, AAC 48 kHz; video frames untouched.
+- **Phone:** a soft chime when a step passes and a tick per counted rep (Web Audio, no files), with a mute switch;
+  the CPR metronome shares the same output. Every sound has a visual twin, and sign-language lessons work fully
+  with the sound off.
+
+Regenerate: `uv run scripts/audio/tts.py`, `uv run scripts/audio/bed.py`, `node scripts/audio/mux.mjs` (details in
+[`scripts/audio/README.md`](scripts/audio/README.md)).
+
 ## The `.istep` format
 
 Like WebVTT for captions, `.istep` is an open JSON sidecar that attaches body-aware gates to any video.
