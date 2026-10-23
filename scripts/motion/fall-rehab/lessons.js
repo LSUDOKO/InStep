@@ -12,7 +12,8 @@
     cv.height = 720;
     return [cv, cv.getContext('2d')];
   };
-  const [off, oc] = mk(), [tint, tc] = mk();
+  const [off, oc] = mk(),
+    [tint, tc] = mk();
   function withShadow(c, I, cam, draw) {
     oc.setTransform(1, 0, 0, 1, 0, 0);
     oc.clearRect(0, 0, off.width, off.height);
@@ -26,7 +27,9 @@
     tc.fillStyle = I.longShadow;
     tc.fillRect(0, 0, tint.width, tint.height);
     tc.globalCompositeOperation = 'source-over';
-    const F = ROOM.FLOOR, kx = 0.42, ky = 0.2;
+    const F = ROOM.FLOOR,
+      kx = 0.42,
+      ky = 0.2;
     c.save();
     c.transform(1, 0, -kx, -ky, kx * F, F * (1 + ky));
     c.drawImage(tint, 0, 0, K.W, K.H);
@@ -68,7 +71,8 @@
     c.restore();
     return { I, P, cam };
   }
-  const CHIP_X = 960, CHIP_Y = 48;
+  const CHIP_X = 960,
+    CHIP_Y = 48;
 
   LESSONS['fall-heel-raise-v1'] = {
     draw(c, P0, t) {
@@ -86,10 +90,22 @@
         // an upward chevron by the heels while they lift
         const a = Math.max(lift, 0) * (t >= 12 ? 1 : 0);
         if (a > 0.02) {
-          const [hx, hy] = fig.near.heel, y = hy - 40 - 30 * a;
+          const [hx, hy] = fig.near.heel,
+            y = hy - 40 - 30 * a;
           g.save();
           g.globalAlpha = a;
-          fill(g, poly([[hx - 70, y + 18], [hx - 50, y - 4], [hx - 30, y + 18], [hx - 38, y + 24], [hx - 50, y + 12], [hx - 62, y + 24]]), P.channel);
+          fill(
+            g,
+            poly([
+              [hx - 70, y + 18],
+              [hx - 50, y - 4],
+              [hx - 30, y + 18],
+              [hx - 38, y + 24],
+              [hx - 50, y + 12],
+              [hx - 62, y + 24],
+            ]),
+            P.channel,
+          );
           g.restore();
         }
       });
@@ -97,7 +113,8 @@
       K.chip(c, P, 'Hands on the chair', CHIP_X, CHIP_Y, pulse(t, 0.6, 0.4, 3.4, 0.4), P.channel);
       K.chip(c, P, 'Stand tall', CHIP_X, CHIP_Y, pulse(t, 4.8, 0.4, 6.4, 0.4), P.channel);
       if (t >= 12 && t < 22) {
-        const n = Math.floor((t - 12) / 2) + 1, a = Math.min(ramp(t, 12, 12.3), 1 - ramp(t, 21.7, 22));
+        const n = Math.floor((t - 12) / 2) + 1,
+          a = Math.min(ramp(t, 12, 12.3), 1 - ramp(t, 21.7, 22));
         K.chip(c, P, `Raise ${n} of 5`, CHIP_X, CHIP_Y, a, P.channel);
       }
       K.chip(c, P, 'Heels down, rest', CHIP_X, CHIP_Y, pulse(t, 22.4, 0.4, 7.4, 0.4), P.channel);
@@ -118,7 +135,10 @@
       if (l > 0.001) pose.farLeg = [12 * l, 60 * l];
       const { P } = livingRoom(c, P0, t, dur, pose, (g, fig, I, P) => {
         // a channel-coloured spot under the lifted foot ties it to the chip
-        for (const [k, leg] of [[r, fig.near], [l, fig.far]]) {
+        for (const [k, leg] of [
+          [r, fig.near],
+          [l, fig.far],
+        ]) {
           if (k < 0.02) continue;
           g.save();
           g.globalAlpha = k;
@@ -136,7 +156,9 @@
 
   LESSONS['rehab-hand-open-close-v1'] = {
     draw(c, P0, t) {
-      const dur = 20, I = ill(P0), P = { ...P0, channel: P0.channels.stroke_rehab };
+      const dur = 20,
+        I = ill(P0),
+        P = { ...P0, channel: P0.channels.stroke_rehab };
       let close = 0;
       const reps = t >= 4 && t < dur - 2;
       if (reps) {

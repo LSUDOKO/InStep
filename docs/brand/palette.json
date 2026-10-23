@@ -32,14 +32,7 @@
     "cpr": "#F87BAA",
     "kids": "#F6D653"
   },
-  "skin": [
-    "#F5D8C1",
-    "#E9B999",
-    "#D09673",
-    "#AA7053",
-    "#814F39",
-    "#5B382C"
-  ],
+  "skin": ["#F5D8C1", "#E9B999", "#D09673", "#AA7053", "#814F39", "#5B382C"],
   "illustration": {
     "shadow": "#05041B",
     "longShadow": "rgba(5,6,26,0.45)",
@@ -60,26 +53,9 @@
     "furnitureLight": "#895D49",
     "leaf": "#38988D",
     "leafDark": "#0C6C68",
-    "hair": [
-      "#2D1D14",
-      "#6C4128",
-      "#CBCED4",
-      "#C26B4C"
-    ],
-    "clothes": [
-      "#5FC6FF",
-      "#AE97FF",
-      "#5BD7D3",
-      "#F87BAA",
-      "#F6D653",
-      "#6284CE",
-      "#EDEEF5"
-    ],
-    "pants": [
-      "#263454",
-      "#335166",
-      "#262738"
-    ]
+    "hair": ["#2D1D14", "#6C4128", "#CBCED4", "#C26B4C"],
+    "clothes": ["#5FC6FF", "#AE97FF", "#5BD7D3", "#F87BAA", "#F6D653", "#6284CE", "#EDEEF5"],
+    "pants": ["#263454", "#335166", "#262738"]
   },
   "rules": [
     "No outlines/strokes on illustrated shapes; separate shapes by value (lighter in front, darker behind).",
@@ -90,11 +66,7 @@
     "Text over illustration: text colour on canvas/surface only (contrast table below), never on accents."
   ],
   "ui": {
-    "tvGlass": [
-      "rgba(170,176,255,0.1)",
-      "rgba(170,176,255,0.16)",
-      "rgba(170,176,255,0.24)"
-    ],
+    "tvGlass": ["rgba(170,176,255,0.1)", "rgba(170,176,255,0.16)", "rgba(170,176,255,0.24)"],
     "companionLabel2": "rgba(226,229,255,0.64)",
     "companionLabel3": "rgba(226,229,255,0.5)"
   },
@@ -166,30 +138,10 @@
     },
     "primaryInk_on_primary": 9.49,
     "primaryInk_on_ok": 10.35,
-    "tv_text_on_glass": [
-      14.83,
-      13.03,
-      10.74
-    ],
-    "tv_muted_on_glass": [
-      8.52,
-      7.48,
-      6.17
-    ],
-    "tv_faint_on_glass": [
-      6.65,
-      5.84,
-      4.81
-    ],
-    "companion_label2": [
-      6.65,
-      6.17,
-      5.47
-    ],
-    "companion_label3_nonText": [
-      4.5,
-      4.31,
-      3.96
-    ]
+    "tv_text_on_glass": [14.83, 13.03, 10.74],
+    "tv_muted_on_glass": [8.52, 7.48, 6.17],
+    "tv_faint_on_glass": [6.65, 5.84, 4.81],
+    "companion_label2": [6.65, 6.17, 5.47],
+    "companion_label3_nonText": [4.5, 4.31, 3.96]
   }
 }

@@ -29,8 +29,18 @@
     return `rgba(${c.map(Math.round).join(',')},${a})`;
   };
   K.blend = (h1, h2, k) => {
-    const a = K.rgb(h1), b = K.rgb(h2);
-    return '#' + a.map((v, i) => Math.round(K.mix(v, b[i], k)).toString(16).padStart(2, '0')).join('');
+    const a = K.rgb(h1),
+      b = K.rgb(h2);
+    return (
+      '#' +
+      a
+        .map((v, i) =>
+          Math.round(K.mix(v, b[i], k))
+            .toString(16)
+            .padStart(2, '0'),
+        )
+        .join('')
+    );
   };
 
   // ---------- flat shapes (no outlines) ----------
@@ -53,8 +63,18 @@
       const n = pts.length;
       p.moveTo(...pts[0]);
       for (let i = 0; i < n; i++) {
-        const a = pts[(i - 1 + n) % n], b = pts[i], c = pts[(i + 1) % n], d = pts[(i + 2) % n];
-        p.bezierCurveTo(b[0] + (c[0] - a[0]) / 6, b[1] + (c[1] - a[1]) / 6, c[0] - (d[0] - b[0]) / 6, c[1] - (d[1] - b[1]) / 6, c[0], c[1]);
+        const a = pts[(i - 1 + n) % n],
+          b = pts[i],
+          c = pts[(i + 1) % n],
+          d = pts[(i + 2) % n];
+        p.bezierCurveTo(
+          b[0] + (c[0] - a[0]) / 6,
+          b[1] + (c[1] - a[1]) / 6,
+          c[0] - (d[0] - b[0]) / 6,
+          c[1] - (d[1] - b[1]) / 6,
+          c[0],
+          c[1],
+        );
       }
       p.closePath();
     });
@@ -69,8 +89,10 @@
   // Flat form with one light direction (upper left): shadow tone, then the base shifted toward the light leaves a
   // shadow band on the lower-right edge, and a thin highlight on the upper-left edge.
   K.form = (c, path, base, o = {}) => {
-    const sh = o.shadow ?? K.shade(base, 0.78), hi = o.hi ?? 'rgba(255,255,255,0.22)';
-    const [vx, vy] = o.v ?? [9, 10], [wx, wy] = o.w ?? [4, 4];
+    const sh = o.shadow ?? K.shade(base, 0.78),
+      hi = o.hi ?? 'rgba(255,255,255,0.22)';
+    const [vx, vy] = o.v ?? [9, 10],
+      [wx, wy] = o.w ?? [4, 4];
     c.save();
     c.clip(path);
     c.fillStyle = sh;
@@ -106,7 +128,8 @@
   K.label = (c, P, dot) => {
     c.save();
     c.font = `600 30px ${K.FONT}`;
-    const text = 'Animated demonstration', w = c.measureText(text).width + 78;
+    const text = 'Animated demonstration',
+      w = c.measureText(text).width + 78;
     K.fill(c, K.rrect(56, 48, w, 60, 30), K.rgba(P.surface, 0.86));
     K.fill(c, K.circle(56 + 32, 78, 8), dot);
     c.fillStyle = P.text;
@@ -120,7 +143,9 @@
     c.save();
     c.globalAlpha = alpha;
     c.font = `700 40px ${K.FONT}`;
-    const tw = c.measureText(text).width, w = tw + (dot ? 100 : 72), x0 = x - w / 2;
+    const tw = c.measureText(text).width,
+      w = tw + (dot ? 100 : 72),
+      x0 = x - w / 2;
     K.fill(c, K.rrect(x0, y, w, 76, 38), K.rgba(P.surface, 0.9));
     if (dot) K.fill(c, K.circle(x0 + 40, y + 38, 10), dot);
     c.fillStyle = P.text;
