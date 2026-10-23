@@ -59,10 +59,16 @@ Every number above is listed with its source in [`docs/SOURCES.md`](docs/SOURCES
 
 ## How it works
 
+<p align="center"><img src="docs/architecture/system-diagram.png" width="960" alt="InStep system diagram in swimlanes: the learner's phone (browser) turns camera frames into body points with MediaPipe Tasks and sends only JSON, about 1 KB a frame and at most 30 a second, over a WebSocket relay on the InStep server (Node 22, Fastify, ws, node:sqlite on Render) to the Fire TV app (React Native for Vega), whose gate engine pauses and plays the W3C media player; gate state and tips flow back to the phone, never video. The server also serves lessons, .istep tracks and video over HTTPS, takes the instructor's demo video and reference.json from Creator Studio, loads lesson content at start and gives templated coach tips with Bedrock and Polly switched off. Shared TypeScript packages and a six-step legend for one gate complete the picture" /></p>
+
+The same system as a poster (the animated architecture shot in the demo film):
+
 <p align="center"><img src="docs/architecture/architecture.png" width="960" alt="InStep architecture: the phone runs MediaPipe in the browser and sends only body points (JSON, about 1 KB a frame) over a WebSocket relay on Render to the Fire TV app, whose gate engine pauses and resumes the W3C media player; Creator Studio, lesson content, shared TypeScript packages and the switched-off Bedrock + Polly coach are shown around them, with a six-step panel for one gate" /></p>
 
-Step by step, with file paths: [`docs/02-architecture.md`](docs/02-architecture.md). The diagram is code
-([`docs/architecture/architecture.html`](docs/architecture/architecture.html)) and animates for the demo film.
+Step by step, with file paths: [`docs/02-architecture.md`](docs/02-architecture.md). The diagrams are code
+([`docs/architecture/system-diagram.html`](docs/architecture/system-diagram.html),
+[`docs/architecture/architecture.html`](docs/architecture/architecture.html)) and animate deterministically with
+`window.seek(seconds)`.
 
 ```mermaid
 flowchart LR
