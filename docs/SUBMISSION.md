@@ -31,11 +31,11 @@ companion web app (React + MediaPipe Tasks in the browser); Node relay (Fastify 
 engine shared by TV, browser and server; Amazon Bedrock (Converse API) for coaching tips and Creator Studio step
 labels; Amazon Polly for voice; zod-validated protocol; 240 unit/integration tests and Playwright e2e in CI.
 Lesson teacher videos: animated demonstrations drawn to each gate (pycairo + ffmpeg), real CPR footage (Pexels,
-credited) and sign-language practice cards.
+credited) and illustrated sign-language handshapes, all narrated with a local voice model.
 
 **Honesty notes.** The camera is an external phone/laptop. CPR does not measure compression depth and is not
 certification. The teacher videos are animated demonstrations (labelled on screen), one credited stock CPR clip and
-sign-language practice cards — no clinician or Deaf signer has reviewed them yet. InStep has not been clinically tested; it is
+illustrated sign-language handshapes — no clinician or Deaf signer has reviewed them yet. InStep has not been clinically tested; it is
 designed to support practice, not to treat or diagnose. Related work: Kemtai, Fingerspelling.xyz, DRAX Inc. patent
 EP 4458432 (see README).
 

@@ -138,13 +138,13 @@ the steps (`pnpm demo-learner`). The gates, safety checks, reps, rhythm and hand
 
 **What the teacher video is, per lesson** (each one says so on screen):
 
-| Lesson                        | Video                                                                                                                |
-| ----------------------------- | -------------------------------------------------------------------------------------------------------------------- |
-| Heel raises, single-leg stand | **Animated demonstration** — a drawn figure does the exact move, timed to each gate                                  |
-| Open and close your hand      | **Animated demonstration** — a drawn hand at the teacher's 2 s pace (loops seamlessly while you catch up)            |
-| Hands-only CPR rhythm         | **Real footage** — compressions on a training manikin (Pexels stock, credited)                                       |
-| Fingerspelling, "I love you"  | **Practice cards** — what to sign, until Deaf signers record it (no drawn hands: a wrong shape teaches a wrong sign) |
-| The Forest Walk (kids)        | Illustrated story cards                                                                                              |
+| Lesson                        | Video                                                                                                                      |
+| ----------------------------- | -------------------------------------------------------------------------------------------------------------------------- |
+| Heel raises, single-leg stand | **Animated demonstration** — a drawn figure does the exact move, timed to each gate                                        |
+| Open and close your hand      | **Animated demonstration** — a drawn hand at the teacher's 2 s pace (loops seamlessly while you catch up)                  |
+| Hands-only CPR rhythm         | **Real footage** — compressions on a training manikin (Pexels stock, credited)                                             |
+| Fingerspelling, "I love you"  | **Illustrated handshapes** — one animated hand forms A B C L Y and I-love-you; labelled "not yet reviewed by Deaf signers" |
+| The Forest Walk (kids)        | Illustrated story cards                                                                                                    |
 
 Animations: [`scripts/make-animated-lesson.py`](scripts/make-animated-lesson.py) (pycairo + ffmpeg). Credits and
 consent: [`content/CREDITS.md`](content/CREDITS.md). A recorded demonstration replaces any of them by dropping in a
@@ -447,14 +447,14 @@ with a demo driven by a synthetic landmark stream. It is generated from this mon
 
 ## Status
 
-| Area                                                        | State                                                                                                          |
-| ----------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------- |
-| Packages (format, engine, protocol, player controller)      | ✅ built, tested (engine ≈ 98 % line coverage)                                                                 |
-| Server (relay, REST, coach, labels, voice, MCP)             | ✅ built, tested (60 s relay soak: 1800/1800 msgs, p95 1.2 ms)                                                 |
-| Companion (camera node, Creator Studio, report, hands-free) | ✅ built, Playwright e2e in CI                                                                                 |
-| TV app (Vega)                                               | ✅ runs on the Vega Virtual Device: full lesson end to end against the hosted server                           |
-| Bedrock / Polly                                             | 🟡 code complete + tested with mocks; account verified; live calls off ($0 credits, no card spend)             |
-| Lesson videos                                               | ✅ animated demos (fall, rehab), real CPR footage, kids story; 🟡 ASL practice cards until Deaf signers record |
+| Area                                                        | State                                                                                                                   |
+| ----------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------- |
+| Packages (format, engine, protocol, player controller)      | ✅ built, tested (engine ≈ 98 % line coverage)                                                                          |
+| Server (relay, REST, coach, labels, voice, MCP)             | ✅ built, tested (60 s relay soak: 1800/1800 msgs, p95 1.2 ms)                                                          |
+| Companion (camera node, Creator Studio, report, hands-free) | ✅ built, Playwright e2e in CI                                                                                          |
+| TV app (Vega)                                               | ✅ runs on the Vega Virtual Device: full lesson end to end against the hosted server                                    |
+| Bedrock / Polly                                             | 🟡 code complete + tested with mocks; account verified; live calls off ($0 credits, no card spend)                      |
+| Lesson videos                                               | ✅ animated demos for every lesson + real CPR footage, all narrated; 🟡 ASL handshapes not yet reviewed by Deaf signers |
 
 ## Contributing
 
