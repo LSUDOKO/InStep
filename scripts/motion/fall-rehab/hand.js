@@ -95,8 +95,11 @@
     const elbow = [cx + 0.1 * u, TABLE_Y + 40], wrist = [cx, cy + 0.55 * u], cuff = K.lerp2(elbow, wrist, 0.5);
     form(c, limb(elbow, wrist, 0.8 * u, 0.6 * u), skin, { shadow: shade(skin, 0.84), v: [14, 0], w: [6, 0] });
     fill(c, limb([cx - 0.18 * u, cy + 0.66 * u], [cx + 0.2 * u, cy + 0.62 * u], 0.03 * u, 0.03 * u), rgba(I.shadow, 0.12)); // wrist crease
-    form(c, limb(elbow, cuff, 0.98 * u, 0.84 * u), P.channel, { shadow: shade(P.channel, 0.78), v: [16, 4], w: [6, 2] });
-    fill(c, limb(K.lerp2(elbow, wrist, 0.44), cuff, 0.86 * u, 0.84 * u), shade(P.channel, 1.18)); // pushed-up cuff
+    // sleeve pushed up to mid-forearm: a soft trapezoid with a rolled cuff and two folds
+    const sw = 0.9 * u, bot = TABLE_Y + 150;
+    form(c, poly([[cuff[0] - sw * 0.47, cuff[1]], [cuff[0] + sw * 0.47, cuff[1]], [elbow[0] + sw * 0.6, bot], [elbow[0] - sw * 0.6, bot]]), P.channel, { shadow: shade(P.channel, 0.78), v: [18, 0], w: [7, 0] });
+    for (const k of [0.4, 0.72]) fill(c, limb(K.lerp2([cuff[0] - sw * 0.4, cuff[1]], [elbow[0] - sw * 0.5, bot], k), K.lerp2([cuff[0] + sw * 0.1, cuff[1]], [elbow[0] + sw * 0.1, bot], k + 0.06), 9, 6), shade(P.channel, 0.84));
+    form(c, rrect(cuff[0] - sw * 0.52, cuff[1] - 0.07 * u, sw * 1.04, 0.15 * u, 0.07 * u), shade(P.channel, 1.12), { shadow: shade(P.channel, 0.9), v: [6, 6], w: [3, 3] });
     towel(c, P, I);
     // palm with the thumb's muscle (right side) and creases that hide as the hand closes
     const palm = blob([[cx - 0.5 * u, cy - 0.46 * u], [cx, cy - 0.53 * u], [cx + 0.5 * u, cy - 0.44 * u], [cx + 0.54 * u, cy + 0.1 * u], [cx + 0.38 * u, cy + 0.56 * u], [cx - 0.02 * u, cy + 0.68 * u], [cx - 0.4 * u, cy + 0.5 * u], [cx - 0.54 * u, cy + 0.02 * u]]);

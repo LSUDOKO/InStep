@@ -148,7 +148,7 @@
       // chip follows the rep phase, so 4 s and 8 s both read "Open wide"
       const p = t >= 4 ? (t - 4) % 2 : 0;
       const chipA = Math.min(ramp(t, 3.6, 4.0), 1 - ramp(t, dur - 2.4, dur - 2));
-      K.chip(c, P, p >= 0.45 && p < 1.45 ? 'Soft fist' : 'Open wide', CHIP_X, CHIP_Y, chipA, P.channel);
+      K.chip(c, P, p >= 0.55 && p < 1.45 ? 'Soft fist' : 'Open wide', CHIP_X, CHIP_Y, chipA, P.channel);
       K.label(c, P, P.channel);
     },
   };
