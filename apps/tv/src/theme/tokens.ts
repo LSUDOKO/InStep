@@ -6,57 +6,64 @@ export const px = (n: number) => Math.round(n * scale);
 
 export type Palette = typeof dark;
 /**
- * tvOS-grade dark theme. A true-black canvas (TV panels) with "glass" surfaces as white at low opacity,
- * a near-white focus platter with a near-black label (tvOS button focus), and teal reserved for progress
- * and success. Metrics come from Apple's tvOS 18 design templates; fonts are Amazon Ember (Vega's system face).
+ * "Blue Hour" brand (docs/brand/palette.json, docs/09): a deep night-indigo canvas for living rooms, glass
+ * surfaces as indigo-tinted white at low opacity, a near-white focus platter with an indigo label (tvOS button
+ * focus), and sky blue as the brand (ghost skeleton, progress). ok / near / far are reserved for feedback.
+ * Metrics come from Apple's tvOS 18 design templates; fonts are Amazon Ember (Vega's system face).
  */
 const dark = {
-  bg: '#000000',
-  /** glass surfaces over black or over artwork */
-  surface: 'rgba(255,255,255,0.08)',
-  surface2: 'rgba(255,255,255,0.14)',
-  surface3: 'rgba(255,255,255,0.22)',
+  bg: '#0D0E2C',
+  /** glass surfaces over the canvas or over artwork */
+  surface: 'rgba(170,176,255,0.10)',
+  surface2: 'rgba(170,176,255,0.16)',
+  surface3: 'rgba(170,176,255,0.24)',
   /** opaque fallbacks where translucency would stack */
-  solid: '#141414',
-  text: '#FFFFFF',
-  muted: 'rgba(255,255,255,0.62)',
-  faint: 'rgba(255,255,255,0.38)',
-  brand: '#4FD1C5',
+  solid: '#1A1C3F',
+  text: '#F5F6FE',
+  muted: '#B8BCD5',
+  faint: '#A1A6C1',
+  brand: '#5FC6FF',
   /** focus platter (tvOS: white @ 90–95 %) and the label on it */
-  focus: '#F5F5F7',
-  onFocus: '#0B0B0C',
-  ok: '#34D399',
-  near: '#FBBF24',
-  far: '#F87171',
-  info: '#93C5FD',
-  neutral: '#6B7280',
-  scrim: 'rgba(0,0,0,0.62)',
-  hairline: 'rgba(255,255,255,0.12)',
-  shadow: '#000000',
+  focus: '#F5F6FE',
+  onFocus: '#0D0E2C',
+  ok: '#49DE78',
+  near: '#FFB439',
+  far: '#FF6762',
+  info: '#B5B8F1',
+  neutral: '#6F7389',
+  scrim: 'rgba(5,6,26,0.62)',
+  hairline: 'rgba(184,188,213,0.16)',
+  shadow: '#05041B',
   stroke: 1,
 };
 const highContrast: Palette = {
   ...dark,
+  bg: '#000000',
   surface: '#1A1A1A',
   surface2: '#2A2A2A',
   surface3: '#3A3A3A',
   solid: '#0A0A0A',
+  text: '#FFFFFF',
   muted: '#E5E5E5',
   faint: '#BDBDBD',
+  focus: '#FFFFFF',
+  onFocus: '#000000',
   ok: '#00FF7F',
   near: '#FFD400',
   far: '#FF3B30',
+  scrim: 'rgba(0,0,0,0.62)',
   hairline: '#FFFFFF',
+  shadow: '#000000',
   stroke: 1.5,
 };
 export const palettes = { dark, highContrast };
 
 export const channelColor: Record<string, string> = {
-  fall_prevention: '#4FD1C5',
-  stroke_rehab: '#7AA7FF',
-  sign_language: '#C08BFF',
-  cpr: '#FF6B6B',
-  kids: '#FFB547',
+  fall_prevention: '#5FC6FF',
+  stroke_rehab: '#5BD7D3',
+  sign_language: '#AE97FF',
+  cpr: '#F87BAA',
+  kids: '#F6D653',
 };
 
 /**
