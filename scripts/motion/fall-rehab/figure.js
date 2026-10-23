@@ -36,7 +36,7 @@
   }
 
   // o: { heelX, heel (deg, both feet), farLeg/nearLeg: [thighDeg, kneeDeg] (lifts that leg), lean (deg), rail: [x,y] }
-  // Facing right, the far leg is her right leg and the near leg her left.
+  // Facing screen-right she shows the viewer her right side: the near leg is her right leg, the far leg her left.
   F.pose = (o) => {
     let far = legFromGround(o.heelX - 0.012 * S, o.heel || 0), near = legFromGround(o.heelX + 0.012 * S, o.heel || 0);
     let hip = [(far.hip[0] + near.hip[0]) / 2, Math.min(far.hip[1], near.hip[1])];

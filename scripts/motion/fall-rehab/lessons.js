@@ -108,15 +108,15 @@
   LESSONS['fall-single-leg-stand-v1'] = {
     draw(c, P0, t) {
       const dur = 40;
-      const r = pulse(t, 9.0, 1.2, 7.0, 1.2); // right foot up 10.2..17.2 (gate t=12, hold 5 s)
-      const l = pulse(t, 23.0, 1.2, 7.0, 1.2); // left foot up 24.2..31.2 (gate t=26, hold 5 s)
-      // facing right, the far leg is her right leg
+      const r = pulse(t, 9.0, 1.2, 6.2, 1.2); // right foot up 10.2..16.4 (gate t=12, hold 5 s), down with the narration
+      const l = pulse(t, 23.0, 1.2, 6.2, 1.2); // left foot up 24.2..30.4 (gate t=26, hold 5 s)
+      // facing screen-right she shows us her right side: the near leg is her right leg, the far leg her left
       const pose = { lean: 3, chin: 2 };
-      if (r > 0.001) pose.farLeg = [12 * r, 60 * r];
-      if (l > 0.001) pose.nearLeg = [12 * l, 60 * l];
+      if (r > 0.001) pose.nearLeg = [12 * r, 60 * r];
+      if (l > 0.001) pose.farLeg = [12 * l, 60 * l];
       const { P } = livingRoom(c, P0, t, dur, pose, (g, fig, I, P) => {
         // a channel-coloured spot under the lifted foot ties it to the chip
-        for (const [k, leg] of [[r, fig.far], [l, fig.near]]) {
+        for (const [k, leg] of [[r, fig.near], [l, fig.far]]) {
           if (k < 0.02) continue;
           g.save();
           g.globalAlpha = k;
@@ -126,8 +126,8 @@
       });
       K.fade(c, P, t, dur);
       K.chip(c, P, 'Hands on the chair', CHIP_X, CHIP_Y, pulse(t, 0.6, 0.4, 7.4, 0.4), P.channel);
-      K.chip(c, P, 'Right foot', CHIP_X, CHIP_Y, pulse(t, 8.8, 0.4, 9.2, 0.4), P.channel);
-      K.chip(c, P, 'Left foot', CHIP_X, CHIP_Y, pulse(t, 22.8, 0.4, 9.2, 0.4), P.channel);
+      K.chip(c, P, 'Right foot', CHIP_X, CHIP_Y, pulse(t, 8.8, 0.4, 8.4, 0.4), P.channel);
+      K.chip(c, P, 'Left foot', CHIP_X, CHIP_Y, pulse(t, 22.8, 0.4, 8.4, 0.4), P.channel);
       K.label(c, P, P.channel);
     },
   };
