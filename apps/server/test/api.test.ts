@@ -52,7 +52,7 @@ describe('health and catalog', () => {
       'kids',
     ]);
     const ids = c.channels.flatMap((x: { lessons: { id: string }[] }) => x.lessons.map((l) => l.id));
-    expect(ids).toEqual(['fall-heel-raise-v1', 'kids-forest-walk-v1']); // kids video is generated (scripts/make-kids-video.sh)
+    expect(ids).toEqual(['fall-heel-raise-v1', 'cpr-rhythm-v1', 'kids-forest-walk-v1']); // CPR is Pexels stock; kids video is generated (scripts/make-kids-video.sh)
   });
   it('?all=1 also includes the drafts waiting for video', async () => {
     const c = (await json('GET', '/api/lessons?all=1')).json();

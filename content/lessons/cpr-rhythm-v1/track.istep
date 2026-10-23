@@ -6,7 +6,7 @@
   "language": "en-US",
   "video": {
     "src": "video.mp4",
-    "durationSec": 30
+    "durationSec": 15
   },
   "tracking": [
     "pose"
@@ -22,7 +22,7 @@
   "gates": [
     {
       "id": "placement",
-      "t": 4,
+      "t": 2,
       "type": "safety_prerequisite",
       "label": "Kneel beside a firm cushion",
       "checks": [
@@ -35,7 +35,7 @@
     },
     {
       "id": "rhythm",
-      "t": 12,
+      "t": 6,
       "type": "rhythm_bpm",
       "label": "Push hard and fast — follow the beat",
       "signal": {
@@ -55,7 +55,7 @@
     }
   ],
   "credits": {
-    "creator": "InStep demonstration lesson",
-    "license": "CC-BY-4.0"
+    "creator": "Juma Mülhem on Pexels (pexels.com/video/13755055)",
+    "license": "Pexels License"
   }
 }
