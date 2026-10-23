@@ -59,26 +59,26 @@ export default function Report({ token }: { token: string }) {
     ? Math.min(100, Math.round((data.adherence.done / data.adherence.planned) * 100))
     : null;
   return (
-    <main className="page report" style={{ maxWidth: 820 }}>
+    <main className="page wide report">
       <div className="topbar">
         <Brand />
-        <button className="btn ghost no-print" onClick={() => print()}>
+        <button className="btn ghost small no-print" onClick={() => print()}>
           <Printer size={18} /> Print
         </button>
       </div>
-      <h1>
+      <h1 className="title1">
         {data.learner.name}'s practice — last {data.days} days
       </h1>
-      <div className="banner" style={{ background: 'color-mix(in srgb, var(--ok) 14%, var(--surface))' }}>
-        <ShieldCheck size={20} color="var(--ok)" /> No video is ever recorded or stored. These numbers come
-        from body points only.
+      <div className="banner ok">
+        <ShieldCheck size={20} /> No video is ever recorded or stored. These numbers come from body points
+        only.
       </div>
       <div className="stat-grid">
         <div className="stat">
           <span className="muted small">Sessions</span>
           <b>
             {data.adherence.done}
-            {data.adherence.planned ? ` of ${data.adherence.planned} planned` : ''}
+            {data.adherence.planned ? <span className="unit"> of {data.adherence.planned} planned</span> : ''}
           </b>
           {pct !== null && <span className="muted small">{pct}% of the plan</span>}
         </div>
@@ -118,7 +118,7 @@ export default function Report({ token }: { token: string }) {
         <section className="card">
           <strong>Steps that needed a tip most often</strong>
           {data.needsCoaching.map((n) => (
-            <div key={n.lessonId + n.label} className="row">
+            <div key={n.lessonId + n.label} className="row line">
               <span className="grow">{n.label}</span>
               <span className="muted">{n.coachedCount}×</span>
             </div>
@@ -130,11 +130,7 @@ export default function Report({ token }: { token: string }) {
         <strong>Sessions</strong>
         {data.sessions.length === 0 && <p className="muted">No sessions in this period yet.</p>}
         {data.sessions.map((s) => (
-          <div
-            key={s.startedAt}
-            className="stack"
-            style={{ gap: 2, borderTop: '1px solid var(--surface-2)', paddingTop: 8 }}
-          >
+          <div key={s.startedAt} className="stack line" style={{ gap: 2 }}>
             <span>
               <strong>{new Date(s.startedAt).toLocaleDateString()}</strong> {s.lessonTitle}
             </span>

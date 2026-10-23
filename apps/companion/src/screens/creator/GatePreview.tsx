@@ -1,7 +1,7 @@
 import { createGateRunner, type GateEval } from '@instep/gate-engine';
 import type { Gate, ReferenceTimeline } from '@instep/istep-format';
 import { toFrame } from '@instep/protocol';
-import { CheckCircle2, Loader2, RotateCcw, X } from 'lucide-react';
+import { AlertTriangle, CheckCircle2, Loader2, RotateCcw, X } from 'lucide-react';
 import { useEffect, useRef, useState } from 'react';
 import { Preview } from '../../components/Preview';
 import { getVision } from '../../lib/getVision';
@@ -77,14 +77,18 @@ export function GatePreview({
         onClick={(e) => e.stopPropagation()}
       >
         <div className="row">
-          <h1 id="preview-title" className="grow" style={{ fontSize: 22 }}>
+          <h1 id="preview-title" className="grow">
             Try: {gate.label}
           </h1>
           <button className="btn ghost icon" onClick={onClose} aria-label="Close">
-            <X size={22} />
+            <X size={16} strokeWidth={2.5} aria-hidden />
           </button>
         </div>
-        {error && <div className="banner bad">{error}</div>}
+        {error && (
+          <div className="banner bad">
+            <AlertTriangle size={20} /> {error}
+          </div>
+        )}
         {!stream && !error && (
           <p className="row muted">
             <Loader2 className="spin" size={18} /> Opening the camera…

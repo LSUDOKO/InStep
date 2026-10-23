@@ -167,7 +167,7 @@ export function RecordStep({
           <button className="btn primary block" onClick={() => void openCamera()}>
             <Circle size={20} /> Record demonstration
           </button>
-          <label className="btn ghost block" style={{ cursor: 'pointer' }}>
+          <label className="btn ghost block">
             <Upload size={20} /> Upload a video instead
             <input
               type="file"
@@ -189,11 +189,7 @@ export function RecordStep({
           <div style={{ position: 'relative' }}>
             <Preview stream={stream} mirrored hidden={false} videoRef={videoRef} drawRef={drawRef} />
             {status === 'recording' && (
-              <span
-                className="chip bad"
-                role="status"
-                style={{ position: 'absolute', top: 12, left: 12, background: 'rgba(0,0,0,0.6)' }}
-              >
+              <span className="chip bad onvideo rec num" role="status">
                 <span className="dot" /> REC {Math.floor(elapsed)}s / {MAX_RECORD_SEC}s
               </span>
             )}
@@ -203,7 +199,7 @@ export function RecordStep({
               <Circle size={20} fill="currentColor" /> Start recording
             </button>
           ) : (
-            <button className="btn block" style={{ background: 'var(--far)', color: '#fff' }} onClick={stop}>
+            <button className="btn danger block" onClick={stop}>
               <Square size={20} fill="currentColor" /> Stop recording
             </button>
           )}
@@ -212,12 +208,7 @@ export function RecordStep({
 
       {status === 'review' && take && (
         <>
-          <video
-            src={take.url}
-            controls
-            playsInline
-            style={{ width: '100%', borderRadius: 16, background: '#000' }}
-          />
+          <video src={take.url} controls playsInline className="media" />
           <p className="muted small">
             {take.reference.frames.length} body-point frames captured ·{' '}
             {(take.video.size / 1024 / 1024).toFixed(1)} MB video

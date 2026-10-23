@@ -140,7 +140,7 @@ export function GateEditor(props: {
 
   return (
     <div className="stack">
-      <div style={{ position: 'relative', borderRadius: 16, overflow: 'hidden', background: '#000' }}>
+      <div className="media" style={{ position: 'relative' }}>
         <video
           ref={video}
           src={props.videoUrl}
@@ -208,21 +208,29 @@ export function GateEditor(props: {
         <p className="muted">No steps yet. Add one at the current video time, or let InStep suggest steps.</p>
       )}
 
-      <div className="row" style={{ flexWrap: 'wrap' }}>
+      <div className="list">
         {ADDABLE[track.channel].map((type) => (
           <button
             key={type}
-            className="btn ghost"
+            className="item action"
             onClick={() => {
               const ng = newGate(type, Math.round(now * 10) / 10, gates.length + 1);
               sortAndSelect([...gates, ng], ng);
             }}
           >
-            <Plus size={18} /> {TYPE_LABEL[type]} at {now.toFixed(1)} s
+            <span className="mark">
+              <Plus size={22} aria-hidden />
+            </span>
+            <span className="title num">
+              {TYPE_LABEL[type]} at {now.toFixed(1)} s
+            </span>
           </button>
         ))}
-        <button className="btn ghost" onClick={props.onAutogates}>
-          <Wand2 size={18} /> Suggest steps again
+        <button className="item action" onClick={props.onAutogates}>
+          <span className="mark">
+            <Wand2 size={20} aria-hidden />
+          </span>
+          <span className="title">Suggest steps again</span>
         </button>
       </div>
 
@@ -252,11 +260,7 @@ export function GateEditor(props: {
               </button>
             ) : null}
           </div>
-          {props.errors[g.id] && (
-            <p className="small" style={{ color: 'var(--far)' }}>
-              {props.errors[g.id]}
-            </p>
-          )}
+          {props.errors[g.id] && <p className="small field-error">{props.errors[g.id]}</p>}
 
           <label htmlFor="t">Time (seconds)</label>
           <div className="row">
@@ -272,7 +276,8 @@ export function GateEditor(props: {
               onBlur={() => sortAndSelect(gates, g)}
             />
             <button
-              className="btn ghost"
+              className="btn ghost num"
+              style={{ whiteSpace: 'nowrap' }}
               onClick={() =>
                 sortAndSelect(
                   gates.map((x, k) => (k === sel ? retime(x, now) : x)),
@@ -294,8 +299,7 @@ export function GateEditor(props: {
           <label htmlFor="tip">Tip when someone is stuck</label>
           <textarea
             id="tip"
-            className="text-input"
-            style={{ minHeight: 80, padding: 12 }}
+            className="text-input short"
             maxLength={200}
             value={g.fallbackTip}
             onChange={(e) => update(sel, { fallbackTip: e.target.value })}

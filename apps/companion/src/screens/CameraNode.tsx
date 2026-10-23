@@ -424,7 +424,7 @@ export function CameraNode() {
               </div>
             ))}
           </div>
-          <p id="room-help" className="muted small">
+          <p id="room-help" className="muted small footer-note">
             The four numbers under the QR code on your TV.
           </p>
           {role === 'guest' && (
@@ -518,35 +518,45 @@ export function CameraNode() {
       <div className="list" aria-live="polite">
         {placement && (
           <div className={`item ${placement.ok ? 'ok' : 'warn'}`}>
-            <span className="mark" />
+            <span className="mark">
+              <Camera size={17} aria-hidden />
+            </span>
             <span>
               <span className="title" data-testid="placement">
                 {placement.message}
               </span>
               {lesson.hint && <span className="sub">{lesson.hint}</span>}
             </span>
-            {placement.ok ? <CheckCircle2 color="var(--ok)" /> : <AlertTriangle color="var(--near)" />}
+            {placement.ok ? (
+              <CheckCircle2 size={22} color="var(--ok)" aria-label="Good" />
+            ) : (
+              <AlertTriangle size={22} color="var(--near)" aria-label="Adjust" />
+            )}
           </div>
         )}
         {gate && hidePreview && (
           <div className={`item ${gateTone}`}>
-            <span className="mark" />
+            <span className="mark">
+              <Tv size={17} aria-hidden />
+            </span>
             <span>
               <span className="title">{gate.label}</span>
               {gate.worst && <span className="sub">{gate.worst.hint}</span>}
             </span>
-            <Tv size={20} color="var(--brand)" />
           </div>
         )}
         {loadingTrackers && (
           <div className="item brand">
-            <span className="mark" />
+            <span className="mark">
+              <Loader2 className="spin" size={17} aria-hidden />
+            </span>
             <span className="title">Getting ready for this lesson</span>
-            <Loader2 className="spin" size={20} />
           </div>
         )}
         <div className="item">
-          <span className="mark" />
+          <span className="mark" style={{ background: 'var(--indigo)' }}>
+            <Tv size={17} aria-hidden />
+          </span>
           <span>
             <span className="title">Room {room}</span>
             <span className="sub num">
@@ -554,21 +564,33 @@ export function CameraNode() {
               {fps ? ` — ${fps} frames per second` : ''}
             </span>
           </span>
-          <span />
         </div>
       </div>
 
-      <div className="stack">
-        {lesson.gestures && (
-          <p className="muted small">
-            Hands-free: raise one hand above your head for two seconds to pause or play.
-          </p>
-        )}
-        {speechRecognitionAvailable() && (
-          <button className="btn ghost block" onClick={() => void voice()} disabled={listening}>
-            <Mic size={20} /> {listening ? 'Listening…' : 'Say a command: pause, play, repeat, easier'}
+      {speechRecognitionAvailable() && (
+        <div className="list">
+          <button className="item action" onClick={() => void voice()} disabled={listening}>
+            <span className="mark">
+              <Mic size={20} aria-hidden />
+            </span>
+            {listening ? (
+              <span className="title">Listening…</span>
+            ) : (
+              <span>
+                <span className="title">Say a command:</span>
+                <span className="sub">pause, play, repeat, easier</span>
+              </span>
+            )}
           </button>
-        )}
+        </div>
+      )}
+      {lesson.gestures && (
+        <p className="muted small footer-note">
+          Hands-free: raise one hand above your head for two seconds to pause or play.
+        </p>
+      )}
+
+      <div className="stack">
         {RECORD && (
           <button className="btn ghost block" onClick={downloadRecording}>
             Save landmarks recording (numbers only, stays on this device)

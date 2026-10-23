@@ -8,6 +8,20 @@ InStep should feel **calm, warm and trustworthy** — closer to a good physiothe
 > Source of truth: `apps/tv/src/theme/tokens.ts`. Brand voice, state colours (ok/near/far) and the
 > skeleton rules below still apply.
 
+> **Companion (iOS idiom), Oct 23:** the phone companion (`apps/companion/src/styles.css`) follows Apple's
+> iOS 18 dark-mode HIG so it feels like a first-party app next to the TV. Tokens: background `#000`, cells and
+> sheets `#1C1C1E`, cells inside sheets `#2C2C2E`, hairline separator `rgba(84,84,88,0.65)` inset to the text
+> column, labels `#FFF` / `rgba(235,235,245,0.6)` / `rgba(235,235,245,0.3)`, gray fill `rgba(120,120,128,0.24)`.
+> Tint is the brand teal `#4FD1C5` (near-black label on filled buttons); states use systemGreen `#30D158`,
+> systemOrange `#FF9F0A`, systemRed `#FF453A`; links systemBlue `#0A84FF`. Type: the system font
+> (`-apple-system`, SF Pro) with Inter Variable as the fallback (−0.01 em body, −0.02 em at 20 px and up);
+> Large Title 34/41 bold, Title3 20/25 semibold, Body 17/22, Subheadline 15/20, Footnote 13/18. Components:
+> 44 pt nav row (logo + name, or tinted back chevron), inset grouped lists (radius 12, 16 px insets, 29 pt
+> coloured icon tiles, chevrons only on rows that navigate), 50 px buttons (radius 14; filled tint, or gray
+> fill with tint label), capsule badges, uppercase footnote field headers, 20 px sheets with a grabber,
+> blurred dark material (`saturate(180%) blur(20px)`) for everything over the camera preview, Lucide icons
+> at 1.75 stroke, 200–300 ms ease transitions removed under `prefers-reduced-motion`.
+
 ## 1. Brand
 
 - **Name:** InStep · **Tagline:** "The video that waits for you."

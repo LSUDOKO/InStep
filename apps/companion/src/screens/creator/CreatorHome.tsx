@@ -1,10 +1,19 @@
 import type { Catalog } from '@instep/protocol';
-import { AlertTriangle, KeyRound, Loader2, Plus } from 'lucide-react';
+import { AlertTriangle, ChevronRight, Clapperboard, KeyRound, Loader2, Lock, Plus } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { Brand } from '../../components/Brand';
 import { FullMessage } from '../../components/FullMessage';
 import { creatorApi, creatorPin } from '../../lib/creatorApi';
 import { navigate } from '../../lib/router';
+
+/** Channel accents, shared with the TV (apps/tv/src/theme/tokens.ts). */
+const CHANNEL_COLOR: Record<string, string> = {
+  fall_prevention: '#4FD1C5',
+  stroke_rehab: '#7AA7FF',
+  sign_language: '#C08BFF',
+  cpr: '#FF6B6B',
+  kids: '#FFB547',
+};
 
 /** Demo-only PIN gate (CREATOR_PIN). Production would need real accounts. */
 export function PinGate({ children }: { children: React.ReactNode }) {
@@ -25,7 +34,7 @@ export function PinGate({ children }: { children: React.ReactNode }) {
     <main className="page">
       <Brand />
       <h1>Creator Studio</h1>
-      <p className="muted">
+      <p className="lede">
         Record a lesson once on your phone. InStep finds the key moments and turns them into steps that wait
         for the learner.
       </p>
@@ -78,16 +87,17 @@ function LessonList() {
   useEffect(() => {
     creatorApi.list().then(setCatalog, (e: Error) => setError(e.message));
   }, []);
-  const all = catalog?.channels.flatMap((c) => c.lessons.map((l) => ({ ...l, channelTitle: c.title }))) ?? [];
+  const all =
+    catalog?.channels.flatMap((c) =>
+      c.lessons.map((l) => ({ ...l, channelTitle: c.title, color: CHANNEL_COLOR[c.channel] })),
+    ) ?? [];
   const mine = all.filter((l) => l.editable);
   const builtIn = all.filter((l) => !l.editable);
 
   return (
     <main className="page">
-      <div className="topbar">
-        <Brand />
-        <span className="chip info">Creator Studio</span>
-      </div>
+      <Brand />
+      <h1>Creator Studio</h1>
       <button className="btn primary block" onClick={() => navigate('/c/creator/new')}>
         <Plus size={20} /> New lesson
       </button>
@@ -103,18 +113,16 @@ function LessonList() {
       )}
       {catalog && (
         <>
-          <h2>Your lessons</h2>
+          <h2 className="section-title">Your lessons</h2>
           <div className="list">
             {mine.length === 0 && (
-              <p className="muted">No lessons yet. Tap “New lesson” to record your first one.</p>
+              <p className="item plain muted">No lessons yet. Tap “New lesson” to record your first one.</p>
             )}
             {mine.map((l) => (
-              <button
-                key={l.id}
-                className={`item ${l.status === 'published' ? 'ok' : 'warn'}`}
-                onClick={() => navigate(`/c/creator/${l.id}`)}
-              >
-                <span className="mark" />
+              <button key={l.id} className="item" onClick={() => navigate(`/c/creator/${l.id}`)}>
+                <span className="mark" style={{ background: l.color, color: '#000' }}>
+                  <Clapperboard size={17} aria-hidden />
+                </span>
                 <span>
                   <span className="title">{l.title}</span>
                   <span className="sub">
@@ -124,16 +132,19 @@ function LessonList() {
                 <span className={`chip ${l.status === 'published' ? 'ok' : 'warn'}`}>
                   {l.status === 'published' ? 'On TV' : 'Draft'}
                 </span>
+                <ChevronRight className="chev" size={20} aria-hidden />
               </button>
             ))}
           </div>
           {builtIn.length > 0 && (
             <>
-              <h2>Built-in demonstration lessons</h2>
+              <h2 className="section-title">Built-in demonstration lessons</h2>
               <div className="list">
                 {builtIn.map((l) => (
                   <div key={l.id} className="item">
-                    <span className="mark" />
+                    <span className="mark" style={{ background: l.color, color: '#000' }}>
+                      <Lock size={15} aria-hidden />
+                    </span>
                     <span>
                       <span className="title">{l.title}</span>
                       <span className="sub">{l.channelTitle}, read-only</span>

@@ -149,14 +149,11 @@ function Form() {
         <textarea
           id="disclaimer"
           className="text-input"
-          style={{ minHeight: 110, padding: 12 }}
           value={disclaimer}
           onChange={(e) => setDisclaimer(e.target.value)}
         />
         {requiresDisclaimer && !disclaimer.trim() && (
-          <p className="small" style={{ color: 'var(--near)' }}>
-            This channel always needs a safety note.
-          </p>
+          <p className="small field-warn">This channel always needs a safety note.</p>
         )}
         {error && (
           <div className="banner bad" role="alert">

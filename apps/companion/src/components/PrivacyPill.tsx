@@ -59,7 +59,7 @@ export function PrivacyPill({ lastMessage }: { lastMessage: string | null }) {
                 What leaves this phone
               </h2>
               <button className="btn ghost icon" onClick={() => setOpen(false)} aria-label="Close">
-                <X size={22} />
+                <X size={16} strokeWidth={2.5} aria-hidden />
               </button>
             </div>
             <p className="muted">

@@ -1,9 +1,8 @@
 import type { Gate, IstepTrack, ReferenceTimeline } from '@instep/istep-format';
 import { validateTrack } from '@instep/istep-format';
 import type { LessonDetail } from '@instep/protocol';
-import { AlertTriangle, ArrowLeft, CheckCircle2, Loader2, Save, Send, Tv } from 'lucide-react';
+import { AlertTriangle, CheckCircle2, ChevronLeft, Loader2, Save, Send, Wand2 } from 'lucide-react';
 import { useCallback, useEffect, useState } from 'react';
-import { Brand } from '../../components/Brand';
 import { FullMessage } from '../../components/FullMessage';
 import { creatorApi, CreatorError } from '../../lib/creatorApi';
 import { navigate } from '../../lib/router';
@@ -131,38 +130,28 @@ function Editor({ id }: { id: string }) {
   };
 
   return (
-    <main className="page" style={{ maxWidth: 820 }}>
+    <main className="page wide">
       <div className="topbar">
-        <button className="btn ghost" onClick={() => navigate('/c/creator')}>
-          <ArrowLeft size={20} /> Lessons
+        <button className="back" onClick={() => navigate('/c/creator')}>
+          <ChevronLeft size={28} strokeWidth={2.25} aria-hidden /> Lessons
         </button>
-        <Brand />
-      </div>
-      <div className="row">
-        <h1 className="grow" style={{ fontSize: 24 }}>
-          {lesson.title}
-        </h1>
         <span className={`chip ${lesson.status === 'published' ? 'ok' : 'warn'}`}>
           {lesson.status === 'published' ? 'Published' : 'Draft'}
         </span>
       </div>
+      <h1>{lesson.title}</h1>
 
       {note && (
         <div
           className={`banner ${note.tone === 'bad' ? 'bad' : note.tone === 'ok' ? 'ok' : 'info'}`}
           role="status"
-          style={
-            note.tone === 'ok'
-              ? { background: 'color-mix(in srgb, var(--ok) 16%, var(--surface))' }
-              : undefined
-          }
         >
           {note.tone === 'ok' ? (
             <CheckCircle2 size={20} />
           ) : note.tone === 'bad' ? (
             <AlertTriangle size={20} />
           ) : (
-            <Tv size={20} />
+            <Wand2 size={20} />
           )}{' '}
           {note.text}
         </div>
