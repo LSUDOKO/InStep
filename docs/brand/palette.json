@@ -86,7 +86,7 @@
     "Long shadows: 45 deg down-right, illustration.longShadow, no blur; contact shadows are soft ellipses in illustration.shadow at 40% opacity.",
     "One highlight per form (illustration.highlight) on the upper-left edge; corner radius generous (>= 12% of the shape).",
     "Never paint large areas in status.ok / status.near / status.far; never green plants next to the teaching figure (use illustration.leaf, a teal).",
-    "Figures: skin from skin[], clothes from illustration.clothes; the teaching figure wears the lesson channel colour.",
+    "Figures: skin from skin[], clothes from illustration.clothes; the teaching figure wears the lesson channel colour, except Fall Prevention: its channel colour is the brand sky, which the TV uses for the dashed ghost skeleton, so that teacher wears denim (illustration.clothes[5], #6284CE) with sky only as small trim. Never put large sky (primary) areas behind the figure.",
     "Text over illustration: text colour on canvas/surface only (contrast table below), never on accents."
   ],
   "ui": {

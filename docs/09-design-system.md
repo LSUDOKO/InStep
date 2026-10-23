@@ -125,7 +125,9 @@ Colours from `docs/brand/palette.json` (`illustration`, `skin`, `accents`); the 
 4. **The canvas is night indigo** (`skyTop` → `skyBottom` walls, `floor`, `wall`), with the sun or a lamp as the
    warm accent.
 5. **People:** skin from `skin[]` (vary it across lessons), hair from `illustration.hair`; the teaching figure
-   wears the lesson's channel colour so the poster, card and video agree. Faces simple and friendly; no medical
+   wears the lesson's channel colour so the poster, card and video agree, except Fall Prevention: its channel
+   colour is the brand sky, which the TV uses for the dashed ghost skeleton, so that teacher wears denim
+   (`illustration.clothes[5]`, `#6284CE`) with sky only as trim. No large sky areas behind any figure. Faces simple and friendly; no medical
    props unless the lesson needs them (CPR manikin).
 6. **Keep feedback colours free.** No large areas of `ok` green, `near` amber or `far` red, and no green plants
    next to the teaching figure (plants use the teal `illustration.leaf`), so the TV's skeleton feedback stays
