@@ -13,13 +13,17 @@ import { createRelay } from '../src/relay';
 
 export const PIN = '1357';
 
-/** Temp content dir: all seed lessons without their placeholder videos, plus a real 2 s video for heel raises. */
+/**
+ * Temp content dir: all seed lessons, plus a real 2 s video for heel raises. Placeholder videos (video.placeholder)
+ * and the "I love you" video are dropped, so at least one lesson is a draft and the drafts-vs-published rules stay
+ * testable now that every seed lesson has a video.
+ */
 export function makeContent() {
   const dir = mkdtempSync(join(tmpdir(), 'instep-content-'));
   cpSync(new URL('../../../content/lessons', import.meta.url), dir, { recursive: true });
-  // placeholder videos (marked by video.placeholder) are dropped so the drafts-vs-published rules stay testable
   for (const id of readdirSync(dir))
     if (existsSync(join(dir, id, 'video.placeholder'))) rmSync(join(dir, id, 'video.mp4'), { force: true });
+  rmSync(join(dir, 'asl-i-love-you-v1', 'video.mp4'), { force: true });
   tinyVideo(join(dir, 'fall-heel-raise-v1', 'video.mp4'));
   return dir;
 }
