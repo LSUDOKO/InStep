@@ -1,0 +1,104 @@
+1
+00:00:06,900 --> 00:00:12,166
+Every how-to video plays at the same speed, whether you keep up, or not.
+
+2
+00:00:14,000 --> 00:00:19,606
+Falls are the second-leading cause of unintentional injury death worldwide.
+
+3
+00:00:20,600 --> 00:00:27,377
+In one survey, three in four people didn't finish their home physical therapy exercises.
+
+4
+00:00:28,100 --> 00:00:32,198
+And most cardiac arrests outside hospital happen at home,
+
+5
+00:00:32,198 --> 00:00:34,864
+where nobody is checking your form.
+
+6
+00:00:36,200 --> 00:00:40,836
+At least nine in ten deaf children are born to hearing parents.
+
+7
+00:00:41,000 --> 00:00:44,050
+And a video can't see whether your hands are right.
+
+8
+00:00:47,600 --> 00:00:50,408
+InStep is the video that waits for you.
+
+9
+00:00:52,800 --> 00:00:58,667
+Prop up your phone. It becomes the camera: an external camera, not the TV.
+
+10
+00:00:59,000 --> 00:01:05,620
+Pose tracking runs in the phone's browser. Only body points travel to the TV,
+
+11
+00:01:05,620 --> 00:01:06,802
+never video.
+
+12
+00:01:09,000 --> 00:01:11,781
+At each key moment, the lesson pauses,
+
+13
+00:01:11,781 --> 00:01:15,078
+and continues only when your pose is right.
+
+14
+00:01:17,000 --> 00:01:21,093
+It counts your reps, times your balance, and if you're stuck,
+
+15
+00:01:21,093 --> 00:01:23,524
+a coach gives one short, kind tip.
+
+16
+00:01:28,600 --> 00:01:33,682
+Safety comes first: no balance work until a chair is beside you.
+
+17
+00:01:33,682 --> 00:01:37,167
+And if the camera drops, the lesson stops.
+
+18
+00:01:39,400 --> 00:01:46,129
+The same engine teaches sign-language hand shapes, hand rehab, and CPR rhythm:
+
+19
+00:01:46,129 --> 00:01:49,126
+practice only, not certification.
+
+20
+00:01:50,400 --> 00:01:54,815
+Kids act out a story. And two people can practise together.
+
+21
+00:01:58,100 --> 00:02:02,909
+A physiotherapist or teacher records a lesson once, on a phone.
+
+22
+00:02:03,400 --> 00:02:09,808
+InStep finds the still moments, suggests the steps, and publishes it to the TV.
+
+23
+00:02:11,400 --> 00:02:16,007
+Under the hood: an open lesson format called .istep,
+
+24
+00:02:16,400 --> 00:02:22,355
+one pure TypeScript gate engine, shared by the phone, the server and the TV,
+
+25
+00:02:22,700 --> 00:02:26,430
+and an open-source Vega player that any app can use.
+
+26
+00:02:31,800 --> 00:02:34,430
+InStep. The video that waits for you.
+

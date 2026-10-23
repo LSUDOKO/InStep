@@ -1,0 +1,23 @@
+<!doctype html>
+<!-- InStep demo film. window.seek(t) draws frame t (seconds) on the 1920x1080 canvas and returns a JPEG (base64).
+     Driven by render.py; open with ?t=12.5 to look at one frame in a browser. -->
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>InStep film</title>
+    <style>
+      @font-face {
+        font-family: 'Inter';
+        src: url('../../../apps/companion/node_modules/@fontsource-variable/inter/files/inter-latin-wght-normal.woff2')
+          format('woff2');
+        font-weight: 100 900;
+      }
+      html, body { margin: 0; background: #000; }
+      canvas { display: block; }
+    </style>
+  </head>
+  <body>
+    <canvas id="c" width="1920" height="1080"></canvas>
+    <script src="film.js"></script>
+  </body>
+</html>

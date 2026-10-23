@@ -1,0 +1,378 @@
+{
+ "fps": 30,
+ "duration": 161.0,
+ "width": 1920,
+ "height": 1080,
+ "shots": [
+  {
+   "id": "s1",
+   "start": 0.0,
+   "end": 6.4
+  },
+  {
+   "id": "s2",
+   "start": 6.4,
+   "end": 13.4
+  },
+  {
+   "id": "s3",
+   "start": 13.4,
+   "end": 35.6
+  },
+  {
+   "id": "s4",
+   "start": 35.6,
+   "end": 44.2
+  },
+  {
+   "id": "s5",
+   "start": 44.2,
+   "end": 52.0
+  },
+  {
+   "id": "s6",
+   "start": 52.0,
+   "end": 68.0
+  },
+  {
+   "id": "s7",
+   "start": 68.0,
+   "end": 88.0
+  },
+  {
+   "id": "s8",
+   "start": 88.0,
+   "end": 98.6
+  },
+  {
+   "id": "s9",
+   "start": 98.6,
+   "end": 117.5
+  },
+  {
+   "id": "s10",
+   "start": 117.5,
+   "end": 130.5
+  },
+  {
+   "id": "s11",
+   "start": 130.5,
+   "end": 150.0
+  },
+  {
+   "id": "s12",
+   "start": 150.0,
+   "end": 161.0
+  }
+ ],
+ "vo": [
+  {
+   "id": "s2",
+   "at": 6.9,
+   "dur": 5.116,
+   "text": "Every how-to video plays at the same speed, whether you keep up, or not."
+  },
+  {
+   "id": "s3a",
+   "at": 14.0,
+   "dur": 5.456,
+   "text": "Falls are the second-leading cause of unintentional injury death worldwide."
+  },
+  {
+   "id": "s3b",
+   "at": 20.6,
+   "dur": 6.627,
+   "text": "In one survey, three in four people didn't finish their home physical therapy exercises."
+  },
+  {
+   "id": "s3c",
+   "at": 28.1,
+   "dur": 6.614,
+   "text": "And most cardiac arrests outside hospital happen at home, where nobody is checking your form."
+  },
+  {
+   "id": "s4a",
+   "at": 36.2,
+   "dur": 4.486,
+   "text": "At least nine in ten deaf children are born to hearing parents."
+  },
+  {
+   "id": "s4b",
+   "at": 41.0,
+   "dur": 2.9,
+   "text": "And a video can't see whether your hands are right."
+  },
+  {
+   "id": "s5",
+   "at": 47.6,
+   "dur": 2.658,
+   "text": "InStep is the video that waits for you."
+  },
+  {
+   "id": "s6a",
+   "at": 52.8,
+   "dur": 5.717,
+   "text": "Prop up your phone. It becomes the camera: an external camera, not the TV."
+  },
+  {
+   "id": "s6b",
+   "at": 59.0,
+   "dur": 7.652,
+   "text": "Pose tracking runs in the phone's browser. Only body points travel to the TV, never video."
+  },
+  {
+   "id": "s7a",
+   "at": 69.0,
+   "dur": 5.928,
+   "text": "At each key moment, the lesson pauses, and continues only when your pose is right."
+  },
+  {
+   "id": "s7b",
+   "at": 77.0,
+   "dur": 6.374,
+   "text": "It counts your reps, times your balance, and if you're stuck, a coach gives one short, kind tip."
+  },
+  {
+   "id": "s8",
+   "at": 88.6,
+   "dur": 8.417,
+   "text": "Safety comes first: no balance work until a chair is beside you. And if the camera drops, the lesson stops."
+  },
+  {
+   "id": "s9a",
+   "at": 99.4,
+   "dur": 9.576,
+   "text": "The same engine teaches sign-language hand shapes, hand rehab, and CPR rhythm: practice only, not certification."
+  },
+  {
+   "id": "s9b",
+   "at": 110.4,
+   "dur": 4.265,
+   "text": "Kids act out a story. And two people can practise together."
+  },
+  {
+   "id": "s10a",
+   "at": 118.1,
+   "dur": 4.659,
+   "text": "A physiotherapist or teacher records a lesson once, on a phone."
+  },
+  {
+   "id": "s10b",
+   "at": 123.4,
+   "dur": 6.258,
+   "text": "InStep finds the still moments, suggests the steps, and publishes it to the TV."
+  },
+  {
+   "id": "s11a",
+   "at": 131.4,
+   "dur": 4.457,
+   "text": "Under the hood: an open lesson format called .istep,"
+  },
+  {
+   "id": "s11b",
+   "at": 136.4,
+   "dur": 5.805,
+   "text": "one pure TypeScript gate engine, shared by the phone, the server and the TV,"
+  },
+  {
+   "id": "s11c",
+   "at": 142.7,
+   "dur": 3.58,
+   "text": "and an open-source Vega player that any app can use."
+  },
+  {
+   "id": "s12",
+   "at": 151.8,
+   "dur": 2.48,
+   "text": "InStep. The video that waits for you."
+  }
+ ],
+ "captions": [
+  {
+   "a": 6.9,
+   "b": 12.166,
+   "text": "Every how-to video plays at the same speed, whether you keep up, or not."
+  },
+  {
+   "a": 14.0,
+   "b": 19.606,
+   "text": "Falls are the second-leading cause of unintentional injury death worldwide."
+  },
+  {
+   "a": 20.6,
+   "b": 27.377,
+   "text": "In one survey, three in four people didn't finish their home physical therapy exercises."
+  },
+  {
+   "a": 28.1,
+   "b": 32.198,
+   "text": "And most cardiac arrests outside hospital happen at home,"
+  },
+  {
+   "a": 32.198,
+   "b": 34.864,
+   "text": "where nobody is checking your form."
+  },
+  {
+   "a": 36.2,
+   "b": 40.836,
+   "text": "At least nine in ten deaf children are born to hearing parents."
+  },
+  {
+   "a": 41.0,
+   "b": 44.05,
+   "text": "And a video can't see whether your hands are right."
+  },
+  {
+   "a": 47.6,
+   "b": 50.408,
+   "text": "InStep is the video that waits for you."
+  },
+  {
+   "a": 52.8,
+   "b": 58.667,
+   "text": "Prop up your phone. It becomes the camera: an external camera, not the TV."
+  },
+  {
+   "a": 59.0,
+   "b": 65.62,
+   "text": "Pose tracking runs in the phone's browser. Only body points travel to the TV,"
+  },
+  {
+   "a": 65.62,
+   "b": 66.802,
+   "text": "never video."
+  },
+  {
+   "a": 69.0,
+   "b": 71.781,
+   "text": "At each key moment, the lesson pauses,"
+  },
+  {
+   "a": 71.781,
+   "b": 75.078,
+   "text": "and continues only when your pose is right."
+  },
+  {
+   "a": 77.0,
+   "b": 81.093,
+   "text": "It counts your reps, times your balance, and if you're stuck,"
+  },
+  {
+   "a": 81.093,
+   "b": 83.524,
+   "text": "a coach gives one short, kind tip."
+  },
+  {
+   "a": 88.6,
+   "b": 93.682,
+   "text": "Safety comes first: no balance work until a chair is beside you."
+  },
+  {
+   "a": 93.682,
+   "b": 97.167,
+   "text": "And if the camera drops, the lesson stops."
+  },
+  {
+   "a": 99.4,
+   "b": 106.129,
+   "text": "The same engine teaches sign-language hand shapes, hand rehab, and CPR rhythm:"
+  },
+  {
+   "a": 106.129,
+   "b": 109.126,
+   "text": "practice only, not certification."
+  },
+  {
+   "a": 110.4,
+   "b": 114.815,
+   "text": "Kids act out a story. And two people can practise together."
+  },
+  {
+   "a": 118.1,
+   "b": 122.909,
+   "text": "A physiotherapist or teacher records a lesson once, on a phone."
+  },
+  {
+   "a": 123.4,
+   "b": 129.808,
+   "text": "InStep finds the still moments, suggests the steps, and publishes it to the TV."
+  },
+  {
+   "a": 131.4,
+   "b": 136.007,
+   "text": "Under the hood: an open lesson format called .istep,"
+  },
+  {
+   "a": 136.4,
+   "b": 142.355,
+   "text": "one pure TypeScript gate engine, shared by the phone, the server and the TV,"
+  },
+  {
+   "a": 142.7,
+   "b": 146.43,
+   "text": "and an open-source Vega player that any app can use."
+  },
+  {
+   "a": 151.8,
+   "b": 154.43,
+   "text": "InStep. The video that waits for you."
+  }
+ ],
+ "clips": {
+  "launcher": {
+   "src": "/home/arpit/instep-capture/film/launcher.webm",
+   "in": 3.0,
+   "dur": 40.0,
+   "new": true
+  },
+  "heel": {
+   "src": "/home/arpit/instep-capture/film/heel-raise.webm",
+   "in": 55.0,
+   "dur": 22.0,
+   "new": true
+  },
+  "chair": {
+   "src": "/home/arpit/instep-capture/film/heel-raise.webm",
+   "in": 30.0,
+   "dur": 6.0,
+   "new": true
+  },
+  "lost": {
+   "src": "/home/arpit/instep-capture/fall-heel-raise.webm",
+   "in": 44.0,
+   "dur": 5.0,
+   "new": false
+  },
+  "asl": {
+   "src": "/home/arpit/instep-capture/film/asl.webm",
+   "in": 88.0,
+   "dur": 8.0,
+   "new": true
+  },
+  "rehab": {
+   "src": "/home/arpit/instep-capture/rehab-hand-open-close.webm",
+   "in": 33.0,
+   "dur": 8.0,
+   "new": false
+  },
+  "cpr": {
+   "src": "/home/arpit/instep-capture/cpr-rhythm.webm",
+   "in": 37.0,
+   "dur": 8.0,
+   "new": false
+  },
+  "kids": {
+   "src": "/home/arpit/instep-capture/kids-forest-walk.webm",
+   "in": 53.0,
+   "dur": 8.0,
+   "new": false
+  },
+  "fall": {
+   "src": "/home/arpit/instep-capture/film/heel-raise.webm",
+   "in": 64.0,
+   "dur": 8.0,
+   "new": true
+  }
+ }
+}
