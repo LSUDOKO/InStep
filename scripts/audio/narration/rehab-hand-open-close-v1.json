@@ -1,0 +1,16 @@
+{
+  "voice": "af_heart",
+  "speed": 0.95,
+  "bed": "calm",
+  "lines": [
+    { "at": 0.4, "text": "Rest your forearm on the table." },
+    { "at": 2.2, "text": "Hand facing the camera." },
+    { "at": 4.4, "text": "Close," },
+    { "at": 5.3, "text": "and open." },
+    { "at": 6.4, "text": "Close," },
+    { "at": 7.05, "text": "open." },
+    { "at": 8.4, "text": "Lovely. Keep it smooth and easy." },
+    { "at": 11.2, "text": "Stop if you feel pain, dizziness or unsteadiness." },
+    { "at": 16.0, "text": "Now let your hand rest. Well done." }
+  ]
+}

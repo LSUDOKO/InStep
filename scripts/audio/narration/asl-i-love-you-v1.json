@@ -1,0 +1,12 @@
+{
+  "voice": "af_heart",
+  "speed": 0.95,
+  "bed": "gentle",
+  "lines": [
+    { "at": 0.4, "text": "Your first sign: I love you." },
+    { "at": 4.0, "text": "Thumb, index and little finger up." },
+    { "at": 8.0, "text": "Beautiful. That's I love you." },
+    { "at": 11.0, "text": "Sign it to someone you love." }
+  ],
+  "sfx": [{ "at": 7.9, "name": "sparkle" }]
+}

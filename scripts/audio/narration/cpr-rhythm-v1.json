@@ -1,0 +1,12 @@
+{
+  "voice": "af_heart",
+  "speed": 1.0,
+  "bed": "none",
+  "lines": [
+    { "at": 0.25, "text": "Kneel beside the cushion." },
+    { "at": 2.3, "text": "Lock your elbows." },
+    { "at": 3.6, "text": "Push hard and fast, with the beat." },
+    { "at": 6.3, "text": "Good rhythm. Well done." },
+    { "at": 9.0, "text": "This is practice for rhythm only. Take a certified CPR course." }
+  ]
+}

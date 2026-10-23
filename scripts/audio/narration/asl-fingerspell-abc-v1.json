@@ -1,0 +1,30 @@
+{
+  "voice": "af_heart",
+  "speed": 0.95,
+  "bed": "gentle",
+  "lines": [
+    { "at": 0.4, "text": "Let's fingerspell." },
+    { "at": 2.5, "text": "Letter A. A fist, thumb resting at the side." },
+    { "at": 6.5, "text": "Lovely." },
+    { "at": 8.5, "text": "Letter B. Fingers up, thumb across your palm." },
+    { "at": 12.5, "text": "That's it." },
+    { "at": 14.5, "text": "Letter C. Curve your hand like a cup." },
+    { "at": 18.5, "text": "Nice." },
+    { "at": 20.5, "text": "Letter L. Index finger up, thumb out to the side." },
+    { "at": 24.5, "text": "Great." },
+    { "at": 26.5, "text": "Letter Y. Thumb and little finger out." },
+    { "at": 30.5, "text": "Now spell a word." },
+    { "at": 32.1, "text": "C." },
+    { "at": 33.7, "text": "A." },
+    { "at": 35.3, "text": "B." },
+    { "at": 38.5, "text": "You spelled cab! Well done." }
+  ],
+  "sfx": [
+    { "at": 6.4, "name": "sparkle" },
+    { "at": 12.4, "name": "sparkle" },
+    { "at": 18.4, "name": "sparkle" },
+    { "at": 24.4, "name": "sparkle" },
+    { "at": 30.4, "name": "sparkle" },
+    { "at": 38.4, "name": "sparkle" }
+  ]
+}

@@ -1,0 +1,26 @@
+{
+  "voice": "af_heart",
+  "speed": 0.95,
+  "bed": "calm",
+  "lines": [
+    { "at": 0.4, "text": "Stand beside a sturdy chair." },
+    { "at": 3.3, "text": "Hold the chair, and stand up tall." },
+    { "at": 5.45, "text": "Soft knees. Shoulders relaxed." },
+    { "at": 8.3, "text": "Now we'll rise onto our toes, five times." },
+    { "at": 12.05, "text": "Up," },
+    { "at": 12.95, "text": "and down." },
+    { "at": 14.05, "text": "Up," },
+    { "at": 14.95, "text": "and down." },
+    { "at": 16.05, "text": "Up," },
+    { "at": 16.95, "text": "and down." },
+    { "at": 18.05, "text": "Up," },
+    { "at": 18.95, "text": "and down." },
+    { "at": 20.05, "text": "Up," },
+    { "at": 20.95, "text": "and down." },
+    { "at": 22.4, "text": "Heels down, and rest." },
+    { "at": 24.6, "text": "Stop if you feel pain, dizziness or unsteadiness." },
+    { "at": 30.2, "text": "Now rise onto your toes, and hold." },
+    { "at": 36.3, "text": "Lovely. Now lower slowly." },
+    { "at": 40.0, "text": "Well done today. Take a seat and rest." }
+  ]
+}

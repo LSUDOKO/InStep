@@ -1,0 +1,18 @@
+{
+  "voice": "af_heart",
+  "speed": 0.95,
+  "bed": "calm",
+  "lines": [
+    { "at": 0.4, "text": "Stand beside a sturdy chair." },
+    { "at": 3.3, "text": "Hold the chair, and stand up tall." },
+    { "at": 5.6, "text": "Stop if you feel pain, dizziness or unsteadiness." },
+    { "at": 8.8, "text": "Lift your right foot, just off the floor." },
+    { "at": 12.3, "text": "Well done. Keep breathing." },
+    { "at": 16.3, "text": "And lower your foot." },
+    { "at": 20.0, "text": "Now the other side." },
+    { "at": 22.8, "text": "Lift your left foot, just off the floor." },
+    { "at": 26.3, "text": "Lovely balance." },
+    { "at": 30.3, "text": "And lower your foot." },
+    { "at": 33.0, "text": "Well done today. Take a seat and rest." }
+  ]
+}
