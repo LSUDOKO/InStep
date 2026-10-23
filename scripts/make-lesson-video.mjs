@@ -12,8 +12,8 @@ import { existsSync, readdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
 
 const ROOT = new URL('../', import.meta.url).pathname;
-/** Lessons with their own illustrated video (scripts/make-kids-video.sh): never overwritten here. */
-const HANDMADE = new Set(['kids-forest-walk-v1']);
+/** Lessons with their own illustrated video (scripts/motion/kids-asl/render.py): never overwritten here. */
+const HANDMADE = new Set(['kids-forest-walk-v1', 'asl-fingerspell-abc-v1', 'asl-i-love-you-v1']);
 const FONT = process.env.FONT ?? '/usr/share/fonts/noto/NotoSans-Bold.ttf';
 const FONT_R = process.env.FONT_REGULAR ?? '/usr/share/fonts/noto/NotoSans-Regular.ttf';
 if (!existsSync(FONT)) throw new Error(`font not found: ${FONT} (set FONT=/path/to/bold.ttf)`);

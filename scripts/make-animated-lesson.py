@@ -5,7 +5,7 @@ Animated demonstration videos for lessons that have no recorded teacher yet.
 A drawn figure (or hand) performs the exact move each gate checks, timed to the gate's `t` in track.istep, so the
 move is on screen just before the video pauses. Segments that a gate loops (`rewindTo` .. `t`) start and end on
 the same pose, so the loop is seamless. Every frame carries an "Animated demonstration" label: no person is shown
-and nothing pretends to be a recording. Sign-language lessons get branded practice cards instead (no drawn hands).
+and nothing pretends to be a recording. Sign-language lessons are drawn by scripts/motion/kids-asl/render.py.
 
   python3 scripts/make-animated-lesson.py fall-heel-raise-v1
   python3 scripts/make-animated-lesson.py --all
@@ -470,87 +470,18 @@ def hand_open_close(cr, t, dur):
     fade(cr, t, dur)
 
 
-def wrap(cr, text, width):
-    lines, cur = [], ''
-    for w in text.split():
-        trial = (cur + ' ' + w).strip()
-        if cr.text_extents(trial).x_advance > width and cur:
-            lines.append(cur)
-            cur = w
-        else:
-            cur = trial
-    return lines + [cur] if cur else lines
-
-
-def centred(cr, text, y, size, weight, alpha=1.0):
-    cr.select_font_face(FONT, cairo.FONT_SLANT_NORMAL, weight)
-    cr.set_font_size(size)
-    cr.set_source_rgba(1, 1, 1, alpha)
-    cr.move_to(W / 2 - cr.text_extents(text).x_advance / 2, y)
-    cr.show_text(text)
-
-
-def glyph(label):
-    """'Letter A' -> 'A', 'Spell: C-A-B' -> 'C A B', 'Sign: I love you' -> 'I love you'."""
-    s = label.split(':', 1)[-1].strip()
-    if s.lower().startswith('letter '):
-        s = s[7:]
-    return s.replace('-', ' ')
-
-
-def practice_cards(track):
-    """Sign language: no drawn hands (a wrong handshape teaches the wrong sign). Branded step cards say what to sign
-    and that a video by Deaf signers replaces them, timed like scripts/make-lesson-video.mjs."""
-    gates = sorted(track['gates'], key=lambda g: g['t'])
-    start = lambda g: g['rewindTo'] if isinstance(g.get('rewindTo'), (int, float)) else max(0, g['t'] - 1.5)
-
-    def draw(cr, t, dur):
-        backdrop(cr, '#1E1238', '#5B3A8E')
-        idx = next((i for i, g in reversed(list(enumerate(gates))) if t >= start(g)), -1)
-        label(cr, 'Practice card', 'A video by Deaf signers replaces this card')
-        if idx < 0:
-            centred(cr, track['title'], 500, 92, cairo.FONT_WEIGHT_BOLD)
-            centred(cr, 'Sign Language for Families', 600, 44, cairo.FONT_WEIGHT_NORMAL, 0.72)
-        else:
-            g = gates[idx]
-            centred(cr, f'Step {idx + 1} of {len(gates)}', 300, 40, cairo.FONT_WEIGHT_BOLD, 0.7)
-            hero = glyph(g['label'])
-            cr.select_font_face(FONT, cairo.FONT_SLANT_NORMAL, cairo.FONT_WEIGHT_BOLD)
-            size = 260 if len(hero) <= 1 else 180 if len(hero) <= 5 else 130
-            cr.set_font_size(size)
-            tw = cr.text_extents(hero).x_advance
-            bw = max(360, tw + 160)
-            rrect(cr, W / 2 - bw / 2, 340, bw, 340, 48)
-            cr.set_source_rgba(1, 1, 1, 0.10)
-            cr.fill_preserve()
-            cr.set_source_rgba(1, 1, 1, 0.18)
-            cr.set_line_width(2)
-            cr.stroke()
-            centred(cr, hero, 510 + size * 0.36, size, cairo.FONT_WEIGHT_BOLD)
-            cr.select_font_face(FONT, cairo.FONT_SLANT_NORMAL, cairo.FONT_WEIGHT_NORMAL)
-            cr.set_font_size(44)
-            for i, line in enumerate(wrap(cr, g.get('fallbackTip', ''), 1300)[:2]):
-                centred(cr, line, 790 + i * 60, 44, cairo.FONT_WEIGHT_NORMAL, 0.86)
-        fade(cr, t, dur)
-
-    return draw
-
-
 LESSONS = {
     'fall-heel-raise-v1': heel_raise,
     'fall-single-leg-stand-v1': single_leg,
     'rehab-hand-open-close-v1': hand_open_close,
-    'asl-fingerspell-abc-v1': practice_cards,
-    'asl-i-love-you-v1': practice_cards,
 }
-CARDS = {'asl-fingerspell-abc-v1', 'asl-i-love-you-v1'}
 
 
 def render(lesson_id, still=None):
     d = os.path.join(ROOT, 'content/lessons', lesson_id)
     track = json.load(open(os.path.join(d, 'track.istep')))
     dur = float(track['video']['durationSec'])
-    draw = LESSONS[lesson_id](track) if lesson_id in CARDS else LESSONS[lesson_id]
+    draw = LESSONS[lesson_id]
     surf = cairo.ImageSurface(cairo.FORMAT_ARGB32, W, H)
     cr = cairo.Context(surf)
     cr.set_antialias(cairo.ANTIALIAS_BEST)
@@ -575,8 +506,6 @@ def render(lesson_id, still=None):
     if ff.wait():
         sys.exit('ffmpeg failed')
     print('wrote', out)
-    if lesson_id in CARDS:  # still a stand-in: keep the placeholder marker (text-free posters, catalog rules)
-        return
     marker = os.path.join(d, 'video.placeholder')
     if os.path.exists(marker):
         os.remove(marker)
