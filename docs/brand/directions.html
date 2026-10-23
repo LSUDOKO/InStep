@@ -1,0 +1,244 @@
+<!doctype html>
+<!-- Three brand directions for InStep (huashu-design "three-direction gate"), one board.
+     Rendered to directions.png by: node docs/brand/render.mjs directions -->
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <style>
+      @font-face {
+        font-family: 'Inter';
+        src: url('../../apps/companion/node_modules/@fontsource-variable/inter/files/inter-latin-wght-normal.woff2')
+          format('woff2');
+        font-weight: 100 900;
+      }
+      * {
+        box-sizing: border-box;
+        margin: 0;
+      }
+      body {
+        width: 1600px;
+        height: 1000px;
+        background: #07081c;
+        color: #f5f6fe;
+        font-family: Inter, sans-serif;
+        letter-spacing: -0.01em;
+        padding: 48px 56px;
+      }
+      header {
+        display: flex;
+        justify-content: space-between;
+        align-items: baseline;
+        margin-bottom: 28px;
+      }
+      header h1 {
+        font-size: 34px;
+        font-weight: 800;
+        letter-spacing: -0.03em;
+      }
+      header p {
+        font-size: 17px;
+        color: #b8bcd5;
+        max-width: 820px;
+        text-align: right;
+      }
+      .cols {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 28px;
+      }
+      .dir {
+        border-radius: 24px;
+        padding: 24px;
+        background: #12132f;
+        position: relative;
+        display: flex;
+        flex-direction: column;
+        gap: 16px;
+      }
+      .dir.chosen {
+        box-shadow: 0 0 0 3px #5fc6ff;
+      }
+      .badge {
+        position: absolute;
+        top: 20px;
+        right: 20px;
+        font-size: 14px;
+        font-weight: 700;
+        padding: 6px 12px;
+        border-radius: 999px;
+        background: #5fc6ff;
+        color: #021630;
+      }
+      .badge.alt {
+        background: #272a52;
+        color: #b8bcd5;
+      }
+      h2 {
+        font-size: 28px;
+        font-weight: 800;
+        letter-spacing: -0.02em;
+      }
+      .logic {
+        font-size: 14px;
+        color: #a1a6c1;
+        margin-top: 4px;
+      }
+      .scene {
+        border-radius: 16px;
+        overflow: hidden;
+        aspect-ratio: 16 / 9;
+        position: relative;
+      }
+      .scene svg {
+        display: block;
+        width: 100%;
+        height: 100%;
+      }
+      .scene .title {
+        position: absolute;
+        left: 18px;
+        bottom: 14px;
+        font-size: 22px;
+        font-weight: 700;
+      }
+      .row {
+        display: flex;
+        gap: 10px;
+        align-items: center;
+      }
+      .sw {
+        width: 44px;
+        height: 44px;
+        border-radius: 12px;
+      }
+      .logo {
+        width: 64px;
+        height: 64px;
+        border-radius: 16px;
+      }
+      .btn {
+        font-size: 16px;
+        font-weight: 700;
+        padding: 12px 18px;
+        border-radius: 14px;
+      }
+      ul {
+        font-size: 15px;
+        line-height: 1.45;
+        color: #d6d9ea;
+        padding-left: 18px;
+      }
+      li + li {
+        margin-top: 4px;
+      }
+      .verdict {
+        font-size: 15px;
+        line-height: 1.45;
+        padding: 12px 14px;
+        border-radius: 12px;
+        background: #1a1c3f;
+        color: #f5f6fe;
+      }
+    </style>
+  </head>
+  <body>
+    <header>
+      <h1>InStep · three brand directions</h1>
+      <p>
+        Same product, same logo idea (a footprint that is also a pause bar, beside a play button). Directions differ in
+        canvas, colour logic and illustration language. Chosen: A. B and C are kept here so the team can switch.
+      </p>
+    </header>
+    <div class="cols" id="cols"></div>
+
+    <script>
+      // A flat figure mid heel-raise. opts: shadows (long 45° shadows), geo (Bauhaus primitives instead of capsules)
+      function scene(p, opts = {}) {
+        const cap = (x1, y1, x2, y2, w, fill) =>
+          `<line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" stroke="${fill}" stroke-width="${w}" stroke-linecap="${opts.geo ? 'butt' : 'round'}"/>`;
+        const sh = (d) => (opts.shadows ? `<path d="${d}" fill="${p.longShadow}"/>` : '');
+        const body = opts.geo
+          ? `<rect x="214" y="168" width="22" height="70" fill="${p.pants}"/><rect x="246" y="168" width="22" height="70" fill="${p.pants}"/>
+             <polygon points="241,84 196,170 286,170" fill="${p.shirt}"/>
+             <rect x="160" y="96" width="44" height="16" fill="${p.skin}"/><rect x="278" y="96" width="44" height="16" fill="${p.skin}"/>
+             <circle cx="241" cy="62" r="22" fill="${p.skin}"/><rect x="219" y="38" width="44" height="14" fill="${p.hair}"/>
+             <rect x="208" y="236" width="30" height="10" fill="${p.shoe}"/><rect x="244" y="236" width="30" height="10" fill="${p.shoe}"/>`
+          : `${cap(228, 168, 226, 230, 22, p.pants)}${cap(254, 168, 256, 230, 22, p.pants)}
+             <rect x="206" y="90" width="70" height="88" rx="26" fill="${p.shirt}"/>
+             <rect x="206" y="90" width="22" height="88" rx="11" fill="${p.highlight}"/>
+             ${cap(212, 104, 176, 140, 16, p.skin)}${cap(270, 104, 306, 140, 16, p.skin)}
+             <rect x="234" y="76" width="14" height="20" rx="6" fill="${p.skin}"/>
+             <circle cx="241" cy="58" r="24" fill="${p.skin}"/>
+             <path d="M217 56a24 24 0 0 1 48 0c-8-8-22-12-36-6z" fill="${p.hair}"/>
+             <ellipse cx="226" cy="238" rx="17" ry="8" fill="${p.shoe}"/><ellipse cx="256" cy="238" rx="17" ry="8" fill="${p.shoe}"/>`;
+        return `<svg viewBox="0 0 480 270" xmlns="http://www.w3.org/2000/svg">
+          <rect width="480" height="270" fill="${p.bg}"/>
+          ${p.sun ? `<circle cx="96" cy="66" r="36" fill="${p.sun}"/>` : ''}
+          ${p.hill ? `<path d="M-10 210 Q120 150 260 196 T490 186 V270 H-10z" fill="${p.hill}"/>` : ''}
+          <rect y="236" width="480" height="34" fill="${p.floor}"/>
+          ${p.plant ? `${sh('M412 196 L446 196 L486 236 L412 236z')}<rect x="378" y="196" width="34" height="40" rx="8" fill="${p.pot}"/><ellipse cx="386" cy="178" rx="14" ry="26" fill="${p.plant}"/><ellipse cx="406" cy="172" rx="13" ry="30" fill="${p.plantDark}"/>` : ''}
+          <ellipse cx="241" cy="244" rx="54" ry="6" fill="${p.contact}"/>
+          ${body}
+        </svg>`;
+      }
+      const logo = (tile, sole, play) => `<svg class="logo" viewBox="0 0 64 64">
+          <rect width="64" height="64" rx="15" fill="${tile}"/>
+          <path d="M16.2 31 Q17 24.8 23.4 24.8 Q30.6 25 30.4 32.4 L26 49.5 Q24.4 52 20.4 51.9 Q15 51.4 15 46.5z" fill="${sole}"/>
+          <circle cx="16.6" cy="19.9" r="2.3" fill="${sole}"/><circle cx="21.6" cy="17.1" r="2.8" fill="${sole}"/><circle cx="27.6" cy="18.4" r="3.5" fill="${sole}"/>
+          <path d="M34 24 Q34 21 37 22.5 L51 31.6 Q53 34 51 36.4 L37 45.5 Q34 47 34 44z" fill="${play}"/></svg>`;
+
+      const dirs = [
+        {
+          name: 'A · Blue Hour',
+          chosen: true,
+          logic: 'Best-designer logic: a Kurzgesagt-style flat-vector studio. Layered rounded shapes, 45° long shadows, saturated colour on night indigo.',
+          p: { bg: '#181844', sun: '#F6D653', hill: '#272950', floor: '#18263F', longShadow: 'rgba(5,6,26,0.45)', contact: 'rgba(5,4,27,0.5)', shirt: '#5FC6FF', highlight: 'rgba(255,255,255,0.22)', pants: '#263454', skin: '#D09673', hair: '#2D1D14', shoe: '#F5F6FE', plant: '#38988D', plantDark: '#0C6C68', pot: '#694234' },
+          shadows: true,
+          swatches: ['#0D0E2C', '#1A1C3F', '#5FC6FF', '#AE97FF', '#5BD7D3', '#F87BAA', '#F6D653'],
+          logoImg: '../../apps/companion/public/logo.svg',
+          btn: ['#5FC6FF', '#021630'],
+          title: '#F5F6FE',
+          pros: ['Dark-first: calm in a dim living room at 3 m, no glare, matches the camera preview', 'Sky brand sits far from ok green, nearly amber and stop red, so the ghost skeleton never reads as a status', 'Five channel hues spread round the wheel; text contrast 7.5–17:1 on the canvas'],
+          verdict: 'Chosen. Warm through skin tones, sun and rose accents, and still professional at TV distance.',
+        },
+        {
+          name: 'B · Sunday Paper',
+          logic: 'Real-reference logic: warm picture-book wellness apps. A cream paper canvas, chunky soft shapes, no shadows, iris violet brand.',
+          p: { bg: '#FFF4E6', sun: '#FFD9A8', hill: '#F6E3CC', floor: '#EBD3B6', contact: 'rgba(120,80,40,0.18)', shirt: '#7B61FF', highlight: 'rgba(255,255,255,0.25)', pants: '#3D3A6B', skin: '#E9B999', hair: '#6C4128', shoe: '#3D3A6B', plant: '#6BBF9A', plantDark: '#3E9A7A', pot: '#E38B5B' },
+          swatches: ['#FFF4E6', '#F6E3CC', '#7B61FF', '#E38B5B', '#6BBF9A', '#3D3A6B', '#1F1B3A'],
+          logo: ['#7B61FF', '#FFF4E6', '#FFD9A8'],
+          btn: ['#7B61FF', '#FFFFFF'],
+          title: '#1F1B3A',
+          pros: ['Friendliest and most familiar for older adults on a phone', 'Reads well in daylight and in print (reports)'],
+          verdict: 'Not chosen: a full-screen cream canvas glares in a dark room at 3 m, and the peach and terracotta warmth drifts toward the amber "nearly" state.',
+        },
+        {
+          name: 'C · Bauhaus Play',
+          logic: 'Style-roulette logic (style library: Bauhaus geometric mark + flat illustration). Circles, triangles and blocks in a primary triad on charcoal.',
+          p: { bg: '#1E1E24', sun: '#FFB703', hill: null, floor: '#2B2B33', contact: 'rgba(0,0,0,0.4)', shirt: '#E63946', pants: '#0077B6', skin: '#E9B999', hair: '#1E1E24', shoe: '#FFB703' },
+          geo: true,
+          swatches: ['#1E1E24', '#2B2B33', '#0077B6', '#E63946', '#FFB703', '#F1FAEE', '#8D99AE'],
+          logo: ['#0077B6', '#F1FAEE', '#FFB703'],
+          btn: ['#0077B6', '#FFFFFF'],
+          title: '#F1FAEE',
+          pros: ['Most graphic and memorable mark; strong for kids', 'Pure geometry draws cleanly in SVG on Vega'],
+          verdict: 'Not chosen: the red and yellow of the primary triad are exactly "stop" and "nearly", so brand shapes would compete with feedback; colder for older adults.',
+        },
+      ];
+
+      document.getElementById('cols').innerHTML = dirs
+        .map(
+          (d) => `<section class="dir ${d.chosen ? 'chosen' : ''}">
+            <span class="badge ${d.chosen ? '' : 'alt'}">${d.chosen ? 'Chosen' : 'Alternative'}</span>
+            <div><h2>${d.name}</h2><p class="logic">${d.logic}</p></div>
+            <div class="scene">${scene(d.p, { shadows: d.shadows, geo: d.geo })}<span class="title" style="color:${d.title}">Heel raises</span></div>
+            <div class="row">${d.logoImg ? `<img class="logo" src="${d.logoImg}" alt="">` : logo(...d.logo)}<span class="btn" style="background:${d.btn[0]};color:${d.btn[1]}">Start lesson</span></div>
+            <div class="row">${d.swatches.map((c) => `<span class="sw" style="background:${c}"></span>`).join('')}</div>
+            <ul>${d.pros.map((x) => `<li>${x}</li>`).join('')}</ul>
+            <p class="verdict">${d.verdict}</p>
+          </section>`,
+        )
+        .join('');
+    </script>
+  </body>
+</html>
