@@ -425,7 +425,18 @@
         [724, 428, 228, 84, 'db', 'SQLite', 'lessons, sessions', C.grey, T.grey, 2.4],
         [968, 428, 228, 84, 'coach', 'Coach', 'templated tips', C.iris, T.iris, 2.55],
         // TV
-        [1484, 204, 372, 84, 'gate', 'Gate engine', 'gated-player pauses at each gate', C.iris, T.iris, 2.75],
+        [
+          1484,
+          204,
+          372,
+          84,
+          'gate',
+          'Gate engine + gated-player',
+          'scores frames · pauses, plays',
+          C.iris,
+          T.iris,
+          2.75,
+        ],
         [1484, 316, 372, 84, 'film', 'W3C media player', 'plays video.mp4 (H.264)', C.grey, T.grey, 2.9],
         [
           1484,
@@ -543,7 +554,7 @@
             [250, 428],
             [250, 400],
           ],
-          C.sky,
+          C.skyL,
           4.5,
         ],
         [
@@ -552,7 +563,7 @@
             [250, 316],
             [250, 288],
           ],
-          C.sky,
+          C.skyL,
           4.6,
         ],
         [
@@ -570,7 +581,7 @@
             [436, 228],
             [724, 228],
           ],
-          C.sky,
+          C.skyL,
           4.9,
           false,
           3,
@@ -581,7 +592,7 @@
             [1196, 228],
             [1484, 228],
           ],
-          C.sky,
+          C.skyL,
           5.3,
           false,
           3,
@@ -766,7 +777,7 @@
           `<div class="step" data-at="${10.5 + i * 0.15}" data-hl="${i}"><div class="mark">${i + 1}</div><div><b>${b}</b><small>${small}</small></div></div>`,
       ).join('');
       document.getElementById('key').innerHTML = `
-          <div>${keyLine(C.sky)}body points (WebSocket)</div><div>${keyLine(C.iris)}gate state · tips</div>
+          <div>${keyLine(C.skyL)}body points (WebSocket)</div><div>${keyLine(C.iris)}gate state · tips</div>
           <div>${keyLine(C.grey)}HTTPS</div><div>${keyLine(C.grey, true)}switched off</div>`;
 
       // ---- packets: body points phone → relay → TV (sky), gate state TV → relay → phone (iris) --
@@ -777,7 +788,7 @@
         return g;
       };
       const FLOWS = [
-        { route: ['e1', 'e3'], color: C.sky, n: 2, period: 2, start: 11.6 },
+        { route: ['e1', 'e3'], color: C.skyL, n: 2, period: 2, start: 11.6 },
         { route: ['e4', 'e2'], color: C.iris, n: 1, period: 3, start: 12.1 },
       ].map((f) => ({ ...f, dots: Array.from({ length: f.n }, () => packet(f.color)) }));
 
