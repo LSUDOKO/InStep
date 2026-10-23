@@ -1,18 +1,18 @@
 {
- "id": "S5",
- "url": "https://en.wikipedia.org/wiki/Language_acquisition_by_deaf_children",
- "title": "Language acquisition by deaf children - Wikipedia",
- "hit": {
-  "text": "However, at least 90% of deaf children are born to hearing parents who use a spoken language at home.",
-  "needle": "at least 90% of deaf children are born to hearing parents",
-  "rects": [
-   {
-    "x": 335.140625,
-    "y": 256.390625,
-    "w": 399.375,
-    "h": 17
-   }
-  ]
- },
- "ua": "chrome"
+  "id": "S5",
+  "url": "https://en.wikipedia.org/wiki/Language_acquisition_by_deaf_children",
+  "title": "Language acquisition by deaf children - Wikipedia",
+  "hit": {
+    "text": "However, at least 90% of deaf children are born to hearing parents who use a spoken language at home.",
+    "needle": "at least 90% of deaf children are born to hearing parents",
+    "rects": [
+      {
+        "x": 335.140625,
+        "y": 256.390625,
+        "w": 399.375,
+        "h": 17
+      }
+    ]
+  },
+  "ua": "chrome"
 }

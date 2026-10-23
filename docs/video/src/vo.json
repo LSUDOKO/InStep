@@ -1,116 +1,116 @@
 {
- "voice": "af_heart",
- "speed": 0.8,
- "lines": [
-  {
-   "id": "s2",
-   "text": "Every how-to video plays at the same speed, whether you keep up, or not."
-  },
-  {
-   "id": "s3a",
-   "text": "Falls are the second-leading cause of unintentional injury death worldwide."
-  },
-  {
-   "id": "s3b",
-   "text": "In one survey, three in four people didn't finish their home physical therapy exercises."
-  },
-  {
-   "id": "s3c",
-   "text": "And most cardiac arrests outside hospital happen at home, where nobody is checking your form."
-  },
-  {
-   "id": "s4a",
-   "text": "At least nine in ten deaf children are born to hearing parents."
-  },
-  {
-   "id": "s4b",
-   "text": "And a video can't see whether your hands are right."
-  },
-  {
-   "id": "s5",
-   "text": "InStep is the video that waits for you.",
-   "say": "In Step is the video that waits for you."
-  },
-  {
-   "id": "cam_a",
-   "text": "Prop up your phone or laptop. It becomes the camera: an external camera, not the TV."
-  },
-  {
-   "id": "cam_b",
-   "text": "Pose tracking runs in its browser. Only body points travel to the TV: numbers, never video."
-  },
-  {
-   "id": "heel_a",
-   "text": "This is Fall Prevention, on the Vega Virtual Device. At each key moment, the lesson pauses, and continues only when your pose is right."
-  },
-  {
-   "id": "heel_b",
-   "text": "It counts your reps and times your balance. If you're stuck, it offers one short, kind tip."
-  },
-  {
-   "id": "safe",
-   "text": "Safety comes first. No balance work until a chair is beside you. And if the camera drops, the lesson stops, and waits."
-  },
-  {
-   "id": "asl_a",
-   "text": "Sign Language for Families teaches hand shapes, letter by letter."
-  },
-  {
-   "id": "asl_b",
-   "text": "The hands are illustrated, and not yet reviewed by Deaf signers. Learn with Deaf teachers, too."
-  },
-  {
-   "id": "kids_a",
-   "text": "For kids, the lesson is a story."
-  },
-  {
-   "id": "kids_b",
-   "text": "The forest waits until they're a tree, a mouse, and a flamingo."
-  },
-  {
-   "id": "more_a",
-   "text": "The same engine runs hand rehab, and CPR rhythm: practice only, not certification."
-  },
-  {
-   "id": "more_b",
-   "text": "And two people can practise together, each with their own phone."
-  },
-  {
-   "id": "s10a",
-   "text": "A physiotherapist or teacher records a lesson once, on a phone."
-  },
-  {
-   "id": "s10b",
-   "text": "InStep finds the still moments, suggests the steps, and publishes it to the TV.",
-   "say": "In Step finds the still moments, suggests the steps, and publishes it to the TV."
-  },
-  {
-   "id": "file",
-   "text": "Every lesson is an open file, called .istep: a video, plus the poses it waits for.",
-   "say": "Every lesson is an open file, called dot eye step: a video, plus the poses it waits for."
-  },
-  {
-   "id": "arch_a",
-   "text": "The phone sends body points over a WebSocket. A small server relays them to the TV."
-  },
-  {
-   "id": "s11b",
-   "text": "One pure TypeScript gate engine, shared by the phone, the server and the TV, decides when to move on.",
-   "say": "One pure TypeScript gate engine, shared by the phone, the server, and the TV, decides when to move on."
-  },
-  {
-   "id": "s11c",
-   "text": "And the gated video player is open source, for any Vega app.",
-   "say": "And the gated video player is open source, for any Vega app."
-  },
-  {
-   "id": "hon",
-   "text": "No learner video leaves the phone. The voices are synthetic, made on this machine. And the AWS coach is built, but switched off."
-  },
-  {
-   "id": "s12",
-   "text": "InStep. The video that waits for you.",
-   "say": "In Step. The video that waits for you."
-  }
- ]
+  "voice": "af_heart",
+  "speed": 0.8,
+  "lines": [
+    {
+      "id": "s2",
+      "text": "Every how-to video plays at the same speed, whether you keep up, or not."
+    },
+    {
+      "id": "s3a",
+      "text": "Falls are the second-leading cause of unintentional injury death worldwide."
+    },
+    {
+      "id": "s3b",
+      "text": "In one survey, three in four people didn't finish their home physical therapy exercises."
+    },
+    {
+      "id": "s3c",
+      "text": "And most cardiac arrests outside hospital happen at home, where nobody is checking your form."
+    },
+    {
+      "id": "s4a",
+      "text": "At least nine in ten deaf children are born to hearing parents."
+    },
+    {
+      "id": "s4b",
+      "text": "And a video can't see whether your hands are right."
+    },
+    {
+      "id": "s5",
+      "text": "InStep is the video that waits for you.",
+      "say": "In Step is the video that waits for you."
+    },
+    {
+      "id": "cam_a",
+      "text": "Prop up your phone or laptop. It becomes the camera: an external camera, not the TV."
+    },
+    {
+      "id": "cam_b",
+      "text": "Pose tracking runs in its browser. Only body points travel to the TV: numbers, never video."
+    },
+    {
+      "id": "heel_a",
+      "text": "This is Fall Prevention, on the Vega Virtual Device. At each key moment, the lesson pauses, and continues only when your pose is right."
+    },
+    {
+      "id": "heel_b",
+      "text": "It counts your reps and times your balance. If you're stuck, it offers one short, kind tip."
+    },
+    {
+      "id": "safe",
+      "text": "Safety comes first. No balance work until a chair is beside you. And if the camera drops, the lesson stops, and waits."
+    },
+    {
+      "id": "asl_a",
+      "text": "Sign Language for Families teaches hand shapes, letter by letter."
+    },
+    {
+      "id": "asl_b",
+      "text": "The hands are illustrated, and not yet reviewed by Deaf signers. Learn with Deaf teachers, too."
+    },
+    {
+      "id": "kids_a",
+      "text": "For kids, the lesson is a story."
+    },
+    {
+      "id": "kids_b",
+      "text": "The forest waits until they're a tree, a mouse, and a flamingo."
+    },
+    {
+      "id": "more_a",
+      "text": "The same engine runs hand rehab, and CPR rhythm: practice only, not certification."
+    },
+    {
+      "id": "more_b",
+      "text": "And two people can practise together, each with their own phone."
+    },
+    {
+      "id": "s10a",
+      "text": "A physiotherapist or teacher records a lesson once, on a phone."
+    },
+    {
+      "id": "s10b",
+      "text": "InStep finds the still moments, suggests the steps, and publishes it to the TV.",
+      "say": "In Step finds the still moments, suggests the steps, and publishes it to the TV."
+    },
+    {
+      "id": "file",
+      "text": "Every lesson is an open file, called .istep: a video, plus the poses it waits for.",
+      "say": "Every lesson is an open file, called dot eye step: a video, plus the poses it waits for."
+    },
+    {
+      "id": "arch_a",
+      "text": "The phone sends body points over a WebSocket. A small server relays them to the TV."
+    },
+    {
+      "id": "s11b",
+      "text": "One pure TypeScript gate engine, shared by the phone, the server and the TV, decides when to move on.",
+      "say": "One pure TypeScript gate engine, shared by the phone, the server, and the TV, decides when to move on."
+    },
+    {
+      "id": "s11c",
+      "text": "And the gated video player is open source, for any Vega app.",
+      "say": "And the gated video player is open source, for any Vega app."
+    },
+    {
+      "id": "hon",
+      "text": "No learner video leaves the phone. The voices are synthetic, made on this machine. And the AWS coach is built, but switched off."
+    },
+    {
+      "id": "s12",
+      "text": "InStep. The video that waits for you.",
+      "say": "In Step. The video that waits for you."
+    }
+  ]
 }

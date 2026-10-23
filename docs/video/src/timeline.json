@@ -1,754 +1,726 @@
 {
- "fps": 30,
- "duration": 244.4,
- "width": 1920,
- "height": 1080,
- "shots": [
-  {
-   "id": "s1",
-   "start": 0.0,
-   "end": 14.0
-  },
-  {
-   "id": "s2",
-   "start": 14.0,
-   "end": 21.0,
-   "legacy": 6.4
-  },
-  {
-   "id": "s3",
-   "start": 21.0,
-   "end": 43.2,
-   "legacy": 13.4
-  },
-  {
-   "id": "s4",
-   "start": 43.2,
-   "end": 51.8,
-   "legacy": 35.6
-  },
-  {
-   "id": "s5",
-   "start": 51.8,
-   "end": 59.6,
-   "legacy": 44.2
-  },
-  {
-   "id": "s6",
-   "start": 59.6,
-   "end": 76.4,
-   "legacy": 52.0
-  },
-  {
-   "id": "heel",
-   "start": 76.4,
-   "end": 111.4
-  },
-  {
-   "id": "safe",
-   "start": 111.4,
-   "end": 122.4
-  },
-  {
-   "id": "asl",
-   "start": 122.4,
-   "end": 141.0
-  },
-  {
-   "id": "kids",
-   "start": 141.0,
-   "end": 160.9
-  },
-  {
-   "id": "more",
-   "start": 160.9,
-   "end": 174.7
-  },
-  {
-   "id": "s10",
-   "start": 174.7,
-   "end": 187.7,
-   "legacy": 117.5
-  },
-  {
-   "id": "file",
-   "start": 187.7,
-   "end": 198.5
-  },
-  {
-   "id": "arch",
-   "start": 198.5,
-   "end": 221.0
-  },
-  {
-   "id": "hon",
-   "start": 221.0,
-   "end": 233.4
-  },
-  {
-   "id": "s12",
-   "start": 233.4,
-   "end": 244.4,
-   "legacy": 150.0
-  }
- ],
- "vo": [
-  {
-   "id": "s2",
-   "shot": "s2",
-   "at": 14.5,
-   "dur": 5.116,
-   "text": "Every how-to video plays at the same speed, whether you keep up, or not."
-  },
-  {
-   "id": "s3a",
-   "shot": "s3",
-   "at": 21.6,
-   "dur": 5.456,
-   "text": "Falls are the second-leading cause of unintentional injury death worldwide."
-  },
-  {
-   "id": "s3b",
-   "shot": "s3",
-   "at": 28.2,
-   "dur": 6.627,
-   "text": "In one survey, three in four people didn't finish their home physical therapy exercises."
-  },
-  {
-   "id": "s3c",
-   "shot": "s3",
-   "at": 35.7,
-   "dur": 6.614,
-   "text": "And most cardiac arrests outside hospital happen at home, where nobody is checking your form."
-  },
-  {
-   "id": "s4a",
-   "shot": "s4",
-   "at": 43.8,
-   "dur": 4.486,
-   "text": "At least nine in ten deaf children are born to hearing parents."
-  },
-  {
-   "id": "s4b",
-   "shot": "s4",
-   "at": 48.6,
-   "dur": 2.9,
-   "text": "And a video can't see whether your hands are right."
-  },
-  {
-   "id": "s5",
-   "shot": "s5",
-   "at": 55.2,
-   "dur": 2.658,
-   "text": "InStep is the video that waits for you."
-  },
-  {
-   "id": "cam_a",
-   "shot": "s6",
-   "at": 60.4,
-   "dur": 6.761,
-   "text": "Prop up your phone or laptop. It becomes the camera: an external camera, not the TV."
-  },
-  {
-   "id": "cam_b",
-   "shot": "s6",
-   "at": 67.7,
-   "dur": 8.026,
-   "text": "Pose tracking runs in its browser. Only body points travel to the TV: numbers, never video."
-  },
-  {
-   "id": "heel_a",
-   "shot": "heel",
-   "at": 76.7,
-   "dur": 10.873,
-   "text": "This is Fall Prevention, on the Vega Virtual Device. At each key moment, the lesson pauses, and continues only when your pose is right."
-  },
-  {
-   "id": "heel_b",
-   "shot": "heel",
-   "at": 97.4,
-   "dur": 6.311,
-   "text": "It counts your reps and times your balance. If you're stuck, it offers one short, kind tip."
-  },
-  {
-   "id": "safe",
-   "shot": "safe",
-   "at": 111.9,
-   "dur": 9.295,
-   "text": "Safety comes first. No balance work until a chair is beside you. And if the camera drops, the lesson stops, and waits."
-  },
-  {
-   "id": "asl_a",
-   "shot": "asl",
-   "at": 122.6,
-   "dur": 4.287,
-   "text": "Sign Language for Families teaches hand shapes, letter by letter."
-  },
-  {
-   "id": "asl_b",
-   "shot": "asl",
-   "at": 131.9,
-   "dur": 7.013,
-   "text": "The hands are illustrated, and not yet reviewed by Deaf signers. Learn with Deaf teachers, too."
-  },
-  {
-   "id": "kids_a",
-   "shot": "kids",
-   "at": 141.35,
-   "dur": 2.34,
-   "text": "For kids, the lesson is a story."
-  },
-  {
-   "id": "kids_b",
-   "shot": "kids",
-   "at": 150.3,
-   "dur": 4.495,
-   "text": "The forest waits until they're a tree, a mouse, and a flamingo."
-  },
-  {
-   "id": "more_a",
-   "shot": "more",
-   "at": 161.4,
-   "dur": 7.243,
-   "text": "The same engine runs hand rehab, and CPR rhythm: practice only, not certification."
-  },
-  {
-   "id": "more_b",
-   "shot": "more",
-   "at": 169.5,
-   "dur": 4.154,
-   "text": "And two people can practise together, each with their own phone."
-  },
-  {
-   "id": "s10a",
-   "shot": "s10",
-   "at": 175.3,
-   "dur": 4.659,
-   "text": "A physiotherapist or teacher records a lesson once, on a phone."
-  },
-  {
-   "id": "s10b",
-   "shot": "s10",
-   "at": 180.6,
-   "dur": 6.258,
-   "text": "InStep finds the still moments, suggests the steps, and publishes it to the TV."
-  },
-  {
-   "id": "file",
-   "shot": "file",
-   "at": 188.3,
-   "dur": 7.154,
-   "text": "Every lesson is an open file, called .istep: a video, plus the poses it waits for."
-  },
-  {
-   "id": "arch_a",
-   "shot": "arch",
-   "at": 199.1,
-   "dur": 7.013,
-   "text": "The phone sends body points over a WebSocket. A small server relays them to the TV."
-  },
-  {
-   "id": "s11b",
-   "shot": "arch",
-   "at": 206.7,
-   "dur": 8.061,
-   "text": "One pure TypeScript gate engine, shared by the phone, the server and the TV, decides when to move on."
-  },
-  {
-   "id": "s11c",
-   "shot": "arch",
-   "at": 215.2,
-   "dur": 4.283,
-   "text": "And the gated video player is open source, for any Vega app."
-  },
-  {
-   "id": "hon",
-   "shot": "hon",
-   "at": 221.8,
-   "dur": 10.3,
-   "text": "No learner video leaves the phone. The voices are synthetic, made on this machine. And the AWS coach is built, but switched off."
-  },
-  {
-   "id": "s12",
-   "shot": "s12",
-   "at": 235.2,
-   "dur": 2.48,
-   "text": "InStep. The video that waits for you."
-  }
- ],
- "tv": [
-  {
-   "at": 87.9,
-   "src": "/home/arpit/instep-capture/film/heel-raise.webm",
-   "in": 47.6,
-   "dur": 7.0
-  },
-  {
-   "at": 127.1,
-   "src": "/home/arpit/instep-capture/film/asl.webm",
-   "in": 37.4,
-   "dur": 4.3
-  },
-  {
-   "at": 144.6,
-   "src": "/home/arpit/instep-capture/film/kids.webm",
-   "in": 86.6,
-   "dur": 5.8
-  },
-  {
-   "at": 154.6,
-   "src": "/home/arpit/Desktop/hackathon_projects/InStep/content/lessons/kids-forest-walk-v1/video.mp4",
-   "in": 19.3,
-   "dur": 6.3
-  }
- ],
- "captions": [
-  {
-   "a": 14.5,
-   "b": 19.766,
-   "text": "Every how-to video plays at the same speed, whether you keep up, or not.",
-   "burn": false
-  },
-  {
-   "a": 21.6,
-   "b": 27.206,
-   "text": "Falls are the second-leading cause of unintentional injury death worldwide.",
-   "burn": true
-  },
-  {
-   "a": 28.2,
-   "b": 34.977,
-   "text": "In one survey, three in four people didn't finish their home physical therapy exercises.",
-   "burn": true
-  },
-  {
-   "a": 35.7,
-   "b": 39.798,
-   "text": "And most cardiac arrests outside hospital happen at home,",
-   "burn": true
-  },
-  {
-   "a": 39.798,
-   "b": 42.464,
-   "text": "where nobody is checking your form.",
-   "burn": true
-  },
-  {
-   "a": 43.8,
-   "b": 48.436,
-   "text": "At least nine in ten deaf children are born to hearing parents.",
-   "burn": true
-  },
-  {
-   "a": 48.6,
-   "b": 51.65,
-   "text": "And a video can't see whether your hands are right.",
-   "burn": false
-  },
-  {
-   "a": 55.2,
-   "b": 58.008,
-   "text": "InStep is the video that waits for you.",
-   "burn": false
-  },
-  {
-   "a": 60.4,
-   "b": 66.265,
-   "text": "Prop up your phone or laptop. It becomes the camera: an external camera,",
-   "burn": true
-  },
-  {
-   "a": 66.265,
-   "b": 67.311,
-   "text": "not the TV.",
-   "burn": true
-  },
-  {
-   "a": 67.7,
-   "b": 74.656,
-   "text": "Pose tracking runs in its browser. Only body points travel to the TV: numbers,",
-   "burn": true
-  },
-  {
-   "a": 74.656,
-   "b": 75.876,
-   "text": "never video.",
-   "burn": true
-  },
-  {
-   "a": 76.7,
-   "b": 82.542,
-   "text": "This is Fall Prevention, on the Vega Virtual Device. At each key moment,",
-   "burn": true
-  },
-  {
-   "a": 82.542,
-   "b": 87.723,
-   "text": "the lesson pauses, and continues only when your pose is right.",
-   "burn": true
-  },
-  {
-   "a": 88.3,
-   "b": 94.7,
-   "text": "Up, and down.",
-   "tv": true,
-   "burn": true
-  },
-  {
-   "a": 97.4,
-   "b": 101.607,
-   "text": "It counts your reps and times your balance. If you're stuck,",
-   "burn": true
-  },
-  {
-   "a": 101.607,
-   "b": 103.861,
-   "text": "it offers one short, kind tip.",
-   "burn": true
-  },
-  {
-   "a": 111.9,
-   "b": 116.984,
-   "text": "Safety comes first. No balance work until a chair is beside you.",
-   "burn": true
-  },
-  {
-   "a": 116.984,
-   "b": 121.345,
-   "text": "And if the camera drops, the lesson stops, and waits.",
-   "burn": true
-  },
-  {
-   "a": 122.6,
-   "b": 127.037,
-   "text": "Sign Language for Families teaches hand shapes, letter by letter.",
-   "burn": true
-  },
-  {
-   "a": 127.35,
-   "b": 131.2,
-   "text": "Letter A. A fist, thumb resting at the side.",
-   "tv": true,
-   "burn": true
-  },
-  {
-   "a": 131.9,
-   "b": 136.675,
-   "text": "The hands are illustrated, and not yet reviewed by Deaf signers.",
-   "burn": true
-  },
-  {
-   "a": 136.675,
-   "b": 139.063,
-   "text": "Learn with Deaf teachers, too.",
-   "burn": true
-  },
-  {
-   "a": 141.35,
-   "b": 143.84,
-   "text": "For kids, the lesson is a story.",
-   "burn": true
-  },
-  {
-   "a": 145.3,
-   "b": 149.9,
-   "text": "Look at the tall trees. Stretch up tall like a tree!",
-   "tv": true,
-   "burn": true
-  },
-  {
-   "a": 150.3,
-   "b": 154.945,
-   "text": "The forest waits until they're a tree, a mouse, and a flamingo.",
-   "burn": true
-  },
-  {
-   "a": 155.2,
-   "b": 158.4,
-   "text": "Here\u2019s a flamingo. Can you stand on one foot?",
-   "tv": true,
-   "burn": true
-  },
-  {
-   "a": 159.8,
-   "b": 160.85,
-   "text": "Amazing balancing!",
-   "tv": true,
-   "burn": true
-  },
-  {
-   "a": 161.4,
-   "b": 167.033,
-   "text": "The same engine runs hand rehab, and CPR rhythm: practice only,",
-   "burn": true
-  },
-  {
-   "a": 167.033,
-   "b": 168.793,
-   "text": "not certification.",
-   "burn": true
-  },
-  {
-   "a": 169.5,
-   "b": 173.804,
-   "text": "And two people can practise together, each with their own phone.",
-   "burn": true
-  },
-  {
-   "a": 175.3,
-   "b": 180.109,
-   "text": "A physiotherapist or teacher records a lesson once, on a phone.",
-   "burn": true
-  },
-  {
-   "a": 180.6,
-   "b": 187.008,
-   "text": "InStep finds the still moments, suggests the steps, and publishes it to the TV.",
-   "burn": true
-  },
-  {
-   "a": 188.3,
-   "b": 192.981,
-   "text": "Every lesson is an open file, called .istep: a video,",
-   "burn": true
-  },
-  {
-   "a": 192.981,
-   "b": 195.604,
-   "text": "plus the poses it waits for.",
-   "burn": true
-  },
-  {
-   "a": 199.1,
-   "b": 202.949,
-   "text": "The phone sends body points over a WebSocket.",
-   "burn": true
-  },
-  {
-   "a": 202.949,
-   "b": 206.263,
-   "text": "A small server relays them to the TV.",
-   "burn": true
-  },
-  {
-   "a": 206.7,
-   "b": 212.826,
-   "text": "One pure TypeScript gate engine, shared by the phone, the server and the TV,",
-   "burn": true
-  },
-  {
-   "a": 212.826,
-   "b": 214.911,
-   "text": "decides when to move on.",
-   "burn": true
-  },
-  {
-   "a": 215.2,
-   "b": 219.633,
-   "text": "And the gated video player is open source, for any Vega app.",
-   "burn": true
-  },
-  {
-   "a": 221.8,
-   "b": 226.666,
-   "text": "No learner video leaves the phone. The voices are synthetic,",
-   "burn": true
-  },
-  {
-   "a": 226.666,
-   "b": 232.25,
-   "text": "made on this machine. And the AWS coach is built, but switched off.",
-   "burn": true
-  },
-  {
-   "a": 235.2,
-   "b": 237.83,
-   "text": "InStep. The video that waits for you.",
-   "burn": false
-  }
- ],
- "clips": {
-  "s10": {
-   "src": "/home/arpit/instep-capture/film/boot.mp4",
-   "in": 6.6,
-   "dur": 3.4,
-   "full": false
-  },
-  "s11": {
-   "src": "/home/arpit/instep-capture/film/boot.mp4",
-   "in": 12.8,
-   "dur": 1.2,
-   "full": false
-  },
-  "s12": {
-   "src": "/home/arpit/instep-capture/film/boot.mp4",
-   "in": 18.8,
-   "dur": 1.2,
-   "full": false
-  },
-  "s13": {
-   "src": "/home/arpit/instep-capture/film/boot.mp4",
-   "in": 20.0,
-   "dur": 1.2,
-   "full": false
-  },
-  "s14": {
-   "src": "/home/arpit/instep-capture/film/boot.mp4",
-   "in": 99.0,
-   "dur": 10.8,
-   "full": false
-  },
-  "s15": {
-   "src": "/home/arpit/instep-capture/film/boot.mp4",
-   "in": 120.8,
-   "dur": 1.9,
-   "full": false
-  },
-  "s16": {
-   "src": "/home/arpit/instep-capture/film/boot.mp4",
-   "in": 124.5,
-   "dur": 2.4,
-   "full": false
-  },
-  "heel0": {
-   "src": "/home/arpit/instep-capture/film/heel-raise.webm",
-   "in": 35.6,
-   "dur": 11.5,
-   "full": false
-  },
-  "heel1": {
-   "src": "/home/arpit/instep-capture/film/heel-raise.webm",
-   "in": 47.6,
-   "dur": 7.0,
-   "full": false
-  },
-  "heel2": {
-   "src": "/home/arpit/instep-capture/film/heel-raise.webm",
-   "in": 60.0,
-   "dur": 12.0,
-   "full": false
-  },
-  "heel3": {
-   "src": "/home/arpit/instep-capture/film/heel-raise.webm",
-   "in": 120.5,
-   "dur": 4.5,
-   "full": false
-  },
-  "safe0": {
-   "src": "/home/arpit/instep-capture/film/heel-raise.webm",
-   "in": 30.4,
-   "dur": 5.4,
-   "full": false
-  },
-  "safe1": {
-   "src": "/home/arpit/instep-capture/film/kids.webm",
-   "in": 105.6,
-   "dur": 5.6,
-   "full": false
-  },
-  "asl0": {
-   "src": "/home/arpit/instep-capture/film/launcher.webm",
-   "in": 46.0,
-   "dur": 3.0,
-   "full": false
-  },
-  "asl1": {
-   "src": "/home/arpit/instep-capture/film/asl.webm",
-   "in": 35.7,
-   "dur": 6.0,
-   "full": false
-  },
-  "asl2": {
-   "src": "/home/arpit/instep-capture/film/asl.webm",
-   "in": 55.2,
-   "dur": 9.6,
-   "full": false
-  },
-  "kids0": {
-   "src": "/home/arpit/instep-capture/film/kids.webm",
-   "in": 12.6,
-   "dur": 3.0,
-   "full": false
-  },
-  "kids1": {
-   "src": "/home/arpit/instep-capture/film/kids.webm",
-   "in": 86.0,
-   "dur": 10.6,
-   "full": false
-  },
-  "kids2": {
-   "src": "/home/arpit/Desktop/hackathon_projects/InStep/content/lessons/kids-forest-walk-v1/video.mp4",
-   "in": 19.3,
-   "dur": 6.3,
-   "full": true
-  },
-  "more0": {
-   "src": "/home/arpit/Desktop/hackathon_projects/InStep/content/lessons/rehab-hand-open-close-v1/video.mp4",
-   "in": 2.0,
-   "dur": 8.4,
-   "full": false
-  },
-  "more1": {
-   "src": "/home/arpit/Desktop/hackathon_projects/InStep/content/lessons/cpr-rhythm-v1/video.mp4",
-   "in": 1.0,
-   "dur": 8.4,
-   "full": false
-  },
-  "more2": {
-   "src": "/home/arpit/instep-capture/film/heel-raise.webm",
-   "in": 7.0,
-   "dur": 2.9,
-   "full": false
-  },
-  "heel": {
-   "src": "/home/arpit/instep-capture/film/heel-raise.webm",
-   "in": 55.0,
-   "dur": 22.0,
-   "full": false
-  },
-  "launcher": {
-   "src": "/home/arpit/instep-capture/film/launcher.webm",
-   "in": 3.0,
-   "dur": 40.0,
-   "full": false
-  }
- },
- "archFrames": 693,
- "open": [
-  [
-   0.9,
-   4.3,
-   1
+  "fps": 30,
+  "duration": 244.4,
+  "width": 1920,
+  "height": 1080,
+  "shots": [
+    {
+      "id": "s1",
+      "start": 0.0,
+      "end": 14.0
+    },
+    {
+      "id": "s2",
+      "start": 14.0,
+      "end": 21.0,
+      "legacy": 6.4
+    },
+    {
+      "id": "s3",
+      "start": 21.0,
+      "end": 43.2,
+      "legacy": 13.4
+    },
+    {
+      "id": "s4",
+      "start": 43.2,
+      "end": 51.8,
+      "legacy": 35.6
+    },
+    {
+      "id": "s5",
+      "start": 51.8,
+      "end": 59.6,
+      "legacy": 44.2
+    },
+    {
+      "id": "s6",
+      "start": 59.6,
+      "end": 76.4,
+      "legacy": 52.0
+    },
+    {
+      "id": "heel",
+      "start": 76.4,
+      "end": 111.4
+    },
+    {
+      "id": "safe",
+      "start": 111.4,
+      "end": 122.4
+    },
+    {
+      "id": "asl",
+      "start": 122.4,
+      "end": 141.0
+    },
+    {
+      "id": "kids",
+      "start": 141.0,
+      "end": 160.9
+    },
+    {
+      "id": "more",
+      "start": 160.9,
+      "end": 174.7
+    },
+    {
+      "id": "s10",
+      "start": 174.7,
+      "end": 187.7,
+      "legacy": 117.5
+    },
+    {
+      "id": "file",
+      "start": 187.7,
+      "end": 198.5
+    },
+    {
+      "id": "arch",
+      "start": 198.5,
+      "end": 221.0
+    },
+    {
+      "id": "hon",
+      "start": 221.0,
+      "end": 233.4
+    },
+    {
+      "id": "s12",
+      "start": 233.4,
+      "end": 244.4,
+      "legacy": 150.0
+    }
   ],
-  [
-   4.3,
-   5.5,
-   1
+  "vo": [
+    {
+      "id": "s2",
+      "shot": "s2",
+      "at": 14.5,
+      "dur": 5.116,
+      "text": "Every how-to video plays at the same speed, whether you keep up, or not."
+    },
+    {
+      "id": "s3a",
+      "shot": "s3",
+      "at": 21.6,
+      "dur": 5.456,
+      "text": "Falls are the second-leading cause of unintentional injury death worldwide."
+    },
+    {
+      "id": "s3b",
+      "shot": "s3",
+      "at": 28.2,
+      "dur": 6.627,
+      "text": "In one survey, three in four people didn't finish their home physical therapy exercises."
+    },
+    {
+      "id": "s3c",
+      "shot": "s3",
+      "at": 35.7,
+      "dur": 6.614,
+      "text": "And most cardiac arrests outside hospital happen at home, where nobody is checking your form."
+    },
+    {
+      "id": "s4a",
+      "shot": "s4",
+      "at": 43.8,
+      "dur": 4.486,
+      "text": "At least nine in ten deaf children are born to hearing parents."
+    },
+    {
+      "id": "s4b",
+      "shot": "s4",
+      "at": 48.6,
+      "dur": 2.9,
+      "text": "And a video can't see whether your hands are right."
+    },
+    {
+      "id": "s5",
+      "shot": "s5",
+      "at": 55.2,
+      "dur": 2.658,
+      "text": "InStep is the video that waits for you."
+    },
+    {
+      "id": "cam_a",
+      "shot": "s6",
+      "at": 60.4,
+      "dur": 6.761,
+      "text": "Prop up your phone or laptop. It becomes the camera: an external camera, not the TV."
+    },
+    {
+      "id": "cam_b",
+      "shot": "s6",
+      "at": 67.7,
+      "dur": 8.026,
+      "text": "Pose tracking runs in its browser. Only body points travel to the TV: numbers, never video."
+    },
+    {
+      "id": "heel_a",
+      "shot": "heel",
+      "at": 76.7,
+      "dur": 10.873,
+      "text": "This is Fall Prevention, on the Vega Virtual Device. At each key moment, the lesson pauses, and continues only when your pose is right."
+    },
+    {
+      "id": "heel_b",
+      "shot": "heel",
+      "at": 97.4,
+      "dur": 6.311,
+      "text": "It counts your reps and times your balance. If you're stuck, it offers one short, kind tip."
+    },
+    {
+      "id": "safe",
+      "shot": "safe",
+      "at": 111.9,
+      "dur": 9.295,
+      "text": "Safety comes first. No balance work until a chair is beside you. And if the camera drops, the lesson stops, and waits."
+    },
+    {
+      "id": "asl_a",
+      "shot": "asl",
+      "at": 122.6,
+      "dur": 4.287,
+      "text": "Sign Language for Families teaches hand shapes, letter by letter."
+    },
+    {
+      "id": "asl_b",
+      "shot": "asl",
+      "at": 131.9,
+      "dur": 7.013,
+      "text": "The hands are illustrated, and not yet reviewed by Deaf signers. Learn with Deaf teachers, too."
+    },
+    {
+      "id": "kids_a",
+      "shot": "kids",
+      "at": 141.35,
+      "dur": 2.34,
+      "text": "For kids, the lesson is a story."
+    },
+    {
+      "id": "kids_b",
+      "shot": "kids",
+      "at": 150.3,
+      "dur": 4.495,
+      "text": "The forest waits until they're a tree, a mouse, and a flamingo."
+    },
+    {
+      "id": "more_a",
+      "shot": "more",
+      "at": 161.4,
+      "dur": 7.243,
+      "text": "The same engine runs hand rehab, and CPR rhythm: practice only, not certification."
+    },
+    {
+      "id": "more_b",
+      "shot": "more",
+      "at": 169.5,
+      "dur": 4.154,
+      "text": "And two people can practise together, each with their own phone."
+    },
+    {
+      "id": "s10a",
+      "shot": "s10",
+      "at": 175.3,
+      "dur": 4.659,
+      "text": "A physiotherapist or teacher records a lesson once, on a phone."
+    },
+    {
+      "id": "s10b",
+      "shot": "s10",
+      "at": 180.6,
+      "dur": 6.258,
+      "text": "InStep finds the still moments, suggests the steps, and publishes it to the TV."
+    },
+    {
+      "id": "file",
+      "shot": "file",
+      "at": 188.3,
+      "dur": 7.154,
+      "text": "Every lesson is an open file, called .istep: a video, plus the poses it waits for."
+    },
+    {
+      "id": "arch_a",
+      "shot": "arch",
+      "at": 199.1,
+      "dur": 7.013,
+      "text": "The phone sends body points over a WebSocket. A small server relays them to the TV."
+    },
+    {
+      "id": "s11b",
+      "shot": "arch",
+      "at": 206.7,
+      "dur": 8.061,
+      "text": "One pure TypeScript gate engine, shared by the phone, the server and the TV, decides when to move on."
+    },
+    {
+      "id": "s11c",
+      "shot": "arch",
+      "at": 215.2,
+      "dur": 4.283,
+      "text": "And the gated video player is open source, for any Vega app."
+    },
+    {
+      "id": "hon",
+      "shot": "hon",
+      "at": 221.8,
+      "dur": 10.3,
+      "text": "No learner video leaves the phone. The voices are synthetic, made on this machine. And the AWS coach is built, but switched off."
+    },
+    {
+      "id": "s12",
+      "shot": "s12",
+      "at": 235.2,
+      "dur": 2.48,
+      "text": "InStep. The video that waits for you."
+    }
   ],
-  [
-   5.5,
-   6.7,
-   1
+  "tv": [
+    {
+      "at": 87.9,
+      "src": "/home/arpit/instep-capture/film/heel-raise.webm",
+      "in": 47.6,
+      "dur": 7.0
+    },
+    {
+      "at": 127.1,
+      "src": "/home/arpit/instep-capture/film/asl.webm",
+      "in": 37.4,
+      "dur": 4.3
+    },
+    {
+      "at": 144.6,
+      "src": "/home/arpit/instep-capture/film/kids.webm",
+      "in": 86.6,
+      "dur": 5.8
+    },
+    {
+      "at": 154.6,
+      "src": "/home/arpit/Desktop/hackathon_projects/InStep/content/lessons/kids-forest-walk-v1/video.mp4",
+      "in": 19.3,
+      "dur": 6.3
+    }
   ],
-  [
-   6.7,
-   7.9,
-   1
+  "captions": [
+    {
+      "a": 14.5,
+      "b": 19.766,
+      "text": "Every how-to video plays at the same speed, whether you keep up, or not.",
+      "burn": false
+    },
+    {
+      "a": 21.6,
+      "b": 27.206,
+      "text": "Falls are the second-leading cause of unintentional injury death worldwide.",
+      "burn": true
+    },
+    {
+      "a": 28.2,
+      "b": 34.977,
+      "text": "In one survey, three in four people didn't finish their home physical therapy exercises.",
+      "burn": true
+    },
+    {
+      "a": 35.7,
+      "b": 39.798,
+      "text": "And most cardiac arrests outside hospital happen at home,",
+      "burn": true
+    },
+    {
+      "a": 39.798,
+      "b": 42.464,
+      "text": "where nobody is checking your form.",
+      "burn": true
+    },
+    {
+      "a": 43.8,
+      "b": 48.436,
+      "text": "At least nine in ten deaf children are born to hearing parents.",
+      "burn": true
+    },
+    {
+      "a": 48.6,
+      "b": 51.65,
+      "text": "And a video can't see whether your hands are right.",
+      "burn": false
+    },
+    {
+      "a": 55.2,
+      "b": 58.008,
+      "text": "InStep is the video that waits for you.",
+      "burn": false
+    },
+    {
+      "a": 60.4,
+      "b": 66.265,
+      "text": "Prop up your phone or laptop. It becomes the camera: an external camera,",
+      "burn": true
+    },
+    {
+      "a": 66.265,
+      "b": 67.311,
+      "text": "not the TV.",
+      "burn": true
+    },
+    {
+      "a": 67.7,
+      "b": 74.656,
+      "text": "Pose tracking runs in its browser. Only body points travel to the TV: numbers,",
+      "burn": true
+    },
+    {
+      "a": 74.656,
+      "b": 75.876,
+      "text": "never video.",
+      "burn": true
+    },
+    {
+      "a": 76.7,
+      "b": 82.542,
+      "text": "This is Fall Prevention, on the Vega Virtual Device. At each key moment,",
+      "burn": true
+    },
+    {
+      "a": 82.542,
+      "b": 87.723,
+      "text": "the lesson pauses, and continues only when your pose is right.",
+      "burn": true
+    },
+    {
+      "a": 88.3,
+      "b": 94.7,
+      "text": "Up, and down.",
+      "tv": true,
+      "burn": true
+    },
+    {
+      "a": 97.4,
+      "b": 101.607,
+      "text": "It counts your reps and times your balance. If you're stuck,",
+      "burn": true
+    },
+    {
+      "a": 101.607,
+      "b": 103.861,
+      "text": "it offers one short, kind tip.",
+      "burn": true
+    },
+    {
+      "a": 111.9,
+      "b": 116.984,
+      "text": "Safety comes first. No balance work until a chair is beside you.",
+      "burn": true
+    },
+    {
+      "a": 116.984,
+      "b": 121.345,
+      "text": "And if the camera drops, the lesson stops, and waits.",
+      "burn": true
+    },
+    {
+      "a": 122.6,
+      "b": 127.037,
+      "text": "Sign Language for Families teaches hand shapes, letter by letter.",
+      "burn": true
+    },
+    {
+      "a": 127.35,
+      "b": 131.2,
+      "text": "Letter A. A fist, thumb resting at the side.",
+      "tv": true,
+      "burn": true
+    },
+    {
+      "a": 131.9,
+      "b": 136.675,
+      "text": "The hands are illustrated, and not yet reviewed by Deaf signers.",
+      "burn": true
+    },
+    {
+      "a": 136.675,
+      "b": 139.063,
+      "text": "Learn with Deaf teachers, too.",
+      "burn": true
+    },
+    {
+      "a": 141.35,
+      "b": 143.84,
+      "text": "For kids, the lesson is a story.",
+      "burn": true
+    },
+    {
+      "a": 145.3,
+      "b": 149.9,
+      "text": "Look at the tall trees. Stretch up tall like a tree!",
+      "tv": true,
+      "burn": true
+    },
+    {
+      "a": 150.3,
+      "b": 154.945,
+      "text": "The forest waits until they're a tree, a mouse, and a flamingo.",
+      "burn": true
+    },
+    {
+      "a": 155.2,
+      "b": 158.4,
+      "text": "Here\u2019s a flamingo. Can you stand on one foot?",
+      "tv": true,
+      "burn": true
+    },
+    {
+      "a": 159.8,
+      "b": 160.85,
+      "text": "Amazing balancing!",
+      "tv": true,
+      "burn": true
+    },
+    {
+      "a": 161.4,
+      "b": 167.033,
+      "text": "The same engine runs hand rehab, and CPR rhythm: practice only,",
+      "burn": true
+    },
+    {
+      "a": 167.033,
+      "b": 168.793,
+      "text": "not certification.",
+      "burn": true
+    },
+    {
+      "a": 169.5,
+      "b": 173.804,
+      "text": "And two people can practise together, each with their own phone.",
+      "burn": true
+    },
+    {
+      "a": 175.3,
+      "b": 180.109,
+      "text": "A physiotherapist or teacher records a lesson once, on a phone.",
+      "burn": true
+    },
+    {
+      "a": 180.6,
+      "b": 187.008,
+      "text": "InStep finds the still moments, suggests the steps, and publishes it to the TV.",
+      "burn": true
+    },
+    {
+      "a": 188.3,
+      "b": 192.981,
+      "text": "Every lesson is an open file, called .istep: a video,",
+      "burn": true
+    },
+    {
+      "a": 192.981,
+      "b": 195.604,
+      "text": "plus the poses it waits for.",
+      "burn": true
+    },
+    {
+      "a": 199.1,
+      "b": 202.949,
+      "text": "The phone sends body points over a WebSocket.",
+      "burn": true
+    },
+    {
+      "a": 202.949,
+      "b": 206.263,
+      "text": "A small server relays them to the TV.",
+      "burn": true
+    },
+    {
+      "a": 206.7,
+      "b": 212.826,
+      "text": "One pure TypeScript gate engine, shared by the phone, the server and the TV,",
+      "burn": true
+    },
+    {
+      "a": 212.826,
+      "b": 214.911,
+      "text": "decides when to move on.",
+      "burn": true
+    },
+    {
+      "a": 215.2,
+      "b": 219.633,
+      "text": "And the gated video player is open source, for any Vega app.",
+      "burn": true
+    },
+    {
+      "a": 221.8,
+      "b": 226.666,
+      "text": "No learner video leaves the phone. The voices are synthetic,",
+      "burn": true
+    },
+    {
+      "a": 226.666,
+      "b": 232.25,
+      "text": "made on this machine. And the AWS coach is built, but switched off.",
+      "burn": true
+    },
+    {
+      "a": 235.2,
+      "b": 237.83,
+      "text": "InStep. The video that waits for you.",
+      "burn": false
+    }
   ],
-  [
-   7.9,
-   9.7,
-   6
-  ],
-  [
-   9.7,
-   11.6,
-   1
-  ],
-  [
-   11.6,
-   14.0,
-   1
+  "clips": {
+    "s10": {
+      "src": "/home/arpit/instep-capture/film/boot.mp4",
+      "in": 6.6,
+      "dur": 3.4,
+      "full": false
+    },
+    "s11": {
+      "src": "/home/arpit/instep-capture/film/boot.mp4",
+      "in": 12.8,
+      "dur": 1.2,
+      "full": false
+    },
+    "s12": {
+      "src": "/home/arpit/instep-capture/film/boot.mp4",
+      "in": 18.8,
+      "dur": 1.2,
+      "full": false
+    },
+    "s13": {
+      "src": "/home/arpit/instep-capture/film/boot.mp4",
+      "in": 20.0,
+      "dur": 1.2,
+      "full": false
+    },
+    "s14": {
+      "src": "/home/arpit/instep-capture/film/boot.mp4",
+      "in": 99.0,
+      "dur": 10.8,
+      "full": false
+    },
+    "s15": {
+      "src": "/home/arpit/instep-capture/film/boot.mp4",
+      "in": 120.8,
+      "dur": 1.9,
+      "full": false
+    },
+    "s16": {
+      "src": "/home/arpit/instep-capture/film/boot.mp4",
+      "in": 124.5,
+      "dur": 2.4,
+      "full": false
+    },
+    "heel0": {
+      "src": "/home/arpit/instep-capture/film/heel-raise.webm",
+      "in": 35.6,
+      "dur": 11.5,
+      "full": false
+    },
+    "heel1": {
+      "src": "/home/arpit/instep-capture/film/heel-raise.webm",
+      "in": 47.6,
+      "dur": 7.0,
+      "full": false
+    },
+    "heel2": {
+      "src": "/home/arpit/instep-capture/film/heel-raise.webm",
+      "in": 60.0,
+      "dur": 12.0,
+      "full": false
+    },
+    "heel3": {
+      "src": "/home/arpit/instep-capture/film/heel-raise.webm",
+      "in": 120.5,
+      "dur": 4.5,
+      "full": false
+    },
+    "safe0": {
+      "src": "/home/arpit/instep-capture/film/heel-raise.webm",
+      "in": 30.4,
+      "dur": 5.4,
+      "full": false
+    },
+    "safe1": {
+      "src": "/home/arpit/instep-capture/film/kids.webm",
+      "in": 105.6,
+      "dur": 5.6,
+      "full": false
+    },
+    "asl0": {
+      "src": "/home/arpit/instep-capture/film/launcher.webm",
+      "in": 46.0,
+      "dur": 3.0,
+      "full": false
+    },
+    "asl1": {
+      "src": "/home/arpit/instep-capture/film/asl.webm",
+      "in": 35.7,
+      "dur": 6.0,
+      "full": false
+    },
+    "asl2": {
+      "src": "/home/arpit/instep-capture/film/asl.webm",
+      "in": 55.2,
+      "dur": 9.6,
+      "full": false
+    },
+    "kids0": {
+      "src": "/home/arpit/instep-capture/film/kids.webm",
+      "in": 12.6,
+      "dur": 3.0,
+      "full": false
+    },
+    "kids1": {
+      "src": "/home/arpit/instep-capture/film/kids.webm",
+      "in": 86.0,
+      "dur": 10.6,
+      "full": false
+    },
+    "kids2": {
+      "src": "/home/arpit/Desktop/hackathon_projects/InStep/content/lessons/kids-forest-walk-v1/video.mp4",
+      "in": 19.3,
+      "dur": 6.3,
+      "full": true
+    },
+    "more0": {
+      "src": "/home/arpit/Desktop/hackathon_projects/InStep/content/lessons/rehab-hand-open-close-v1/video.mp4",
+      "in": 2.0,
+      "dur": 8.4,
+      "full": false
+    },
+    "more1": {
+      "src": "/home/arpit/Desktop/hackathon_projects/InStep/content/lessons/cpr-rhythm-v1/video.mp4",
+      "in": 1.0,
+      "dur": 8.4,
+      "full": false
+    },
+    "more2": {
+      "src": "/home/arpit/instep-capture/film/heel-raise.webm",
+      "in": 7.0,
+      "dur": 2.9,
+      "full": false
+    },
+    "heel": {
+      "src": "/home/arpit/instep-capture/film/heel-raise.webm",
+      "in": 55.0,
+      "dur": 22.0,
+      "full": false
+    },
+    "launcher": {
+      "src": "/home/arpit/instep-capture/film/launcher.webm",
+      "in": 3.0,
+      "dur": 40.0,
+      "full": false
+    }
+  },
+  "archFrames": 693,
+  "open": [
+    [0.9, 4.3, 1],
+    [4.3, 5.5, 1],
+    [5.5, 6.7, 1],
+    [6.7, 7.9, 1],
+    [7.9, 9.7, 6],
+    [9.7, 11.6, 1],
+    [11.6, 14.0, 1]
   ]
- ]
 }
