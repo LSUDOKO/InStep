@@ -1,6 +1,6 @@
 <div align="center">
 
-<img src="apps/companion/public/logo.svg" width="96" alt="" />
+<img src="https://lsudoko.github.io/InStep/site/logo.svg" width="96" alt="" />
 
 # InStep
 
@@ -18,11 +18,11 @@ hand shape, rhythm or hold is right — using the phone or laptop you already ow
 
 </div>
 
-**Demo film (4:04):** [`docs/video/instep-demo.mp4`](docs/video/instep-demo.mp4) — narrated, original score,
+**Demo film (4:04):** [`docs/video/instep-demo.mp4`](https://lsudoko.github.io/InStep/video/instep-demo.mp4) — narrated, original score,
 captions; TV shots recorded on the Vega Virtual Device, learner simulated where labelled. Script:
 [`docs/video/script.md`](docs/video/script.md).
 
-<p align="center"><a href="docs/video/instep-demo.mp4"><img src="docs/video/poster.jpg" width="720" alt="InStep demo film — logo lockup: The video that waits for you. Click to play." /></a></p>
+<p align="center"><a href="https://lsudoko.github.io/InStep/video/instep-demo.mp4"><img src="https://lsudoko.github.io/InStep/video/poster.jpg" width="720" alt="InStep demo film — logo lockup: The video that waits for you. Click to play." /></a></p>
 
 **Website:** [lsudoko.github.io/InStep](https://lsudoko.github.io/InStep/) · **Live:** [instep-wfcr.onrender.com/c](https://instep-wfcr.onrender.com/c/) — open it on a phone to use it as a camera
 (free Render instance: the first request after idle takes about a minute to wake).
@@ -33,7 +33,7 @@ captions; TV shots recorded on the Vega Virtual Device, learner simulated where 
 
 ---
 
-<p align="center"><img src="docs/brand/brand-board.png" width="900" alt="InStep brand sheet: logo, tagline, core colours, channel colours, type scale, controls and voice" /></p>
+<p align="center"><img src="https://lsudoko.github.io/InStep/brand/brand-board.png" width="900" alt="InStep brand sheet: logo, tagline, core colours, channel colours, type scale, controls and voice" /></p>
 
 One brand on both screens: the TV follows tvOS (Amazon Ember, white focus platter), the phone follows iOS (SF Pro on
 Apple devices, Inter elsewhere, inset grouped lists), both on true black with the InStep teal. Tokens:
@@ -59,11 +59,11 @@ Every number above is listed with its source in [`docs/SOURCES.md`](docs/SOURCES
 
 ## How it works
 
-<p align="center"><img src="docs/architecture/system-diagram.png" width="960" alt="InStep system diagram in swimlanes: the learner's phone (browser) turns camera frames into body points with MediaPipe Tasks and sends only JSON, about 1 KB a frame and at most 30 a second, over a WebSocket relay on the InStep server (Node 22, Fastify, ws, node:sqlite on Render) to the Fire TV app (React Native for Vega), whose gate engine pauses and plays the W3C media player; gate state and tips flow back to the phone, never video. The server also serves lessons, .istep tracks and video over HTTPS, takes the instructor's demo video and reference.json from Creator Studio, loads lesson content at start and gives templated coach tips with Bedrock and Polly switched off. Shared TypeScript packages and a six-step legend for one gate complete the picture" /></p>
+<p align="center"><img src="https://lsudoko.github.io/InStep/architecture/system-diagram.png" width="960" alt="InStep system diagram in swimlanes: the learner's phone (browser) turns camera frames into body points with MediaPipe Tasks and sends only JSON, about 1 KB a frame and at most 30 a second, over a WebSocket relay on the InStep server (Node 22, Fastify, ws, node:sqlite on Render) to the Fire TV app (React Native for Vega), whose gate engine pauses and plays the W3C media player; gate state and tips flow back to the phone, never video. The server also serves lessons, .istep tracks and video over HTTPS, takes the instructor's demo video and reference.json from Creator Studio, loads lesson content at start and gives templated coach tips with Bedrock and Polly switched off. Shared TypeScript packages and a six-step legend for one gate complete the picture" /></p>
 
 The same system as a poster (the animated architecture shot in the demo film):
 
-<p align="center"><img src="docs/architecture/architecture.png" width="960" alt="InStep architecture: the phone runs MediaPipe in the browser and sends only body points (JSON, about 1 KB a frame) over a WebSocket relay on Render to the Fire TV app, whose gate engine pauses and resumes the W3C media player; Creator Studio, lesson content, shared TypeScript packages and the switched-off Bedrock + Polly coach are shown around them, with a six-step panel for one gate" /></p>
+<p align="center"><img src="https://lsudoko.github.io/InStep/architecture/architecture.png" width="960" alt="InStep architecture: the phone runs MediaPipe in the browser and sends only body points (JSON, about 1 KB a frame) over a WebSocket relay on Render to the Fire TV app, whose gate engine pauses and resumes the W3C media player; Creator Studio, lesson content, shared TypeScript packages and the switched-off Bedrock + Polly coach are shown around them, with a six-step panel for one gate" /></p>
 
 Step by step, with file paths: [`docs/02-architecture.md`](docs/02-architecture.md). The diagrams are code
 ([`docs/architecture/system-diagram.html`](docs/architecture/system-diagram.html),
@@ -103,25 +103,25 @@ test camera and real MediaPipe inference.
 
 ### TV (Vega OS, Virtual Device)
 
-|                                 Profiles                                 |                                      Lesson                                       |                               Pair by QR / room code                                |
-| :----------------------------------------------------------------------: | :-------------------------------------------------------------------------------: | :---------------------------------------------------------------------------------: |
-| ![Who's practising? profile picker](docs/screenshots/tv/00-profiles.png) | ![Lesson page with steps and camera placement](docs/screenshots/tv/04-lesson.png) | ![Pair your camera: QR code and 4-digit room code](docs/screenshots/tv/05-pair.png) |
+|                                               Profiles                                               |                                                    Lesson                                                     |                                             Pair by QR / room code                                              |
+| :--------------------------------------------------------------------------------------------------: | :-----------------------------------------------------------------------------------------------------------: | :-------------------------------------------------------------------------------------------------------------: |
+| ![Who's practising? profile picker](https://lsudoko.github.io/InStep/screenshots/tv/00-profiles.png) | ![Lesson page with steps and camera placement](https://lsudoko.github.io/InStep/screenshots/tv/04-lesson.png) | ![Pair your camera: QR code and 4-digit room code](https://lsudoko.github.io/InStep/screenshots/tv/05-pair.png) |
 
-|                                                                       Player: gate waiting                                                                        |                                                                Player: hold gate                                                                |                                                Summary                                                 |
-| :---------------------------------------------------------------------------------------------------------------------------------------------------------------: | :---------------------------------------------------------------------------------------------------------------------------------------------: | :----------------------------------------------------------------------------------------------------: |
-| ![Heel raises paused at step 3: rep counter 0 of 5, the coach tip shown on the video like a subtitle, step rail below](docs/screenshots/tv/06-player-waiting.png) | ![Rise onto your toes and hold: 2 s countdown ring, legs drawn green while they match, step rail below](docs/screenshots/tv/07-player-hold.png) | ![Summary: Every step done, 4 of 4 steps, 5 reps, best hold 2.1 s](docs/screenshots/tv/08-summary.png) |
+|                                                                                     Player: gate waiting                                                                                      |                                                                              Player: hold gate                                                                              |                                                              Summary                                                               |
+| :-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------: | :-------------------------------------------------------------------------------------------------------------------------------------------------------------------------: | :--------------------------------------------------------------------------------------------------------------------------------: |
+| ![Heel raises paused at step 3: rep counter 0 of 5, the coach tip shown on the video like a subtitle, step rail below](https://lsudoko.github.io/InStep/screenshots/tv/06-player-waiting.png) | ![Rise onto your toes and hold: 2 s countdown ring, legs drawn green while they match, step rail below](https://lsudoko.github.io/InStep/screenshots/tv/07-player-hold.png) | ![Summary: Every step done, 4 of 4 steps, 5 reps, best hold 2.1 s](https://lsudoko.github.io/InStep/screenshots/tv/08-summary.png) |
 
-|                                  Camera lost (safety pause)                                  |                          Home                          |                         New profile (on-screen keyboard)                          |
-| :------------------------------------------------------------------------------------------: | :----------------------------------------------------: | :-------------------------------------------------------------------------------: |
-| ![Camera disconnected: the lesson pauses within 2 s](docs/screenshots/tv/09-camera-lost.png) | ![Home with channels](docs/screenshots/tv/03-home.png) | ![New profile keyboard and colour picker](docs/screenshots/tv/02-new-profile.png) |
+|                                                Camera lost (safety pause)                                                |                                        Home                                        |                                       New profile (on-screen keyboard)                                        |
+| :----------------------------------------------------------------------------------------------------------------------: | :--------------------------------------------------------------------------------: | :-----------------------------------------------------------------------------------------------------------: |
+| ![Camera disconnected: the lesson pauses within 2 s](https://lsudoko.github.io/InStep/screenshots/tv/09-camera-lost.png) | ![Home with channels](https://lsudoko.github.io/InStep/screenshots/tv/03-home.png) | ![New profile keyboard and colour picker](https://lsudoko.github.io/InStep/screenshots/tv/02-new-profile.png) |
 
-|                                 My progress                                  |                                    Settings                                    |                        Welcome                        |
-| :--------------------------------------------------------------------------: | :----------------------------------------------------------------------------: | :---------------------------------------------------: |
-| ![Last 14 days: sessions, reps, streak](docs/screenshots/tv/11-progress.png) | ![Settings list: label left, value right](docs/screenshots/tv/10-settings.png) | ![Welcome screen](docs/screenshots/tv/01-welcome.png) |
+|                                               My progress                                                |                                                  Settings                                                  |                                      Welcome                                      |
+| :------------------------------------------------------------------------------------------------------: | :--------------------------------------------------------------------------------------------------------: | :-------------------------------------------------------------------------------: |
+| ![Last 14 days: sessions, reps, streak](https://lsudoko.github.io/InStep/screenshots/tv/11-progress.png) | ![Settings list: label left, value right](https://lsudoko.github.io/InStep/screenshots/tv/10-settings.png) | ![Welcome screen](https://lsudoko.github.io/InStep/screenshots/tv/01-welcome.png) |
 
-|                                          Together mode: pairing (second QR for a family member)                                           |                                   Together mode: both learners in the player                                   |
-| :---------------------------------------------------------------------------------------------------------------------------------------: | :------------------------------------------------------------------------------------------------------------: |
-| ![Practise together: room code, camera connected, waiting for a family member, Start on my own](docs/screenshots/tv/12-together-pair.png) | ![Heel raises with two learners, Demo and Mia, rep counter 3 of 5](docs/screenshots/tv/13-together-player.png) |
+|                                                        Together mode: pairing (second QR for a family member)                                                         |                                                 Together mode: both learners in the player                                                 |
+| :-------------------------------------------------------------------------------------------------------------------------------------------------------------------: | :----------------------------------------------------------------------------------------------------------------------------------------: |
+| ![Practise together: room code, camera connected, waiting for a family member, Start on my own](https://lsudoko.github.io/InStep/screenshots/tv/12-together-pair.png) | ![Heel raises with two learners, Demo and Mia, rep counter 3 of 5](https://lsudoko.github.io/InStep/screenshots/tv/13-together-player.png) |
 
 **Design.** The TV app follows Apple's tvOS 18 design templates for metrics and behaviour, not for branding:
 80 × 60 px safe area, 4-up lockups (410 × 231, 40 px gutters), 72 px button platters that turn white with a dark
@@ -132,18 +132,18 @@ translucent glass over black. Lesson artwork is placeholder until real footage i
 
 ### Phone
 
-|                      Phone as camera                      |                               Live tracking + TV feedback                               |                          Privacy pill (measured)                          |
-| :-------------------------------------------------------: | :-------------------------------------------------------------------------------------: | :-----------------------------------------------------------------------: |
-| ![Join by room code](docs/screenshots/companion-join.png) | ![Live skeleton, placement help and gate feedback](docs/screenshots/companion-live.png) | ![Measured bytes: video 0.0 KB/s](docs/screenshots/companion-privacy.png) |
+|                                    Phone as camera                                    |                                             Live tracking + TV feedback                                             |                                        Privacy pill (measured)                                        |
+| :-----------------------------------------------------------------------------------: | :-----------------------------------------------------------------------------------------------------------------: | :---------------------------------------------------------------------------------------------------: |
+| ![Join by room code](https://lsudoko.github.io/InStep/screenshots/companion-join.png) | ![Live skeleton, placement help and gate feedback](https://lsudoko.github.io/InStep/screenshots/companion-live.png) | ![Measured bytes: video 0.0 KB/s](https://lsudoko.github.io/InStep/screenshots/companion-privacy.png) |
 
-|                    Creator Studio                    |                                      New lesson                                       |                       Recording (visible REC)                        |            Step editor with suggested steps             |
-| :--------------------------------------------------: | :-----------------------------------------------------------------------------------: | :------------------------------------------------------------------: | :-----------------------------------------------------: |
-| ![Lesson list](docs/screenshots/creator-lessons.png) | ![New lesson form with required safety note](docs/screenshots/creator-new-lesson.png) | ![Recording a demonstration](docs/screenshots/creator-recording.png) | ![Timeline editor](docs/screenshots/creator-editor.png) |
+|                                  Creator Studio                                  |                                                    New lesson                                                     |                                     Recording (visible REC)                                      |                          Step editor with suggested steps                           |
+| :------------------------------------------------------------------------------: | :---------------------------------------------------------------------------------------------------------------: | :----------------------------------------------------------------------------------------------: | :---------------------------------------------------------------------------------: |
+| ![Lesson list](https://lsudoko.github.io/InStep/screenshots/creator-lessons.png) | ![New lesson form with required safety note](https://lsudoko.github.io/InStep/screenshots/creator-new-lesson.png) | ![Recording a demonstration](https://lsudoko.github.io/InStep/screenshots/creator-recording.png) | ![Timeline editor](https://lsudoko.github.io/InStep/screenshots/creator-editor.png) |
 
 <details>
 <summary>Caregiver / physio report (share link, print-friendly, numbers only)</summary>
 
-![Progress report](docs/screenshots/report.png)
+![Progress report](https://lsudoko.github.io/InStep/screenshots/report.png)
 
 </details>
 
@@ -153,7 +153,7 @@ Every channel below runs end to end on the Vega Virtual Device against the hoste
 screen recording of the TV (emulator screen recorder, played 3× faster) with the synthetic learner performing
 the steps (`pnpm demo-learner`). The gates, safety checks, reps, rhythm and hand shapes are the real engine.
 
-<p align="center"><img src="docs/screenshots/lesson-videos.jpg" width="900" alt="Frames from the seven lesson videos: heel raises and single-leg stand in a living room, a hand closing to a soft fist, real CPR footage, the ASL letter L and the I-love-you handshape, and the kids' forest story with tree and flamingo poses" /></p>
+<p align="center"><img src="https://lsudoko.github.io/InStep/screenshots/lesson-videos.jpg" width="900" alt="Frames from the seven lesson videos: heel raises and single-leg stand in a living room, a hand closing to a soft fist, real CPR footage, the ASL letter L and the I-love-you handshape, and the kids' forest story with tree and flamingo poses" /></p>
 
 **What the teacher video is, per lesson** (each one says so on screen, and every one is narrated — see
 [Sound and voice](#sound-and-voice)):
@@ -186,23 +186,23 @@ recorded demonstration replaces any of them by dropping in a new `video.mp4` (or
 The lesson refuses to start the balance work until a chair is detected beside the learner (safety gate, never
 loosened), then checks posture, counts five heel raises by heel height, and finishes with a 2 s hold.
 
-<p align="center"><img src="docs/screenshots/tv/gif/fall-heel-raise.gif" width="720" alt="Heel raises on the TV: chair safety check, posture gate, rep counter counting to five, final hold, summary" /></p>
-<p align="center"><img src="docs/screenshots/tv/gif/fall-single-leg-stand.gif" width="720" alt="Single-leg stand: chair check, then a 5 s hold on each leg with a countdown ring" /></p>
+<p align="center"><img src="https://lsudoko.github.io/InStep/screenshots/tv/gif/fall-heel-raise.gif" width="720" alt="Heel raises on the TV: chair safety check, posture gate, rep counter counting to five, final hold, summary" /></p>
+<p align="center"><img src="https://lsudoko.github.io/InStep/screenshots/tv/gif/fall-single-leg-stand.gif" width="720" alt="Single-leg stand: chair check, then a 5 s hold on each leg with a countdown ring" /></p>
 
 ### Sign Language for Families — fingerspelling A B C L Y, and "I love you"
 
 Each handshape is matched finger by finger; the Delta Glow panel shows exactly which finger to curl or extend.
 The last step is a sequence: C, A, B in order — out-of-order shapes never advance it.
 
-<p align="center"><img src="docs/screenshots/tv/gif/asl-fingerspell-abc.gif" width="720" alt="Fingerspelling lesson: five handshape gates with finger-level feedback, then the C-A-B sequence" /></p>
-<p align="center"><img src="docs/screenshots/tv/gif/asl-i-love-you.gif" width="720" alt="The I-love-you sign matched by finger curls" /></p>
+<p align="center"><img src="https://lsudoko.github.io/InStep/screenshots/tv/gif/asl-fingerspell-abc.gif" width="720" alt="Fingerspelling lesson: five handshape gates with finger-level feedback, then the C-A-B sequence" /></p>
+<p align="center"><img src="https://lsudoko.github.io/InStep/screenshots/tv/gif/asl-i-love-you.gif" width="720" alt="The I-love-you sign matched by finger curls" /></p>
 
 ### Stroke Hand Rehab — open and close your hand, 20 quality reps
 
 Only reps that reach both ends of the range count. Pace-follow slows the video when the learner is slower than the
 teacher.
 
-<p align="center"><img src="docs/screenshots/tv/gif/rehab-hand-open-close.gif" width="720" alt="Hand open/close rep counter climbing to 20 with partial-rep hints" /></p>
+<p align="center"><img src="https://lsudoko.github.io/InStep/screenshots/tv/gif/rehab-hand-open-close.gif" width="720" alt="Hand open/close rep counter climbing to 20 with partial-rep hints" /></p>
 
 ### CPR Practice — rhythm and straight arms
 
@@ -210,13 +210,13 @@ A placement check first (shoulders, arms and hands in view), then compressions m
 with locked elbows; the BPM meter and metronome guide the pace. The disclaimer stays on screen: a practice aid
 for rhythm and straight arms only, it does not measure depth and is not certification.
 
-<p align="center"><img src="docs/screenshots/tv/gif/cpr-rhythm.gif" width="720" alt="CPR rhythm gate: compressions counted, BPM meter in the green band, arms-straight check" /></p>
+<p align="center"><img src="https://lsudoko.github.io/InStep/screenshots/tv/gif/cpr-rhythm.gif" width="720" alt="CPR rhythm gate: compressions counted, BPM meter in the green band, arms-straight check" /></p>
 
 ### Kids' Active Storytime — The Forest Walk
 
 Tree, mouse, flamingo, wave: four poses with generous tolerances and a star burst on every pass.
 
-<p align="center"><img src="docs/screenshots/tv/gif/kids-forest-walk.gif" width="720" alt="The Forest Walk: four kid poses with stars on every pass" /></p>
+<p align="center"><img src="https://lsudoko.github.io/InStep/screenshots/tv/gif/kids-forest-walk.gif" width="720" alt="The Forest Walk: four kid poses with stars on every pass" /></p>
 
 Safety notes shown in the app: exercises should be prescribed or approved by a physiotherapist; the CPR lesson is a
 practice aid for rhythm and straight arms only; sign lessons are a practice aid — learn with Deaf teachers and
@@ -401,23 +401,23 @@ pnpm aws:check --probe --tts                # + one 5-token tip and one short sy
 `pnpm aws:check` (free control-plane calls only) against the developer's account: credentials valid, 49 on-demand
 text models listed in us-east-1 including `amazon.nova-micro-v1:0`, and all four neural Polly voices available.
 
-<p align="center"><img src="docs/screenshots/aws/aws-check.png" width="760" alt="pnpm aws:check output: credentials ok, 49 Bedrock models listed, nova-micro listed, Joanna/Lucia/Kajal/Lea neural voices available" /></p>
+<p align="center"><img src="https://lsudoko.github.io/InStep/screenshots/aws/aws-check.png" width="760" alt="pnpm aws:check output: credentials ok, 49 Bedrock models listed, nova-micro listed, Joanna/Lucia/Kajal/Lea neural voices available" /></p>
 
 The first real Converse call hit the account's **daily Bedrock token allowance** (a small per-day cap on new
 accounts, reset daily) — `ThrottlingException: Too many tokens per day`. That is exactly the case the coach is
 built for: the server logs it and answers with the lesson's own fallback tip, and nothing is charged.
 
-<p align="center"><img src="docs/screenshots/aws/bedrock-daily-quota.png" width="760" alt="aws bedrock-runtime converse returning ThrottlingException: Too many tokens per day" /></p>
+<p align="center"><img src="https://lsudoko.github.io/InStep/screenshots/aws/bedrock-daily-quota.png" width="760" alt="aws bedrock-runtime converse returning ThrottlingException: Too many tokens per day" /></p>
 
 The hosted instance runs in mock mode. A real request to its coach endpoint answers in well under a second with the
 template tip (first call `source: "mock"`, repeats `source: "cache"`), and `/api/health` reports `mockAi: true`:
 
-<p align="center"><img src="docs/screenshots/aws/coach-hosted-mock.png" width="760" alt="curl to the hosted /api/coach returning a template tip with source cache, and /api/health with mockAi true" /></p>
+<p align="center"><img src="https://lsudoko.github.io/InStep/screenshots/aws/coach-hosted-mock.png" width="760" alt="curl to the hosted /api/coach returning a template tip with source cache, and /api/health with mockAi true" /></p>
 
 The coach, labeler and safety filter have 18 unit tests (model errors, malformed JSON, the daily cap, banned
 terms), plus 5 for the MCP server:
 
-<p align="center"><img src="docs/screenshots/aws/ai-tests.png" width="760" alt="vitest output: 23 passing tests for the coach, labeler, safety filter and MCP server" /></p>
+<p align="center"><img src="https://lsudoko.github.io/InStep/screenshots/aws/ai-tests.png" width="760" alt="vitest output: 23 passing tests for the coach, labeler, safety filter and MCP server" /></p>
 
 **Not shown, on purpose:** a successful AI-written tip end to end. On Oct 23 the free
 `freetier:GetAccountPlanState` call reported the account on the paid plan with **$0 credits left** (a $1 zero-spend
