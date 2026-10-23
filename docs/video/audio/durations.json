@@ -85,18 +85,88 @@
   "sr": 24000
  },
  "s11b": {
-  "key": "af_heart|0.8|one pure TypeScript gate engine, shared by the phone, the server, and the TV,",
-  "dur": 5.805,
+  "key": "af_heart|0.8|One pure TypeScript gate engine, shared by the phone, the server, and the TV, decides when to move on.",
+  "dur": 8.061,
   "sr": 24000
  },
  "s11c": {
-  "key": "af_heart|0.8|and an open-source Vega player that any app can use.",
-  "dur": 3.58,
+  "key": "af_heart|0.8|And the gated video player is open source, for any Vega app.",
+  "dur": 4.283,
   "sr": 24000
  },
  "s12": {
   "key": "af_heart|0.8|In Step. The video that waits for you.",
   "dur": 2.48,
+  "sr": 24000
+ },
+ "cam_a": {
+  "key": "af_heart|0.8|Prop up your phone or laptop. It becomes the camera: an external camera, not the TV.",
+  "dur": 6.761,
+  "sr": 24000
+ },
+ "cam_b": {
+  "key": "af_heart|0.8|Pose tracking runs in its browser. Only body points travel to the TV: numbers, never video.",
+  "dur": 8.026,
+  "sr": 24000
+ },
+ "heel_a": {
+  "key": "af_heart|0.8|This is Fall Prevention, on the Vega Virtual Device. At each key moment, the lesson pauses, and continues only when your pose is right.",
+  "dur": 10.873,
+  "sr": 24000
+ },
+ "heel_b": {
+  "key": "af_heart|0.8|It counts your reps and times your balance. If you're stuck, it offers one short, kind tip.",
+  "dur": 6.311,
+  "sr": 24000
+ },
+ "safe": {
+  "key": "af_heart|0.8|Safety comes first. No balance work until a chair is beside you. And if the camera drops, the lesson stops, and waits.",
+  "dur": 9.295,
+  "sr": 24000
+ },
+ "asl_a": {
+  "key": "af_heart|0.8|Sign Language for Families teaches hand shapes, letter by letter.",
+  "dur": 4.287,
+  "sr": 24000
+ },
+ "asl_b": {
+  "key": "af_heart|0.8|The hands are illustrated, and not yet reviewed by Deaf signers. Learn with Deaf teachers, too.",
+  "dur": 7.013,
+  "sr": 24000
+ },
+ "kids_a": {
+  "key": "af_heart|0.8|For kids, the lesson is a story.",
+  "dur": 2.34,
+  "sr": 24000
+ },
+ "kids_b": {
+  "key": "af_heart|0.8|The forest waits until they're a tree, a mouse, and a flamingo.",
+  "dur": 4.495,
+  "sr": 24000
+ },
+ "more_a": {
+  "key": "af_heart|0.8|The same engine runs hand rehab, and CPR rhythm: practice only, not certification.",
+  "dur": 7.243,
+  "sr": 24000
+ },
+ "more_b": {
+  "key": "af_heart|0.8|And two people can practise together, each with their own phone.",
+  "dur": 4.154,
+  "sr": 24000
+ },
+ "file": {
+  "key": "af_heart|0.8|Every lesson is an open file, called dot eye step: a video, plus the poses it waits for.",
+  "dur": 7.154,
+  "sr": 24000
+ },
+ "arch_a": {
+  "key": "af_heart|0.8|The phone sends body points over a WebSocket. A small server relays them to the TV.",
+  "dur": 7.013,
+  "sr": 24000
+ },
+ "hon": {
+  "key": "af_heart|0.8|No learner video leaves the phone. The voices are synthetic, made on this machine. And the AWS coach is built, but switched off.",
+  "dur": 10.3,
   "sr": 24000
  }
 }

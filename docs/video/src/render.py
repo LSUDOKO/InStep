@@ -33,41 +33,42 @@ def serve():
 def extract_clips():
     for slot, c in TL['clips'].items():
         d = CACHE / 'clips' / slot
-        key = f"{c['src']}|{c['in']}|{c['dur']}|{os.path.getmtime(c['src'])}"
+        key = f"{c['src']}|{c['in']}|{c['dur']}|{c.get('full')}|{os.path.getmtime(c['src'])}"
         if (d / 'key').exists() and (d / 'key').read_text() == key:
             continue
         d.mkdir(parents=True, exist_ok=True)
         for f in d.glob('*.jpg'):
             f.unlink()
         subprocess.run(['ffmpeg', '-v', 'error', '-y', '-ss', str(c['in']), '-t', str(c['dur']), '-i', c['src'],
-                        '-vf', f'fps={FPS},scale=1280:720:flags=lanczos', '-q:v', '3', str(d / '%05d.jpg')], check=True)
+                        '-vf', f"fps={FPS},scale={'1920:1080' if c.get('full') else '1280:720'}:flags=lanczos", '-q:v', '3', str(d / '%05d.jpg')], check=True)
         (d / 'key').write_text(key)
         print(f'[clips] {slot}: {len(list(d.glob("*.jpg")))} frames from {Path(c["src"]).name} @{c["in"]}s')
 
 
 def arch_frames(port):
-    """docs/architecture/architecture.html via its window.seek(t), one frame per film frame of shot s11."""
+    """docs/architecture/system-diagram.html (architecture.html if missing) via its window.seek(t), one frame per film frame
+    of shot 'arch', rendered at 1.5x so the camera can move in."""
     from playwright.sync_api import sync_playwright
-    src = ROOT / 'docs/architecture/architecture.html'
-    d = CACHE / 'arch'
-    sh = next(s for s in TL['shots'] if s['id'] == 's11')
-    n = round((sh['end'] - sh['start'] + 0.6) * FPS)
-    key = f'{os.path.getmtime(src)}|{n}'
+    name = 'system-diagram.html' if (ROOT / 'docs/architecture/system-diagram.html').exists() else 'architecture.html'
+    src = ROOT / 'docs/architecture' / name
+    d = CACHE / 'arch2'
+    n = TL['archFrames']
+    key = f'{name}|{os.path.getmtime(src)}|{n}'
     if (d / 'key').exists() and (d / 'key').read_text() == key:
         return
     d.mkdir(parents=True, exist_ok=True)
     with sync_playwright() as p:
         b = p.chromium.launch()
-        pg = b.new_page(viewport={'width': 1920, 'height': 1080})
-        pg.goto(f'http://127.0.0.1:{port}/docs/architecture/architecture.html?t=0')
+        pg = b.new_page(viewport={'width': 1920, 'height': 1080}, device_scale_factor=1.5)
+        pg.goto(f'http://127.0.0.1:{port}/docs/architecture/{name}?t=0')
         pg.wait_for_function('typeof window.seek === "function"')
         pg.evaluate('document.fonts.ready')
         for i in range(n):
             pg.evaluate('t => window.seek(t)', i / FPS)
-            pg.screenshot(path=str(d / f'{i + 1:05d}.jpg'), type='jpeg', quality=92)
+            pg.screenshot(path=str(d / f'{i + 1:05d}.jpg'), type='jpeg', quality=90)
         b.close()
     (d / 'key').write_text(key)
-    print(f'[arch] {n} frames')
+    print(f'[arch] {n} frames of {name}')
 
 
 def render_range(args):
@@ -91,7 +92,7 @@ def _render_range(port, f0, f1, out):
         if pg.evaluate('window.__bootFailed || null'):
             return f'boot failed: {pg.evaluate("window.__bootFailed")}'
         ff = subprocess.Popen(['ffmpeg', '-v', 'error', '-y', '-f', 'image2pipe', '-framerate', str(FPS), '-c:v', 'mjpeg', '-i', '-',
-                               '-c:v', 'libx264', '-profile:v', 'high', '-preset', 'medium', '-crf', '19', '-pix_fmt', 'yuv420p',
+                               '-c:v', 'libx264', '-profile:v', 'high', '-preset', 'medium', '-tune', 'animation', '-crf', '23', '-threads', '2', '-rc-lookahead', '20', '-pix_fmt', 'yuv420p',
                                '-g', str(FPS * 2), '-r', str(FPS), str(out)], stdin=subprocess.PIPE)
         for f in range(f0, f1):
             ff.stdin.write(base64.b64decode(pg.evaluate('t => window.seek(t)', f / FPS)))

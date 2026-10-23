@@ -4,8 +4,10 @@
 # ///
 """Original score + sound effects + voice-over mix for the film, all synthesised here (no samples, no third-party music).
 
-Warm pad and a soft pluck motif at 96 BPM in D; lifts at the logo (44.2 s) and the channel montage (98.6 s), resolves
-on the end card. Music ducks 8 dB under every voice-over line. UI ticks on card landings, a chime on each counted rep.
+Warm pad and a soft pluck motif at 96 BPM in D; sections follow the shots in timeline.json: quiet under the problem,
+lifts at the logo and again for the channels, settles for the honest close, resolves on the end card. Music ducks 8 dB
+under every voice-over line and 12 dB under the TV's own narration (taken from the device recording / lesson video,
+loudness-matched to the voice-over). UI ticks on card landings.
 Writes docs/video/audio/music.wav (score + effects, before ducking) and mix.wav (final, -16 LUFS, <= -1.5 dBTP).
 
   uv run docs/video/src/music.py
@@ -102,17 +104,26 @@ def score():
     G = [43, 55, 59, 62, 69]
     A = [45, 52, 57, 61, 64]
     Em = [40, 52, 59, 62, 67]
-    sections = [
-        (0.0, 6.4, [D], 0.55, 0.12, False, False),
-        (6.4, 44.2, [Bm, G, D, A], 0.62, 0.14, False, True),
-        (44.2, 52.0, [D, G], 0.85, 0.22, False, True),
-        (52.0, 98.6, [D, Bm, G, A], 0.75, 0.18, True, True),
-        (98.6, 117.5, [G, D, A, Bm], 0.9, 0.24, True, True),
-        (117.5, 150.0, [D, Em, G, A], 0.78, 0.18, True, True),
-        (150.0, DUR, [D], 0.95, 0.22, False, False),
-    ]
+    LOOK = {  # shot id -> (chords, level, brightness, pulse, plucks, lift)
+        's1': ([D], 0.55, 0.12, False, False, False),
+        's2': ([Bm, G, D, A], 0.62, 0.14, False, True, False), 's3': None, 's4': None,
+        's5': ([D, G], 0.85, 0.22, False, True, False),
+        's6': ([D, Bm, G, A], 0.75, 0.18, True, True, False), 'heel': None, 'safe': None,
+        'asl': ([G, D, A, Bm], 0.9, 0.24, True, True, True), 'kids': None, 'more': None,
+        's10': ([D, Em, G, A], 0.78, 0.18, True, True, False), 'file': None, 'arch': None,
+        'hon': ([Bm, G, D, A], 0.6, 0.14, False, True, False),
+        's12': ([D], 0.95, 0.22, False, False, False),
+    }
+    sections = []  # consecutive shots with the same look share one section so the chords keep moving
+    for sh in TL['shots']:
+        look = LOOK[sh['id']]
+        if look is None:
+            s0, _, *rest = sections[-1]; sections[-1] = (s0, sh['end'], *rest)
+        else:
+            sections.append((sh['start'], sh['end'], *look))
+    sections[-1] = (sections[-1][0], DUR, *sections[-1][2:])
     motif = [74, 76, 78, 81, 78, 76, 74, 69]  # D pentatonic, one per 8th, sparse
-    for s0, s1, chords, lvl, br, pulse, pl in sections:
+    for s0, s1, chords, lvl, br, pulse, pl, lift in sections:
         t = s0
         k = 0
         while t < s1 - 0.05:
@@ -126,14 +137,15 @@ def score():
                         add(mus, t + b * BEAT, kick(), 0.18 * lvl)
             if pl:
                 for b in range(int(d / (BEAT / 2) + 1e-6)):
-                    if (b + k) % 3 == 0 or (s0 >= 98.6 and s0 < 117.5 and b % 2 == 0):
-                        m = motif[(b + 2 * k) % len(motif)] + (12 if s0 == 98.6 and b % 4 == 0 else 0)
+                    if (b + k) % 3 == 0 or (lift and b % 2 == 0):
+                        m = motif[(b + 2 * k) % len(motif)] + (12 if lift and b % 4 == 0 else 0)
                         add(mus, t + b * BEAT / 2, pluck(midi(m)), 0.07 * lvl, pan=0.35 * np.sin(b))
             t += d; k += 1
     # lifts: swell into the logo and into the montage, bloom on the end card
-    add(mus, 44.2 - 1.4, swell(1.4), 0.10)
-    add(mus, 98.6 - 1.2, swell(1.2), 0.08)
-    for at, notes in ((44.95, [62, 69, 74, 78, 81]), (150.3, [50, 62, 69, 74, 78, 81, 86])):
+    st = {sh['id']: sh['start'] for sh in TL['shots']}
+    add(mus, st['s5'] - 1.4, swell(1.4), 0.10)
+    add(mus, st['asl'] - 1.2, swell(1.2), 0.08)
+    for at, notes in ((st['s5'] + 0.75, [62, 69, 74, 78, 81]), (st['s12'] + 0.3, [50, 62, 69, 74, 78, 81, 86])):
         for j, m in enumerate(notes):
             add(mus, at + j * 0.06, pluck(midi(m), 3.0, 0.3), 0.06, pan=-0.5 + j / len(notes))
     # final fade
@@ -144,18 +156,34 @@ def score():
     return mus
 
 
+def v1_to_film(t):
+    """v1 film time -> this film's time, for moments inside shots that are still drawn by their v1 function."""
+    for sh in TL['shots']:
+        if 'legacy' in sh and sh['legacy'] <= t < sh['legacy'] + sh['end'] - sh['start']:
+            return sh['start'] + t - sh['legacy']
+    return None
+
+
 def sfx():
     fx = np.zeros((N, 2))
-    ticks = [13.95, 20.95, 28.45, 36.25, 52.9, 53.3, 62.4, 117.95, 118.2, 118.4, 127.1, 151.75, 151.9, 152.05, 152.2]
-    ticks += [99.1 + i * 0.09 for i in range(6)]
+    st = {sh['id']: sh['start'] for sh in TL['shots']}
+    v1 = [13.95, 20.95, 28.45, 36.25, 52.9, 53.3, 62.4, 117.95, 118.2, 118.4, 127.1, 151.75, 151.9, 152.05, 152.2]
+    ticks = [x for x in map(v1_to_film, v1) if x is not None]
+    ticks += [st['more'] + 0.5 + i * 0.04 for i in range(7)]               # lesson cards fan out
+    ticks += [st['file'] + 2.1 + i * 0.32 for i in range(12)]              # file prints, line by line
     for t in ticks:
         add(fx, t, tick(), 0.10, pan=float(rng.uniform(-0.3, 0.3)))
-    for t in (2.05, 4.5):  # remote clicks
+    for t in (0.7, 6.4, 9.55, 11.45):  # remote clicks
         add(fx, t, tick(0.04), 0.16)
-    for t in (79.57, 82.47, 84.30, 86.80):  # a counted rep on the TV
-        add(fx, t, chime(), 0.07)
-    add(fx, 45.0, chime(midi(81)), 0.05)
+    add(fx, st['s5'] + 0.8, chime(midi(81)), 0.05)
     return fx
+
+
+def tv_line(src, at, dur):
+    raw = subprocess.run(['ffmpeg', '-v', 'error', '-ss', str(at), '-t', str(dur), '-i', src, '-vn', '-ar', str(SR), '-ac', '1', '-f', 'f32le', '-'],
+                         capture_output=True, check=True).stdout
+    x = np.frombuffer(raw, np.float32).astype(np.float64)
+    return x * env(len(x), 0.12, 0.25, 1)
 
 
 def main():
@@ -173,7 +201,19 @@ def main():
     k = int(0.25 * SR)
     cs = np.concatenate([[0], np.cumsum(duck)])
     duck = np.convolve(duck, [1], 'same') if k < 2 else (cs[np.clip(np.arange(N) + k // 2, 0, N)] - cs[np.clip(np.arange(N) - k // 2, 0, N)]) / k
-    gain = 10 ** (-8 * duck / 20)
+    # the TV's own narration: loudness-matched to the voice-over, music ducked further
+    vo_rms = np.sqrt(np.mean(vo[np.abs(vo[:, 0]) > 1e-3, 0] ** 2))
+    duck2 = np.zeros(N)
+    for ln in TL['tv']:
+        x = tv_line(ln['src'], ln['in'], ln['dur'])
+        act = x[np.abs(x) > 0.02 * np.abs(x).max()]
+        x *= 0.8 * vo_rms / np.sqrt(np.mean(act ** 2))
+        add(vo, ln['at'], x, 1.0)
+        a, b = int((ln['at'] - 0.2) * SR), int((ln['at'] + ln['dur'] + 0.2) * SR)
+        duck2[max(0, a):b] = 1
+    cs2 = np.concatenate([[0], np.cumsum(duck2)])
+    duck2 = (cs2[np.clip(np.arange(N) + k // 2, 0, N)] - cs2[np.clip(np.arange(N) - k // 2, 0, N)]) / k
+    gain = 10 ** ((-8 * duck - 12 * duck2) / 20)
     music = mus * gain[:, None] + fx
     sf.write(AUD / 'music.wav', mus + fx, SR, subtype='FLOAT')
     mix = vo * 0.9 + music * 0.55

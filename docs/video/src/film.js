@@ -55,7 +55,7 @@ function clip(slot, lt, loop = false) {
 }
 const RECENT = [];
 function frameImg(src) { // footage frames: keep only the last few decoded, so memory stays flat
-  if (!IM[src]) { RECENT.push(src); while (RECENT.length > 48) { const k = RECENT.shift(); if (IM[k] && IM[k].ok) { IM[k].img.src = ''; delete IM[k]; } } }
+  if (!IM[src]) { RECENT.push(src); while (RECENT.length > 10) { const k = RECENT.shift(); if (IM[k] && IM[k].ok) { IM[k].img.src = ''; delete IM[k]; } } }
   return im(src);
 }
 
@@ -171,8 +171,9 @@ function logo(c, x, y, size, p = 1, tile = true) {
 
 // ---------- captions (from timeline) and labels
 function captions(c, t) {
-  const cap = TL.captions.find((k) => t >= k.a - 0.12 && t < k.b + 0.12);
+  const cap = TL.captions.find((k) => k.burn && t >= k.a - 0.12 && t < k.b + 0.12);
   if (!cap) return;
+  if (cap.tv) return tvCaption(c, t, cap);
   const a = Math.min(P(t, cap.a - 0.12, cap.a + 0.05), 1 - P(t, cap.b - 0.05, cap.b + 0.12));
   const size = 38, maxW = 1500;
   // wrap to at most two lines
@@ -194,41 +195,58 @@ function captions(c, t) {
   c.restore();
 }
 
-// ---------- shots. Each: (ctx, local t, global t)
+function tvCaption(c, t, cap) { // the TV's own narration: smaller, indigo, tagged "TV"
+  const a = Math.min(P(t, cap.a - 0.12, cap.a + 0.05), 1 - P(t, cap.b - 0.05, cap.b + 0.12));
+  const size = 32, tag = 'TV', tagW = tw(c, tag, 20, 700, 1.5) + 26;
+  const w = tw(c, cap.text, size, 500, 0) + tagW + 64, h = 70, y0 = 1036 - h;
+  c.save(); c.globalAlpha = a;
+  rr(c, W / 2 - w / 2, y0, w, h, 35); c.fillStyle = 'rgba(16,18,46,0.88)'; c.fill();
+  c.strokeStyle = hexA(C.sky, 0.45); c.lineWidth = 1.5; c.stroke();
+  const x0 = W / 2 - w / 2 + 18;
+  rr(c, x0, y0 + 19, tagW, 32, 16); c.fillStyle = hexA(C.sky, 0.22); c.fill();
+  txt(c, tag, x0 + tagW / 2, y0 + 42, { size: 20, w: 700, color: C.sky, track: 1.5 });
+  txt(c, cap.text, x0 + tagW + 16, y0 + 46, { size, w: 500, align: 'left', track: 0, color: '#EEF0FF' });
+  c.restore();
+}
+
+// ---------- shots. Each: (ctx, local t, v1 film time)
 const S = {};
 
-S.s1 = (c, l) => { // TV wakes, remote presses Select, real launcher footage
+// opening: the real boot recording (boot.mp4), cut to its beats; TL.open = [[from, to, speed], ...] -> clip slots s1<k>
+function openingFrame(l) {
+  let k = TL.open.findIndex(([a, b]) => l < b); if (k < 0) k = TL.open.length - 1;
+  const [a, , r] = TL.open[k];
+  return { img: clip('s1' + k, Math.max(0, l - a) * r), rate: r, k };
+}
+S.s1 = (c, l) => { // TV wakes, remote presses Select, real Vega Virtual Device footage
   bg(c, l, 'dark');
-  const z = lerp(0.9, 1.05, inout(P(l, 0, 6.8)));
+  const z = lerp(0.92, 1.04, inout(P(l, 0, 13.5)));
   c.save(); cam(c, z, 960, 520);
-  // console under the TV
   c.save(); const g = c.createLinearGradient(0, 860, 0, 940); g.addColorStop(0, '#1A1A21'); g.addColorStop(1, '#101015');
   rr(c, 300, 870, 1320, 64, 14); c.fillStyle = g; c.fill(); c.restore();
-  c.save(); c.globalAlpha = 0.5; const g2 = c.createRadialGradient(960, 960, 0, 960, 960, 700); g2.addColorStop(0, 'rgba(0,0,0,0.6)'); g2.addColorStop(1, 'rgba(0,0,0,0)');
-  c.fillStyle = g2; c.fillRect(200, 930, 1520, 120); c.restore();
-  const on = out3(P(l, 2.15, 2.6));
-  // screen light spill
+  const on = out3(P(l, 0.85, 1.3));
   if (on > 0) glow(c, 960, 470, 900, C.sky, 0.10 * on);
   tv(c, 960, 470, 1180, (x, y, w, h) => {
     const gl = c.createLinearGradient(x, y, x + w, y + h); gl.addColorStop(0, '#15161C'); gl.addColorStop(0.45, '#0A0A0E'); gl.addColorStop(1, '#060608');
     c.fillStyle = gl; c.fillRect(x, y, w, h);
-    c.save(); c.globalAlpha = 0.06; c.beginPath(); c.moveTo(x + w * 0.55, y); c.lineTo(x + w * 0.75, y); c.lineTo(x + w * 0.45, y + h); c.lineTo(x + w * 0.25, y + h); c.fillStyle = '#fff'; c.fill(); c.restore();
     if (on <= 0) return;
-    // launcher, then (second Select) the app opens: splash -> profiles
-    const sw = P(l, 4.6, 4.85);
-    const fa = clip('launcher', l - 2.15), fb = clip('launcher', 8.4 + (l - 4.6));
+    const f = openingFrame(l);
+    let prev = null, mix = 1;
+    for (const [a] of TL.open.slice(1)) if (l >= a && l < a + 0.3) { prev = openingFrame(a - 0.04).img; mix = P(l, a, a + 0.3); }
     c.save(); c.translate(x + w / 2, y + h / 2); const s = 1.03 - 0.03 * on; c.scale(s, s); c.translate(-(x + w / 2), -(y + h / 2));
-    drawImg(c, fa, x, y, w, h, on * (1 - sw)); drawImg(c, fb, x, y, w, h, on * sw); c.restore();
+    if (prev) drawImg(c, prev, x, y, w, h, on);
+    drawImg(c, f.img, x, y, w, h, on * mix); c.restore();
     c.fillStyle = `rgba(255,255,255,${0.5 * (1 - on) * (on > 0)})`; c.fillRect(x, y, w, h);
   });
   c.restore();
-  // remote (generic, illustrated) — foreground
-  const ry = lerp(1250, 790, spring(P(l, 0.5, 1.6)));
-  const press = Math.max(1 - Math.abs(l - 2.05) / 0.25, 1 - Math.abs(l - 4.5) / 0.25, 0);
-  remote(c, 1620, ry + press * 8, press, [P(l, 2.0, 2.7), P(l, 4.45, 5.15)]);
-  const v = vis(l, 2.9);
+  const ry = lerp(1250, 790, spring(P(l, 0.0, 0.8)));
+  const PR = [0.7, 6.4, 9.55, 11.45];
+  const press = Math.max(0, ...PR.map((p) => 1 - Math.abs(l - p) / 0.25));
+  remote(c, 1620, ry + press * 8, press, PR.map((p) => P(l, p - 0.05, p + 0.65)));
+  const v = vis(l, 1.6);
   txt(c, 'Fire TV  ·  Vega OS', 960, 1005 + v.dy, { size: 34, w: 600, color: C.muted, alpha: v.a, blur: v.blur, track: 0.5 });
-  pill(c, 'Recorded on the Vega Virtual Device', 64, 64, { size: 22, alpha: vis(l, 3.3).a, dot: C.sky });
+  const rate = openingFrame(l).rate;
+  pill(c, rate > 1.3 ? `Recorded on the Vega Virtual Device  ·  ${rate.toFixed(0)}× speed` : 'Recorded on the Vega Virtual Device', 64, 64, { size: 22, alpha: vis(l, 1.2).a, dot: C.sky });
   c.fillStyle = `rgba(0,0,0,${1 - out3(P(l, 0, 0.6))})`; c.fillRect(0, 0, W, H);
 };
 function remote(c, cx, cy, press, ripples) {
@@ -336,7 +354,9 @@ S.s4 = (c, l, t) => {
   if (veil > 0) { c.fillStyle = hexA(C.cream, 0.86 * veil); c.fillRect(0, 0, W, H); }
   const v = vis(t, 41.05);
   if (v.a > 0) {
-    txt(c, 'A video can’t see you.', 960, 575 + v.dy, { size: 112, w: 650, color: C.ink, alpha: v.a, blur: v.blur });
+    txt(c, 'And a video can’t see', 960, 510 + v.dy, { size: 104, w: 650, color: C.ink, alpha: v.a, blur: v.blur });
+    const v2 = vis(t, 41.55);
+    txt(c, 'whether your hands are right.', 960, 640 + v2.dy, { size: 104, w: 650, color: C.ink, alpha: v2.a, blur: v2.blur });
   }
 };
 
@@ -430,58 +450,182 @@ function camKeys(keys, t) { // keys: [[t, z, x, y], ...] eased between consecuti
   }
   return { z, x, y };
 }
-S.s7 = (c, l, t) => {
-  tvShot(c, t, 'heel', l, [[68, 1, 960, 520], [70.6, 1.25, 1000, 560], [79.0, 1.25, 1000, 560], [79.9, 1.55, 1180, 640], [82.9, 1.55, 1180, 640], [83.9, 1.15, 960, 540], [87.5, 1.0, 960, 520]]);
-  pill(c, 'Recorded on the Vega Virtual Device', 60, 64, { size: 22, alpha: vis(t, 68.5).a, dot: C.sky });
-  pill(c, 'Simulated learner', 60, 116, { size: 22, alpha: vis(t, 68.8).a, dot: C.peach });
+// ---------- v2 shots: footage reels (timeline REELS -> clip slots <shot><k>)
+function reel(sid, l) { // -> { k, lt, slot, full, a } for local time l, plus the previous segment for a short dissolve
+  let t0 = 0;
+  for (let k = 0; TL.clips[sid + k]; k++) {
+    const c0 = TL.clips[sid + k];
+    if (l < t0 + c0.dur || !TL.clips[sid + (k + 1)]) return { k, lt: l - t0, slot: sid + k, full: c0.full, a: t0 };
+    t0 += c0.dur;
+  }
+  return null;
+}
+function reelDraw(c, sid, l, x, y, w, h, X = 0.3) {
+  const r = reel(sid, l);
+  if (!r) return;
+  if (r.k > 0 && r.lt < X && !TL.clips[sid + (r.k - 1)].full) {
+    const pc = TL.clips[sid + (r.k - 1)];
+    drawImg(c, clip(sid + (r.k - 1), pc.dur - 0.05), x, y, w, h);
+    drawImg(c, clip(r.slot, r.lt), x, y, w, h, out3(r.lt / X));
+  } else drawImg(c, clip(r.slot, r.lt), x, y, w, h);
+}
+function tvReel(c, sid, l, keys) { tvShot(c, l, null, l, keys, { draw: (x, y, w, h) => reelDraw(c, sid, l, x, y, w, h) }); }
+function tags(c, l, list) { // top-left label pills: [text, dot, from, to]
+  let y = 64;
+  for (const [s, dot, a = 0.3, b = 1e9] of list) {
+    const v = vis(l, a, b, 0.5, 0.35);
+    if (v.a > 0) { pill(c, s, 60, y, { size: 22, alpha: v.a, dot }); y += 52; }
+  }
+}
+function note(c, l, s, a, b, col = C.sun) { // centred top pill for an honest caveat
+  const v = vis(l, a, b, 0.5, 0.35);
+  if (v.a > 0) pill(c, s, W / 2, 64 + v.dy * 0.4, { size: 26, w: 600, center: true, alpha: v.a, dot: col, bg: 'rgba(13,14,44,0.86)', stroke: hexA(col, 0.45) });
+}
+
+S.heel = (c, l) => { // Fall Prevention on the TV: gate pause, the TV's "Up, and down", rep count + tip, summary
+  tvReel(c, 'heel', l, [[0, 1, 960, 520], [4, 1.07, 960, 520, 3.5], [12.3, 1.42, 760, 380], [18.3, 1.42, 760, 380], [19.4, 1.0, 960, 520],
+    [21.6, 1.32, 930, 660, 1.4], [30.3, 1.32, 930, 660], [31.3, 1.0, 960, 520]]);
+  tags(c, l, [['Recorded on the Vega Virtual Device', C.sky, 0.4], ['Simulated learner', C.peach, 0.7]]);
+  note(c, l, 'Tips are templated  ·  the AWS Bedrock coach is built, switched off', 24.6, 30.2);
+  note(c, l, 'End-of-lesson summary, on the TV', 31.0, 34.6, C.ok);
 };
-S.s8 = (c, l, t) => {
-  const sw = P(t, 93.3, 93.8);
-  tvShot(c, t, null, l, [[88, 1.0, 960, 520], [90.2, 1.3, 760, 560], [93.2, 1.3, 760, 560], [94.0, 1.0, 960, 520], [95.6, 1.25, 960, 480]], {
-    draw: (x, y, w, h) => { drawImg(c, clip('chair', l), x, y, w, h, 1 - sw); drawImg(c, clip('lost', t - 93.3), x, y, w, h, sw); },
-  });
-  pill(c, 'Simulated learner', 60, 64, { size: 22, alpha: 1, dot: C.peach });
+S.safe = (c, l) => { // safety check gate, then the camera drops and the lesson stops
+  tvReel(c, 'safe', l, [[0, 1.12, 960, 560], [1.6, 1.55, 860, 760, 1.4], [4.5, 1.55, 860, 760], [5.3, 1.0, 960, 520]]);
+  tags(c, l, [['Recorded on the Vega Virtual Device', C.sky, 0.2], ['Simulated learner', C.peach, 0.2]]);
+  note(c, l, 'Safety gates use fixed values — never loosened', 0.6, 4.3, C.ok);
+  note(c, l, 'No body points for 2 s → the lesson pauses', 6.4, 10.6, C.rose);
+};
+S.asl = (c, l) => { // launcher row -> Letter A (the TV speaks) -> Letter B with the hand overlay
+  tvReel(c, 'asl', l, [[0, 1.0, 960, 520], [3.0, 1.0, 960, 520], [4.4, 1.32, 760, 340, 1.2], [9.0, 1.32, 760, 340], [9.8, 1.0, 960, 520], [11.6, 1.22, 1010, 420, 1.4]]);
+  tags(c, l, [['Recorded on the Vega Virtual Device', C.sky, 0.3], ['Simulated learner', C.peach, 3.2]]);
+  note(c, l, 'Illustrated hands  ·  not yet reviewed by Deaf signers', 9.6, 18.2, C.iris);
+};
+S.kids = (c, l) => { // Kids' Forest Walk: lesson page -> the TV waits for the tree -> full-frame lesson video
+  const r = reel('kids', l);
+  if (!r.full || r.lt < 0.45) {
+    tvReel(c, 'kids', l, [[0, 1.0, 960, 520], [3.2, 1.0, 960, 520], [4.6, 1.3, 760, 370, 1.2], [9.4, 1.3, 760, 370], [10.6, 1.05, 960, 520, 1.0], [13.6, 1.12, 760, 400, 3.0]]);
+    tags(c, l, [['Recorded on the Vega Virtual Device', C.sky, 0.3], ['Simulated learner', C.peach, 3.4, 13.4]]);
+  }
+  if (r.full) { // the lesson video itself, full frame
+    const e = out3(r.lt / 0.45);
+    c.save(); c.globalAlpha = e;
+    const z = lerp(1.0, 1.045, P(r.lt, 0, 6.3));
+    c.save(); cam(c, z * lerp(1.12, 1, e), 960, 560); drawImg(c, clip(r.slot, r.lt), 0, 0, W, H); c.restore();
+    if (e < 1) { c.filter = `blur(${((1 - e) * 10).toFixed(1)}px)`; }
+    c.restore();
+    const lab = 'The animated lesson video  ·  what the TV plays', lw = tw(c, lab, 22, 500, 0) + 22 * 1.5 + 22 * 0.9;
+    pill(c, lab, W - 60 - lw, 64, { size: 22, alpha: vis(r.lt, 0.35).a, dot: C.sun, bg: 'rgba(13,14,44,0.7)' });
+  }
 };
 
-// channel montage: 3x2 grid of real lessons, the camera moves to the one being named
-const TILES = [
-  ['fall', 'Fall Prevention', C.sky], ['asl', 'Sign Language for Families', C.iris], ['rehab', 'Hand Rehab', C.lagoon],
-  ['cpr', 'CPR Practice', C.rose], ['kids', 'Kids’ Forest Walk', C.sun], ['together', 'Together mode', C.sky],
-];
-function tileRect(i) {
-  const tw0 = 520, th = 292.5, gx = 44, x0 = (W - (3 * tw0 + 2 * gx)) / 2, rowH = th + 74, y0 = 175;
-  return { x: x0 + (i % 3) * (tw0 + gx), y: y0 + Math.floor(i / 3) * rowH, w: tw0, h: th };
+// fan of the seven real lesson posters, then rehab + CPR lesson videos, then Together mode on the TV
+const POSTERS = ['fall-heel-raise-v1', 'fall-single-leg-stand-v1', 'asl-fingerspell-abc-v1', 'asl-i-love-you-v1', 'rehab-hand-open-close-v1', 'cpr-rhythm-v1', 'kids-forest-walk-v1'];
+function card(c, img, cx, cy, w, rot, a, label, col) {
+  const h = w * 9 / 16;
+  c.save(); c.globalAlpha *= a; c.translate(cx, cy); c.rotate(rot);
+  shadowed(c, 40, 18, 0.5, () => { rr(c, -w / 2, -h / 2, w, h, 16); c.fillStyle = '#000'; c.fill(); });
+  c.save(); rr(c, -w / 2, -h / 2, w, h, 16); c.clip(); drawImg(c, img, -w / 2, -h / 2, w, h); c.restore();
+  rr(c, -w / 2, -h / 2, w, h, 16); c.strokeStyle = 'rgba(255,255,255,0.14)'; c.lineWidth = 1.5; c.stroke();
+  if (label) { c.beginPath(); c.arc(-w / 2 + 8, h / 2 + 40, 7, 0, 7); c.fillStyle = col; c.fill(); txt(c, label, -w / 2 + 26, h / 2 + 49, { size: 30, w: 600, align: 'left', track: 0 }); }
+  c.restore();
 }
-S.s9 = (c, l, t) => {
-  bg(c, t, 'dark');
-  const focus = [[98.6, -1], [100.4, 1], [102.6, 2], [104.1, 3], [108.8, -1], [110.5, 4], [112.6, 5], [115.2, -1]];
-  const keys = [[98.6, 1, 960, 540]];
-  for (const [ft, i] of focus.slice(1)) {
-    if (i < 0) keys.push([ft, 1, 960, 540]);
-    else { const r = tileRect(i); keys.push([ft, 1.78, r.x + r.w / 2, r.y + r.h / 2 + 22]); }
+S.more = (c, l) => {
+  bg(c, l, 'dark');
+  // 1) fan
+  const fanOut = inout(P(l, 2.0, 2.8));
+  if (fanOut < 1) {
+    const spread = out5(P(l, 0.15, 1.3));
+    c.save(); c.globalAlpha = 1 - fanOut; if (fanOut > 0) c.filter = `blur(${(fanOut * 16).toFixed(1)}px)`;
+    c.translate(0, -fanOut * 160);
+    POSTERS.forEach((id, i) => {
+      const k = i - 3, rot = k * 0.085 * spread, x = 960 + k * 205 * spread, y = 560 + Math.abs(k) * 26 * spread + (1 - out5(P(l, 0.05 + i * 0.04, 0.8 + i * 0.04))) * 300;
+      card(c, im(`../../../content/lessons/${id}/poster.jpg`), x, y, 520, rot, out3(P(l, 0.05 + i * 0.04, 0.5 + i * 0.04)));
+    });
+    c.restore();
   }
-  const k = camKeys(keys, t);
-  let cur = -1, since = 0;
-  for (const [ft, i] of focus) if (t >= ft - 0.6) { cur = i; since = ft; }
-  c.save(); cam(c, k.z, k.x, k.y);
-  TILES.forEach(([slot, name, col], i) => {
-    const r = tileRect(i), e = out5(P(t, 98.7 + i * 0.09, 99.5 + i * 0.09));
-    const dim = cur < 0 || cur === i ? 1 : 0.32;
-    c.save(); c.globalAlpha = e * lerp(1, dim, P(t, since - 0.6, since - 0.1) || (cur < 0 ? 0 : 1)); c.translate(0, (1 - e) * 60);
-    shadowed(c, 30, 14, 0.5, () => { rr(c, r.x, r.y, r.w, r.h, 12); c.fillStyle = '#000'; c.fill(); });
-    c.save(); rr(c, r.x, r.y, r.w, r.h, 12); c.clip();
-    const img = TL.clips[slot] ? clip(slot, t - 98.6, true) : im('../../screenshots/tv/13-together-player.png');
-    drawImg(c, img, r.x, r.y, r.w, r.h);
+  // 2) two lesson videos
+  const vin = out5(P(l, 2.3, 3.2)), vout = inout(P(l, 8.0, 8.7));
+  if (vin > 0 && vout < 1) {
+    c.save(); c.globalAlpha = vin * (1 - vout); c.translate(0, (1 - vin) * 120 - vout * 80);
+    if (vout > 0) c.filter = `blur(${(vout * 14).toFixed(1)}px)`;
+    card(c, clip('more0', l - 0.4), 520, 470, 800, 0, 1, 'Stroke Hand Rehab', C.lagoon);
+    card(c, clip('more1', l - 0.4), 1400, 470, 800, 0, 1, 'CPR Practice', C.rose);
+    txt(c, 'Use exercises prescribed or approved by your physiotherapist.', 520, 820, { size: 21, w: 500, color: C.muted, track: 0 });
+    txt(c, 'Practice aid for rhythm and straight arms only. It does not measure', 1400, 820, { size: 21, w: 500, color: C.muted, track: 0 });
+    txt(c, 'compression depth and is not certification. Take a certified CPR course.', 1400, 850, { size: 21, w: 500, color: C.muted, track: 0 });
     c.restore();
-    rr(c, r.x, r.y, r.w, r.h, 12); c.strokeStyle = cur === i ? hexA(col, 0.9) : 'rgba(255,255,255,0.10)'; c.lineWidth = cur === i ? 3 : 1.5; c.stroke();
-    c.beginPath(); c.arc(r.x + 8, r.y + r.h + 36, 7, 0, 7); c.fillStyle = col; c.fill();
-    txt(c, name, r.x + 26, r.y + r.h + 45, { size: 26, w: 600, align: 'left', track: 0 });
-    c.restore();
+    tags(c, l, [['The lesson videos  ·  what the TV plays', C.sun, 2.6, 7.9]]);
+    note(c, l, 'CPR: practice for rhythm only — not certification', 4.4, 7.9, C.rose);
+  }
+  // 3) Together mode on the TV's lesson page
+  const tin = out5(P(l, 8.4, 9.3));
+  if (tin > 0) {
+    c.save(); c.globalAlpha = tin; c.translate(0, (1 - tin) * 140);
+    const z = lerp(1.0, 1.08, P(l, 8.4, 13.8));
+    c.save(); cam(c, z, 960, 560);
+    tv(c, 960, 500, 1460, (x, y, w, h) => {
+      drawImg(c, clip('more2', l - 8.4), x, y, w, h);
+      const ring = P(l, 10.0, 10.6);
+      if (ring > 0) { rr(c, x + w * BTN[0] - 8, y + h * BTN[1] - 8, w * BTN[2] + 16, h * BTN[3] + 16, 14); c.strokeStyle = hexA(C.sun, ring); c.lineWidth = 5; c.stroke(); }
+    });
+    c.restore(); c.restore();
+    tags(c, l, [['Recorded on the Vega Virtual Device', C.sky, 8.8]]);
+    note(c, l, 'Together mode: two phones, one TV', 10.2, 13.6, C.sun);
+  }
+};
+const BTN = [0.072, 0.80, 0.135, 0.052]; // "Practise together" on the lesson page, as fractions of the TV picture
+
+// the open lesson format, typed
+const ISTEP = [
+  ['$ ', 'cat content/lessons/kids-forest-walk-v1/track.istep', 'cmd'],
+  ['', '{', ''], ['  ', '"istep": "1.0",', 'kv'], ['  ', '"id": "kids-forest-walk-v1",', 'kv'], ['  ', '"title": "The Forest Walk",', 'kv'],
+  ['  ', '"video": { "src": "video.mp4", "durationSec": 40 },', 'kv'], ['  ', '"tracking": ["pose"],', 'kv'], ['  ', '"gates": [', 'kv'],
+  ['    ', '{ "id": "tree", "t": 7, "type": "pose_match",', 'kv'], ['      ', '"label": "Stretch tall like a tree",', 'kv'],
+  ['      ', '"target": { "source": "angles",', 'kv'], ['        ', '"angles": { "l_shoulder": 165, "r_shoulder": 165, … } } },', 'kv'],
+  ['    ', '…', ''],
+];
+function codeLine(c, s, x, y, kind, size) {
+  c.save(); c.font = `500 ${size}px "JetBrains Mono", "DejaVu Sans Mono", monospace`; c.textBaseline = 'alphabetic';
+  if (kind === 'cmd') { c.fillStyle = C.ok; c.fillText(s, x, y); c.restore(); return; }
+  // colour keys, strings and numbers
+  const re = /("(?:[^"\\]|\\.)*")(\s*:)?|(-?\d+(?:\.\d+)?)|([^"\d]+)/g;
+  let m, cx = x;
+  while ((m = re.exec(s))) {
+    let part, col;
+    if (m[1]) { part = m[1]; col = m[2] ? C.sky : C.peach; c.fillStyle = col; c.fillText(part, cx, y); cx += c.measureText(part).width; if (m[2]) { c.fillStyle = C.muted; c.fillText(m[2], cx, y); cx += c.measureText(m[2]).width; } continue; }
+    part = m[3] || m[4]; col = m[3] ? C.sun : C.muted;
+    c.fillStyle = col; c.fillText(part, cx, y); cx += c.measureText(part).width;
+  }
+  c.restore();
+}
+S.file = (c, l) => {
+  bg(c, l, 'dark');
+  const e = out5(P(l, 0.05, 0.9)), z = lerp(1.0, 1.06, inout(P(l, 0.5, 10.8)));
+  c.save(); cam(c, z, 960, 560); c.globalAlpha = e; c.translate(0, (1 - e) * 80);
+  if (e < 1) c.filter = `blur(${((1 - e) * 12).toFixed(1)}px)`;
+  const x0 = 300, y0 = 190, w = 1320, h = 720, size = 27, lh = 41;
+  shadowed(c, 70, 30, 0.6, () => { rr(c, x0, y0, w, h, 22); c.fillStyle = '#0E0F24'; c.fill(); });
+  rr(c, x0, y0, w, h, 22); c.strokeStyle = 'rgba(255,255,255,0.12)'; c.lineWidth = 1.5; c.stroke();
+  c.save(); rr(c, x0, y0, w, 58, [22, 22, 0, 0]); c.fillStyle = '#17183A'; c.fill(); c.restore();
+  ['#F87BAA', '#F6D653', '#49DE78'].forEach((col, i) => { c.beginPath(); c.arc(x0 + 32 + i * 26, y0 + 29, 7.5, 0, 7); c.fillStyle = hexA(col, 0.8); c.fill(); });
+  txt(c, 'track.istep  ·  excerpt', x0 + w / 2, y0 + 37, { size: 21, w: 500, color: C.faint, track: 0 });
+  c.filter = 'none';
+  // typing: the command types, then the file prints line by line
+  const tcmd = P(l, 0.6, 2.0), lines = (l - 2.1) / 0.32;
+  ISTEP.forEach(([ind, s, kind], i) => {
+    const y = y0 + 112 + i * lh;
+    if (i === 0) {
+      const n = Math.floor(s.length * tcmd);
+      codeLine(c, '$', x0 + 44, y, 'cmd', size); codeLine(c, s.slice(0, n), x0 + 44 + size * 1.2, y, '', size);
+      if (tcmd < 1 && Math.floor(l * 2.4) % 2 === 0) { c.fillStyle = C.text; c.fillRect(x0 + 44 + size * 1.2 + n * size * 0.6, y - size * 0.8, size * 0.55, size); }
+      return;
+    }
+    if (lines < i) return;
+    c.save(); c.globalAlpha *= cl(lines - i + 1); codeLine(c, ind + s, x0 + 44, y, kind, size); c.restore();
   });
   c.restore();
-  pill(c, 'Simulated learner', 60, 64, { size: 22, alpha: vis(t, 99.2).a, dot: C.peach });
-  const cp = vis(t, 104.6, 108.6);
-  if (cp.a > 0) pill(c, 'Practice for rhythm only — not certification', W / 2, 92 + cp.dy * 0.5, { size: 30, w: 600, center: true, alpha: cp.a, dot: C.rose, bg: 'rgba(20,10,16,0.82)', stroke: hexA(C.rose, 0.5) });
+  const v = vis(l, 7.6);
+  txt(c, 'Open format  ·  validated with zod  ·  the same file on phone, server and TV', 960, 990 + v.dy, { size: 28, w: 500, color: C.muted, alpha: v.a, blur: v.blur, track: 0 });
 };
 
 // Creator Studio: a strip of phone screens, ending on the TV
@@ -506,13 +650,35 @@ S.s10 = (c, l, t) => {
   c.restore();
 };
 
-S.s11 = (c, l, t) => { // architecture diagram (docs/architecture/architecture.html, frames pre-rendered)
-  bg(c, t, 'dark');
-  const z = lerp(1.0, 1.035, inout(P(t, 130.5, 150.5)));
-  c.save(); cam(c, z, 960, 540);
-  const i = cl(Math.floor(l * FPS), 0, Math.floor(19.6 * FPS) - 1);
-  drawImg(c, frameImg(`../.cache/arch/${String(i + 1).padStart(5, '0')}.jpg`), 0, 0, W, H);
+S.arch = (c, l) => { // docs/architecture/system-diagram.html, frames pre-rendered at 1.5x; the camera follows the data
+  c.fillStyle = '#F6F7FB'; c.fillRect(0, 0, W, H);
+  const k = camKeys([[0, 1.0, 960, 540], [3.2, 1.6, 330, 330, 2.4], [6.0, 1.6, 330, 330], [7.6, 1.6, 980, 300, 1.4], [9.4, 1.6, 980, 300],
+    [11.0, 1.6, 1620, 330, 1.4], [13.6, 1.6, 1620, 330], [15.2, 1.5, 560, 950, 1.5], [17.0, 1.5, 560, 950], [18.4, 1.5, 1060, 950, 1.2],
+    [20.2, 1.5, 1060, 950], [21.9, 1.0, 960, 540, 1.6]], l);
+  const hw = 960 / k.z, hh = 540 / k.z;
+  const fx = cl(k.x, hw, W - hw), fy = cl(k.y, hh, H - hh);
+  const i = cl(Math.floor(l * FPS), 0, TL.archFrames - 1);
+  c.save(); cam(c, k.z, fx, fy);
+  drawImg(c, frameImg(`../.cache/arch2/${String(i + 1).padStart(5, '0')}.jpg`), 0, 0, W, H);
   c.restore();
+};
+
+// honesty: what is real, what is not
+const HON = [
+  [0.9, 'Only body points leave the phone.', 'numbers, never video  ·  measured live on the phone'],
+  [3.6, 'The voices are synthetic.', 'Kokoro-82M, made on this machine'],
+  [6.7, 'Coach tips are templated.', 'AWS Bedrock + Polly coach built, switched off'],
+  [9.4, 'Every TV shot: a simulated learner.', 'the camera is an external phone or laptop'],
+];
+S.hon = (c, l) => {
+  bg(c, l, 'cream');
+  const y0 = 230, gap = 165;
+  HON.forEach(([a, big, small], i) => {
+    const v = vis(l, a), y = y0 + i * gap;
+    if (v.a <= 0) return;
+    txt(c, big, 960, y + v.dy, { size: 66, w: 650, color: C.ink, alpha: v.a, blur: v.blur });
+    txt(c, small, 960, y + 50 + v.dy, { size: 26, w: 500, color: hexA(C.ink, 0.55), alpha: v.a, blur: v.blur, track: 0 });
+  });
 };
 
 S.s12 = (c, l, t) => { // end card
@@ -526,7 +692,7 @@ S.s12 = (c, l, t) => { // end card
   c.restore();
   const tg = vis(t, 150.9);
   txt(c, 'The video that waits for you.', 960, 560 + tg.dy, { size: 50, w: 500, color: hexA(C.ink, 0.72), alpha: tg.a, blur: tg.blur });
-  const pills = ['Fire TV · Vega OS', '0 bytes of learner video uploaded', 'Open source · MIT', 'Built for the Amazon Developer Hackathon'];
+  const pills = ['Fire TV · Vega OS', 'Only body points leave the phone', 'Open source · MIT', 'Built for the Amazon Developer Hackathon'];
   const pw = pills.map((s) => tw(c, s, 24, 500, 0) + 40), gap2 = 16, tot = pw.reduce((a, b) => a + b, 0) + gap2 * (pills.length - 1);
   let x = 960 - tot / 2;
   pills.forEach((s, i) => {
@@ -542,7 +708,7 @@ S.s12 = (c, l, t) => { // end card
 const BUF = [0, 1].map(() => { const b = document.createElement('canvas'); b.width = W; b.height = H; return b; });
 function drawShot(c, i, t) {
   const sh = TL.shots[i];
-  c.save(); S[sh.id](c, t - sh.start, t); c.restore();
+  c.save(); S[sh.id](c, t - sh.start, t - sh.start + (sh.legacy ?? sh.start)); c.restore();
 }
 const TR = 0.7;
 function draw(t) {

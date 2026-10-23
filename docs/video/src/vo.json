@@ -32,32 +32,48 @@
    "say": "In Step is the video that waits for you."
   },
   {
-   "id": "s6a",
-   "text": "Prop up your phone. It becomes the camera: an external camera, not the TV."
+   "id": "cam_a",
+   "text": "Prop up your phone or laptop. It becomes the camera: an external camera, not the TV."
   },
   {
-   "id": "s6b",
-   "text": "Pose tracking runs in the phone's browser. Only body points travel to the TV, never video."
+   "id": "cam_b",
+   "text": "Pose tracking runs in its browser. Only body points travel to the TV: numbers, never video."
   },
   {
-   "id": "s7a",
-   "text": "At each key moment, the lesson pauses, and continues only when your pose is right."
+   "id": "heel_a",
+   "text": "This is Fall Prevention, on the Vega Virtual Device. At each key moment, the lesson pauses, and continues only when your pose is right."
   },
   {
-   "id": "s7b",
-   "text": "It counts your reps, times your balance, and if you're stuck, a coach gives one short, kind tip."
+   "id": "heel_b",
+   "text": "It counts your reps and times your balance. If you're stuck, it offers one short, kind tip."
   },
   {
-   "id": "s8",
-   "text": "Safety comes first: no balance work until a chair is beside you. And if the camera drops, the lesson stops."
+   "id": "safe",
+   "text": "Safety comes first. No balance work until a chair is beside you. And if the camera drops, the lesson stops, and waits."
   },
   {
-   "id": "s9a",
-   "text": "The same engine teaches sign-language hand shapes, hand rehab, and CPR rhythm: practice only, not certification."
+   "id": "asl_a",
+   "text": "Sign Language for Families teaches hand shapes, letter by letter."
   },
   {
-   "id": "s9b",
-   "text": "Kids act out a story. And two people can practise together."
+   "id": "asl_b",
+   "text": "The hands are illustrated, and not yet reviewed by Deaf signers. Learn with Deaf teachers, too."
+  },
+  {
+   "id": "kids_a",
+   "text": "For kids, the lesson is a story."
+  },
+  {
+   "id": "kids_b",
+   "text": "The forest waits until they're a tree, a mouse, and a flamingo."
+  },
+  {
+   "id": "more_a",
+   "text": "The same engine runs hand rehab, and CPR rhythm: practice only, not certification."
+  },
+  {
+   "id": "more_b",
+   "text": "And two people can practise together, each with their own phone."
   },
   {
    "id": "s10a",
@@ -69,18 +85,27 @@
    "say": "In Step finds the still moments, suggests the steps, and publishes it to the TV."
   },
   {
-   "id": "s11a",
-   "text": "Under the hood: an open lesson format called .istep,",
-   "say": "Under the hood: an open lesson format, called dot eye step,"
+   "id": "file",
+   "text": "Every lesson is an open file, called .istep: a video, plus the poses it waits for.",
+   "say": "Every lesson is an open file, called dot eye step: a video, plus the poses it waits for."
+  },
+  {
+   "id": "arch_a",
+   "text": "The phone sends body points over a WebSocket. A small server relays them to the TV."
   },
   {
    "id": "s11b",
-   "text": "one pure TypeScript gate engine, shared by the phone, the server and the TV,",
-   "say": "one pure TypeScript gate engine, shared by the phone, the server, and the TV,"
+   "text": "One pure TypeScript gate engine, shared by the phone, the server and the TV, decides when to move on.",
+   "say": "One pure TypeScript gate engine, shared by the phone, the server, and the TV, decides when to move on."
   },
   {
    "id": "s11c",
-   "text": "and an open-source Vega player that any app can use."
+   "text": "And the gated video player is open source, for any Vega app.",
+   "say": "And the gated video player is open source, for any Vega app."
+  },
+  {
+   "id": "hon",
+   "text": "No learner video leaves the phone. The voices are synthetic, made on this machine. And the AWS coach is built, but switched off."
   },
   {
    "id": "s12",
