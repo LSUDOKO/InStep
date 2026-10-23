@@ -2,6 +2,30 @@
 
 Newest first. Each entry: what works, what doesn't, what changed from the spec and why.
 
+## 2026-10-23 — Teacher videos for every lesson, iOS companion, brand sheet
+
+**What works**
+
+- Heel raises, single-leg stand and hand open/close play **animated demonstrations** drawn by
+  `scripts/make-animated-lesson.py` (pycairo + ffmpeg): a figure holding a chair does the exact move each gate checks,
+  timed to the gate's `t`; looped segments (`rewindTo`..`t`) start and end on the same pose so the loop is invisible.
+  Every frame says "Animated demonstration". `pnpm dryrun-lessons` passes; posters are frames of the new videos.
+- CPR plays real footage: a Pexels clip of compressions on a training manikin (Juma Mülhem, credited), trimmed to the
+  first 15 s before the camera angle changes; the two gates were re-timed to 2 s and 6 s.
+- Sign-language lessons get branded practice cards (letter, instruction, step count) and keep `video.placeholder`.
+  No drawn hands: a wrong handshape would teach a wrong sign, and the channel promises work with Deaf signers.
+- The companion follows iOS 18 dark mode (system font stack with Inter as fallback, system colours with the teal
+  tint, inset grouped lists, 50 px buttons, blurred material over the camera). Playwright e2e 6/6, unit 240/240.
+- Brand sheet `docs/brand/brand-board.png`, rendered from HTML by `docs/brand/render.mjs`.
+
+**What doesn't / changed from the spec**
+
+- Seven of eight downloaded stock clips were rejected: none showed a heel raise, the single-leg clip was tree pose
+  without a chair (contradicting the chair safety gate), and the hand clips were a wrist massage and face close-ups.
+- The CPR clip's compression rate could only be estimated (about 110/min by autocorrelation, weak peak); the TV's
+  metronome sets the beat the learner follows.
+- No clinician or Deaf signer has reviewed the demonstrations yet (stated in `content/CREDITS.md`).
+
 ## 2026-10-22 — TV redesign in the tvOS idiom, verified on the device
 
 **What works (checked on the Vega Virtual Device, screenshots in `docs/screenshots/tv/`)**
