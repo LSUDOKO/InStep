@@ -3,7 +3,13 @@
 S=${INSTEP_CAPTURE:-$HOME/instep-capture}
 name=$1; delay=${2:-6}; max=${3:-150}
 cd /home/arpit/Desktop/hackathon_projects/InStep
-room=$(timeout 60 render logs -r srv-dbcadjui0phs73ataj4g --limit 40 -o text 2>/dev/null | grep "tv in room" | tail -1 | grep -oE '"room":"[0-9]+"' | grep -oE '[0-9]+')
+# the TV's newest room: only log lines after this lesson's app launch (LAUNCHED, set by record-all.sh) count,
+# and Render's log stream lags, so poll until it shows up
+since=${LAUNCHED:-$(date -u -d '-2 min' +%Y-%m-%dT%H:%M:%SZ)}
+for i in $(seq 1 20); do
+  room=$(timeout 30 render logs -r srv-dbcadjui0phs73ataj4g --start "$since" --limit 100 -o text 2>/dev/null | grep "tv in room" | tail -1 | grep -oE '"room":"[0-9]+"' | grep -oE '[0-9]+')
+  [ -n "$room" ] && break; sleep 3
+done
 echo "room=$room"
 rm -f /home/arpit/emushots/$name.webm
 docker exec -u arpit vega python3 /home/arpit/emushots/rec.py start /home/arpit/emushots/$name.webm

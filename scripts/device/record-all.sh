@@ -16,8 +16,8 @@ launch_app() { vega_sh "cd ~/Desktop/hackathon_projects/InStep/apps/tv && vega r
 for spec in "$@"; do
   IFS='|' read -r name downs rights delay max <<< "$spec"
   echo "=== $name ($(date +%H:%M:%S))"
-  ensure_device; launch_app
-  $H/tvkey.sh KEY_ENTER; sleep 3            # Profiles → Home (Dad)
+  ensure_device; export LAUNCHED=$(date -u +%Y-%m-%dT%H:%M:%SZ); launch_app
+  $H/tvkey.sh KEY_ENTER; sleep 3            # Profiles → Home (first profile)
   # Home opens with focus on the Top Shelf "Start lesson" button: one Down reaches the first lesson row
   keys=(KEY_DOWN sleep:1.5); for ((i=0;i<downs;i++)); do keys+=(KEY_DOWN sleep:1.2); done; for ((i=0;i<rights;i++)); do keys+=(KEY_RIGHT sleep:0.8); done
   $H/tvkey.sh "${keys[@]}" sleep:1 KEY_ENTER sleep:3 KEY_ENTER
