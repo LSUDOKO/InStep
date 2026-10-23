@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
 # Records lessons on the VVD, one fresh app launch per lesson: name|downs|rights|delay|max
+# max = seconds the synthetic learner may take for the whole lesson; keep it generous (200+), the lesson videos loop
 S=${INSTEP_CAPTURE:-$HOME/instep-capture}
 H=$(cd "$(dirname "$0")" && pwd)
 cd /home/arpit
@@ -20,10 +21,12 @@ for spec in "$@"; do
   $H/tvkey.sh KEY_ENTER; sleep 3            # Profiles → Home (first profile)
   # Home opens with focus on the Top Shelf "Start lesson" button: one Down reaches the first lesson row
   keys=(KEY_DOWN sleep:1.5); for ((i=0;i<downs;i++)); do keys+=(KEY_DOWN sleep:1.2); done; for ((i=0;i<rights;i++)); do keys+=(KEY_RIGHT sleep:0.8); done
+  # record from the lesson page on (no console screenshot while screenrecord runs: F-07)
+  rm -f /home/arpit/emushots/$name.webm
+  docker exec -u arpit vega python3 /home/arpit/emushots/rec.py start /home/arpit/emushots/$name.webm >/dev/null; export REC_T0=$(date +%s)
   $H/tvkey.sh "${keys[@]}" sleep:1 KEY_ENTER sleep:3 KEY_ENTER
   sleep 6
-  $H/tvshot.sh pair-$name >/dev/null
-  $H/record-lesson.sh $name $delay $max 2>&1 | tail -3
+  $H/record-lesson.sh $name $delay $max 2>&1 | tail -4
   if grep -q "lesson ended" $S/learner-$name.log; then sleep 3; $H/tvshot.sh summary-$name >/dev/null; echo "ok $name"; else echo "!! $name did not finish"; kill $(cat $S/learner-$name.pid) 2>/dev/null; fi
 done
 echo "=== done $(date +%H:%M:%S)"
