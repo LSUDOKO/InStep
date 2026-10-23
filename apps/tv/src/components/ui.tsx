@@ -298,7 +298,7 @@ export function SectionHeader({ children, style }: { children: ReactNode; style?
  */
 export function Backdrop({
   source,
-  tint = '#000000',
+  tint,
   dim = 0.35,
   children,
 }: {
@@ -319,13 +319,13 @@ export function Backdrop({
       <Svg width="100%" height="100%" style={StyleSheet.absoluteFill}>
         <Defs>
           <LinearGradient id="bdLeft" x1="0" y1="0" x2="1" y2="0">
-            <Stop offset="0" stopColor={tint} stopOpacity="0.92" />
-            <Stop offset="0.45" stopColor={tint} stopOpacity="0.55" />
-            <Stop offset="0.8" stopColor={tint} stopOpacity="0" />
+            <Stop offset="0" stopColor={tint ?? c.bg} stopOpacity="0.92" />
+            <Stop offset="0.45" stopColor={tint ?? c.bg} stopOpacity="0.55" />
+            <Stop offset="0.8" stopColor={tint ?? c.bg} stopOpacity="0" />
           </LinearGradient>
           <LinearGradient id="bdBottom" x1="0" y1="0" x2="0" y2="1">
-            <Stop offset="0.35" stopColor="#000000" stopOpacity="0" />
-            <Stop offset="1" stopColor="#000000" stopOpacity="1" />
+            <Stop offset="0.35" stopColor={c.bg} stopOpacity="0" />
+            <Stop offset="1" stopColor={c.bg} stopOpacity="1" />
           </LinearGradient>
         </Defs>
         <Rect x="0" y="0" width="100%" height="100%" fill="url(#bdLeft)" />
