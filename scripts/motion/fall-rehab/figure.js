@@ -81,11 +81,11 @@
     shoe(c, I, g, k);
   }
   function arm(c, P, I, sh, el, hand, k) {
-    const knit = shade(P.channel, k);
-    form(c, limb(sh, el, 0.086 * S, 0.07 * S), knit, { shadow: shade(P.channel, 0.78 * k) });
+    const knit = shade(P.wear, k);
+    form(c, limb(sh, el, 0.086 * S, 0.07 * S), knit, { shadow: shade(P.wear, 0.78 * k) });
     const cuff = K.lerp2(el, hand, 0.82);
-    form(c, limb(el, cuff, 0.07 * S, 0.06 * S), knit, { shadow: shade(P.channel, 0.78 * k) });
-    fill(c, limb(K.lerp2(el, hand, 0.74), cuff, 0.066 * S, 0.066 * S), shade(P.channel, 1.18 * k)); // ribbed cuff
+    form(c, limb(el, cuff, 0.07 * S, 0.06 * S), knit, { shadow: shade(P.wear, 0.78 * k) });
+    fill(c, limb(K.lerp2(el, hand, 0.74), cuff, 0.066 * S, 0.066 * S), shade(P.channel, k)); // ribbed cuff: the channel colour only as trim
     // hand wrapped over the rail: palm blob plus a thumb along the near side
     const skin = shade(I.skinTone, k), a = Math.atan2(hand[1] - el[1], hand[0] - el[0]);
     fill(c, limb(cuff, hand, 0.04 * S, 0.042 * S), skin);
@@ -98,12 +98,12 @@
     form(c, ellipse(...add(p.hip, p.fwd, -0.004 * S), 0.098 * S, 0.07 * S, Math.atan2(p.up[1], p.up[0]) + Math.PI / 2), I.pants[1], { shadow: shade(I.pants[1], 0.8) });
     // cardigan body (falls a little below the hip)
     const body = blob([pt(-0.16, -0.094), pt(0.1, -0.088), pt(0.45, -0.086), pt(0.78, -0.09), pt(0.98, -0.062), pt(1.03, 0.0), pt(0.95, 0.07), pt(0.72, 0.1), pt(0.42, 0.102), pt(0.1, 0.1), pt(-0.16, 0.092), pt(-0.2, 0.0)]);
-    form(c, body, P.channel, { shadow: shade(P.channel, 0.78), v: [12, 12], w: [5, 5] });
+    form(c, body, P.wear, { shadow: shade(P.wear, 0.78), v: [12, 12], w: [5, 5] });
     // shirt collar in the V of the cardigan, placket with buttons, a pocket
     fill(c, poly([pt(0.98, 0.0), pt(0.99, 0.064), pt(0.72, 0.09)]), I.clothes[6]);
-    fill(c, limb(pt(0.72, 0.088), pt(-0.14, 0.086), 0.012 * S, 0.012 * S), shade(P.channel, 0.85));
+    fill(c, limb(pt(0.72, 0.088), pt(-0.14, 0.086), 0.012 * S, 0.012 * S), shade(P.wear, 0.82));
     for (const s of [0.6, 0.38, 0.16]) fill(c, circle(...pt(s, 0.08), 0.011 * S), I.clothes[6]);
-    fill(c, rrect(...pt(0.12, -0.012), 0.05 * S, 0.044 * S, 8), shade(P.channel, 0.9));
+    fill(c, rrect(...pt(0.12, -0.012), 0.05 * S, 0.044 * S, 8), shade(P.wear, 0.88));
   }
   function head(c, P, I, p) {
     const [hx, hy] = p.head, r = L.head, skin = I.skinTone, hair = I.hairGrey;

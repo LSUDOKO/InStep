@@ -38,7 +38,9 @@
   const HEEL_X = 800;
   function livingRoom(c, P, t, dur, pose, after) {
     const I = ill(P);
-    P = { ...P, channel: P.channels.fall_prevention };
+    // The TV draws its ghost skeleton in the brand sky (= the fall channel colour), so the teacher wears denim with
+    // sky only as trim (docs/09-design-system.md, people rule).
+    P = { ...P, channel: P.channels.fall_prevention, wear: I.clothes[5] };
     const cam = 8 * wave(t, 10); // slow parallax drift, 10 s period
     c.save();
     c.translate(880, 700); // frame the figure a little closer

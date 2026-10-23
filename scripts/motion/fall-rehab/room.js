@@ -76,7 +76,7 @@
 
   function pictures(c, P, I) {
     const frames = [
-      [1010, 210, 150, 190, P.accents.sky, P.accents.lagoon],
+      [1010, 210, 150, 190, P.accents.peach, P.accents.lagoon], // no sky near the figure: the TV's ghost skeleton is sky
       [1196, 250, 120, 120, P.accents.sun, P.accents.rose],
     ];
     for (const [x, y, w, h, a, b] of frames) {
