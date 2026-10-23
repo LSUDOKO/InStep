@@ -55,10 +55,12 @@ describe('health and catalog', () => {
     expect(ids).toEqual([
       'fall-heel-raise-v1',
       'fall-single-leg-stand-v1',
+      'asl-fingerspell-abc-v1',
+      'asl-i-love-you-v1',
       'rehab-hand-open-close-v1',
       'cpr-rhythm-v1',
       'kids-forest-walk-v1',
-    ]); // animated demos (scripts/make-animated-lesson.py), Pexels CPR, generated kids video
+    ]); // animated demos (scripts/motion/), illustrated handshapes, Pexels CPR, animated kids story
   });
   it('?all=1 also includes the drafts waiting for video', async () => {
     const c = (await json('GET', '/api/lessons?all=1')).json();
