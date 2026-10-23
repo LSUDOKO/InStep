@@ -2,12 +2,36 @@
 
 Newest first. Each entry: what works, what doesn't, what changed from the spec and why.
 
+## 2026-10-23 (evening) — Blue Hour brand, illustrated lessons for every channel, narration
+
+**What works**
+
+- New brand "Blue Hour" (chosen from three directions in `docs/brand/directions.png`): night-indigo canvas, sky-blue
+  brand colour kept clear of the match/nearly/stop status colours, five channel colours, all text 6.6–17.5:1. New
+  mark (a footprint that is also a pause bar, beside a play triangle) on the phone, the README and the TV launcher.
+- Every lesson video was redrawn as flat illustration in code (`scripts/motion/`, canvas + headless Chromium +
+  ffmpeg): fall prevention and hand rehab (older woman with a chair; a hand on a table), The Forest Walk (animated
+  story), and fingerspelling / I-love-you (one illustrated hand, labelled "not yet reviewed by Deaf signers"). Loop
+  seams were measured below codec noise; gate frames checked by eye.
+- Every lesson is narrated by a local Kokoro-82M voice (Apache-2.0) with a code-made music bed; `scripts/audio/mux.mjs
+  --check` proves no line runs across a pause. The phone plays a pass chime and rep tick with a mute switch.
+- The single-leg demonstration now lifts the figure's right foot under "Right foot" (the pycairo version had the
+  near and far legs swapped).
+
+**What doesn't / changed**
+
+- No AWS call: the account reported $0 credits (`freetier:GetAccountPlanState`), and the rule is no card spend, so
+  narration uses a local model instead of Polly and the coach stays in mock mode.
+- The ASL track disclaimer still says "created with Deaf signers" (AGENTS.md wording) while the frames say "not yet
+  reviewed by Deaf signers" — left for the owner to decide.
+- Letter C may be harder to pass with the palm flat to the camera (finger curl is measured in 2D).
+
 ## 2026-10-23 — Teacher videos for every lesson, iOS companion, brand sheet
 
 **What works**
 
-- Heel raises, single-leg stand and hand open/close play **animated demonstrations** drawn by
-  `scripts/make-animated-lesson.py` (pycairo + ffmpeg): a figure holding a chair does the exact move each gate checks,
+- (Superseded the same evening by `scripts/motion/`.) Heel raises, single-leg stand and hand open/close play
+  **animated demonstrations** drawn by `scripts/make-animated-lesson.py` (pycairo + ffmpeg): a figure holding a chair does the exact move each gate checks,
   timed to the gate's `t`; looped segments (`rewindTo`..`t`) start and end on the same pose so the loop is invisible.
   Every frame says "Animated demonstration". `pnpm dryrun-lessons` passes; posters are frames of the new videos.
 - CPR plays real footage: a Pexels clip of compressions on a training manikin (Juma Mülhem, credited), trimmed to the

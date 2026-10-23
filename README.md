@@ -136,19 +136,25 @@ Every channel below runs end to end on the Vega Virtual Device against the hoste
 screen recording of the TV (emulator screen recorder, played 3× faster) with the synthetic learner performing
 the steps (`pnpm demo-learner`). The gates, safety checks, reps, rhythm and hand shapes are the real engine.
 
-**What the teacher video is, per lesson** (each one says so on screen):
+<p align="center"><img src="docs/screenshots/lesson-videos.jpg" width="900" alt="Frames from the seven lesson videos: heel raises and single-leg stand in a living room, a hand closing to a soft fist, real CPR footage, the ASL letter L and the I-love-you handshape, and the kids' forest story with tree and flamingo poses" /></p>
 
-| Lesson                        | Video                                                                                                                      |
-| ----------------------------- | -------------------------------------------------------------------------------------------------------------------------- |
-| Heel raises, single-leg stand | **Animated demonstration** — a drawn figure does the exact move, timed to each gate                                        |
-| Open and close your hand      | **Animated demonstration** — a drawn hand at the teacher's 2 s pace (loops seamlessly while you catch up)                  |
-| Hands-only CPR rhythm         | **Real footage** — compressions on a training manikin (Pexels stock, credited)                                             |
-| Fingerspelling, "I love you"  | **Illustrated handshapes** — one animated hand forms A B C L Y and I-love-you; labelled "not yet reviewed by Deaf signers" |
-| The Forest Walk (kids)        | Illustrated story cards                                                                                                    |
+**What the teacher video is, per lesson** (each one says so on screen, and every one is narrated — see
+[Sound and voice](#sound-and-voice)):
 
-Animations: [`scripts/make-animated-lesson.py`](scripts/make-animated-lesson.py) (pycairo + ffmpeg). Credits and
-consent: [`content/CREDITS.md`](content/CREDITS.md). A recorded demonstration replaces any of them by dropping in a
-new `video.mp4` and re-timing the gates (or by recording one in Creator Studio).
+| Lesson                        | Video                                                                                                                                 |
+| ----------------------------- | ------------------------------------------------------------------------------------------------------------------------------------- |
+| Heel raises, single-leg stand | **Animated demonstration** — an older woman beside a sturdy chair in a living room does the exact move, timed to each gate            |
+| Open and close your hand      | **Animated demonstration** — a hand resting on a table opens wide and closes to a soft fist at the teacher's 2 s pace (seamless loop) |
+| Hands-only CPR rhythm         | **Real footage** — compressions on a training manikin (Pexels stock, credited)                                                        |
+| Fingerspelling, "I love you"  | **Illustrated handshapes** — one animated hand forms A B C L Y and I-love-you; labelled "not yet reviewed by Deaf signers"            |
+| The Forest Walk (kids)        | **Animated story** — a child walks through a forest at dusk and acts out tree, mouse, flamingo and wave, with a star burst after each |
+
+The illustrations are drawn in code on a canvas in the Blue Hour palette and rendered frame by frame with headless
+Chromium + ffmpeg ([`scripts/motion/`](scripts/motion/)), following the method of the
+[huashu-art-motion](https://github.com/alchaincyf/huashu-art-motion) skill (style frame first, then motion, then
+contact-sheet QA); no art or code was copied from it. Looped segments start and end on the same frame, so a learner
+who needs more time sees one continuous move. Credits and consent: [`content/CREDITS.md`](content/CREDITS.md). A
+recorded demonstration replaces any of them by dropping in a new `video.mp4` (or by recording one in Creator Studio).
 
 | Channel                               | What the gates check                                                                                                      |
 | ------------------------------------- | ------------------------------------------------------------------------------------------------------------------------- |
