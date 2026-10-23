@@ -2,49 +2,74 @@
 
 InStep should feel **calm, warm and trustworthy** — closer to a good physiotherapy clinic than a gym app. Large, legible, generous spacing, very clear state changes.
 
-> **As built (Oct 22):** the TV app follows Apple's tvOS 18 metrics instead of the values below: black
-> background with translucent white "glass" surfaces, Amazon Ember (the Vega system font) at 76/57/48/38/31/28,
-> 80×60 safe area, 410×231 lockups, focused buttons turn white (scale 1.06), focused cards lift (scale 1.1).
-> Source of truth: `apps/tv/src/theme/tokens.ts`. Brand voice, state colours (ok/near/far) and the
-> skeleton rules below still apply.
+> **Brand, Oct 23 — "Blue Hour".** Source of truth for colour: `docs/brand/palette.json` (generated from OKLCH
+> by `docs/brand/palette.mjs`, which also computes every contrast ratio below). Boards:
+> `docs/brand/brand-board.png` (the sheet) and `docs/brand/directions.png` (the three directions considered).
+> Applied in `apps/tv/src/theme/tokens.ts` and `apps/companion/src/styles.css`.
 
-> **Companion (iOS idiom), Oct 23:** the phone companion (`apps/companion/src/styles.css`) follows Apple's
-> iOS 18 dark-mode HIG so it feels like a first-party app next to the TV. Tokens: background `#000`, cells and
-> sheets `#1C1C1E`, cells inside sheets `#2C2C2E`, hairline separator `rgba(84,84,88,0.65)` inset to the text
-> column, labels `#FFF` / `rgba(235,235,245,0.6)` / `rgba(235,235,245,0.3)`, gray fill `rgba(120,120,128,0.24)`.
-> Tint is the brand teal `#4FD1C5` (near-black label on filled buttons); states use systemGreen `#30D158`,
-> systemOrange `#FF9F0A`, systemRed `#FF453A`; links systemBlue `#0A84FF`. Type: the system font
-> (`-apple-system`, SF Pro) with Inter Variable as the fallback (−0.01 em body, −0.02 em at 20 px and up);
-> Large Title 34/41 bold, Title3 20/25 semibold, Body 17/22, Subheadline 15/20, Footnote 13/18. Components:
-> 44 pt nav row (logo + name, or tinted back chevron), inset grouped lists (radius 12, 16 px insets, 29 pt
-> coloured icon tiles, chevrons only on rows that navigate), 50 px buttons (radius 14; filled tint, or gray
-> fill with tint label), capsule badges, uppercase footnote field headers, 20 px sheets with a grabber,
-> blurred dark material (`saturate(180%) blur(20px)`) for everything over the camera preview, Lucide icons
-> at 1.75 stroke, 200–300 ms ease transitions removed under `prefers-reduced-motion`.
+> **TV (tvOS metrics), Oct 22:** the TV app follows Apple's tvOS 18 metrics: glass surfaces, Amazon Ember (the
+> Vega system font) at 76/57/48/38/31/28, 80×60 safe area, 410×231 lockups, focused buttons turn to the
+> near-white platter (scale 1.06), focused cards lift (scale 1.1). Colours are the Blue Hour tokens below.
+
+> **Companion (iOS idiom), Oct 23:** the phone companion follows Apple's iOS 18 dark-mode HIG for structure so it
+> feels like a first-party app next to the TV, in Blue Hour colours: background canvas `#0D0E2C`, cells and
+> sheets `#1A1C3F`, cells inside sheets `#272A52`, separator `rgba(150,156,214,0.26)` inset to the text column,
+> labels `#F5F6FE` / `rgba(226,229,255,0.64)` / `rgba(226,229,255,0.5)` (the last for chevrons and disabled
+> labels only), fill `rgba(140,148,230,0.2)`. Tint is sky `#5FC6FF` with a navy label `#021630`; links use the
+> tint; states use the palette ok / near / far; info is lavender `#B5B8F1`. Type: the system font (`-apple-system`,
+> SF Pro) with Inter Variable as the fallback (−0.01 em body, −0.02 em at 20 px and up); Large Title 34/41 bold,
+> Title3 20/25 semibold, Body 17/22, Subheadline 15/20, Footnote 13/18. Components: 44 pt nav row (logo + name,
+> or tinted back chevron), inset grouped lists (radius 12, 16 px insets, 29 pt icon tiles, chevrons only on rows
+> that navigate), 50 px buttons (radius 14; filled tint, or fill with tint label; danger = red with a canvas
+> label), capsule badges, uppercase footnote field headers, 20 px sheets with a grabber, blurred indigo material
+> (`saturate(180%) blur(20px)`) over the camera preview, Lucide icons at 1.75 stroke, 200–300 ms ease
+> transitions removed under `prefers-reduced-motion`. The camera preview itself stays on black.
 
 ## 1. Brand
 
 - **Name:** InStep · **Tagline:** "The video that waits for you."
-- **Logo idea:** a footprint whose toe curve forms a play-button triangle, or a pause bar becoming a step. Simple flat mark, works at 48 px.
+- **Direction:** flat, outline-free illustration (layered rounded shapes, soft long shadows, saturated colour)
+  on a deep night-indigo canvas. Dark-first because the TV and the phone are used in living rooms, often in
+  the evening, at 2–3 m. Warmth comes from skin tones, sun, rose and peach accents; the brand hue is sky blue,
+  chosen because it is far from the three status colours (the ghost skeleton is drawn in it and must never
+  read as "match", "nearly" or "stop"). Alternatives considered (Sunday Paper, Bauhaus Play) and why they
+  were not chosen: `docs/brand/directions.png`.
+- **Logo:** a foot sole that is also a pause bar, beside a play triangle: the lesson waits, then plays when
+  you step. Sky sole and toes, sun-yellow play, indigo tile `#272A52`, short 45° long shadows in `#1A1C3F`.
+  Files: `apps/companion/public/logo.svg` (favicon and nav, 64-unit viewBox) and
+  `apps/tv/src/components/Logo.tsx` (TV splash), both generated by `node docs/brand/logo.mjs`.
+  Usage: always on its own tile (never the bare marks on a busy background); minimum 16 px; clear space ≥ ¼ of
+  the tile; never recolour the play triangle to green, amber or red; no outlines, glows or gradients added.
+  Vega's app icon: the TV `manifest.toml` declares no icon asset, so there is no TV icon file to replace.
 - **Voice:** short, kind, second person. "Nice! Hold it… done." Never blaming ("Wrong!"). Always say what to do next.
 
-## 2. Colour tokens (dark theme default — TV and companion)
+## 2. Colour tokens (Blue Hour, dark default — TV and companion)
 
-| Token | Hex | Use |
-|---|---|---|
-| `bg` | `#0E1116` | App background |
-| `surface` | `#171B22` | Cards, panels |
-| `surface-2` | `#212733` | Raised, focused card bg |
-| `text` | `#F2F4F7` | Primary text |
-| `text-muted` | `#A7B0BE` | Secondary text |
-| `brand` | `#4FD1C5` | Teal: brand, ghost skeleton, links |
-| `focus` | `#FFFFFF` | Focus ring (3 px) + scale |
-| `ok` | `#3DDC97` | Matched joints/fingers, pass |
-| `near` | `#FFB547` | Amber: close / worst finger glow |
-| `far` | `#FF6B6B` | Red: far off, safety block |
-| `info` | `#7AA7FF` | Neutral info chips |
+Contrast is WCAG 2 for text on the canvas `#0D0E2C` / surface `#1A1C3F` / surface 2 `#272A52`.
 
-**High-contrast mode:** pure black bg, white text, OK = `#00FF7F`, near = `#FFD400`, far = `#FF3B30`, thicker strokes (×1.5). Never rely on colour alone: every state also has an icon/shape (✓, !, ✗) and text.
+| Token | Hex | Contrast (canvas / surface / surface 2) | Use |
+|---|---|---|---|
+| `bg` (canvas) | `#0D0E2C` | — | App background, night indigo |
+| `surface` | `#1A1C3F` | — | Cards, cells, sheets (TV: `rgba(170,176,255,0.10)` glass) |
+| `surface-2` | `#272A52` | — | Raised / nested (TV: glass 0.16 and 0.24) |
+| `text` | `#F5F6FE` | 17.5 / 15.2 / 12.7 | Primary text, TV focus platter |
+| `text-muted` | `#B8BCD5` | 10.0 / 8.7 / 7.3 | Secondary text (≥ 6.2 on the strongest TV glass) |
+| `text-faint` | `#A1A6C1` | 7.8 / 6.8 / 5.7 | Tertiary text (≥ 4.8 on every TV glass) |
+| `brand` (sky) | `#5FC6FF` | 9.9 / 8.6 / 7.2 | Brand, tint, ghost skeleton, progress, links |
+| `on-brand` | `#021630` | 9.5 on sky | Label on filled sky buttons |
+| `focus` / `on-focus` | `#F5F6FE` / `#0D0E2C` | 17.5 | TV focus platter and its label |
+| `ok` (match) | `#49DE78` | 10.8 / 9.4 / 7.8 | Matched joints/fingers, pass |
+| `near` (nearly) | `#FFB439` | 10.6 / 9.2 / 7.7 | Close / worst finger glow |
+| `far` (stop) | `#FF6762` | 6.6 / 5.8 / 4.8 | Far off, safety block (labels on it use the canvas colour: 6.6) |
+| `info` | `#B5B8F1` | 9.9 / 8.7 / 7.2 | Neutral info chips |
+| `neutral` | `#6F7389` | — (not for text) | Unused skeleton joints |
+| companion `label-2` | `rgba(226,229,255,0.64)` | 6.7 / 6.2 / 5.5 | Secondary labels, placeholders |
+| companion `label-3` | `rgba(226,229,255,0.5)` | 4.5 / 4.3 / 4.0 | Chevrons and disabled labels only (non-text ≥ 3:1) |
+
+Status colours (`ok`, `near`, `far`) are reserved for feedback: never the brand, never decoration, never large
+illustrated areas. **High-contrast mode:** pure black bg, white text, OK = `#00FF7F`, near = `#FFD400`,
+far = `#FF3B30`, thicker strokes (×1.5). Never rely on colour alone: every state also has an icon/shape (✓, !, ✗)
+and text.
 
 ## 3. Typography
 
@@ -64,8 +89,8 @@ InStep should feel **calm, warm and trustworthy** — closer to a good physiothe
 
 | Element | Style |
 |---|---|
-| Ghost (instructor) skeleton | `brand` teal, 6 px dashed (12/8), 70% opacity, joints 10 px hollow circles |
-| Learner skeleton | 8 px solid, per-limb colour `ok`/`near`/`far`, joints 12 px filled; unused joints grey `#5B6575` |
+| Ghost (instructor) skeleton | `brand` sky, 6 px dashed (12/8), 70% opacity, joints 10 px hollow circles |
+| Learner skeleton | 8 px solid, per-limb colour `ok`/`near`/`far`, joints 12 px filled; unused joints `neutral` `#6F7389` |
 | Worst joint | pulsing ring (1 Hz) + label chip ("Left knee: bend less") |
 | Delta Glow hand | 2.5× scale hand diagram; finger bones as rounded bars; correct = `ok` glow; worst = `near` pulsing glow + arrow (↓ curl, ↑ extend); others not OK = `near` steady |
 | Lock-in (pass) | whole-screen edge glow `ok` 400 ms + ✓ badge + soft chime |
@@ -83,7 +108,30 @@ InStep should feel **calm, warm and trustworthy** — closer to a good physiothe
 
 - Line icons (e.g., Lucide, MIT) bundled locally.
 - Camera placement illustrations: simple flat drawings (front view at hip height 2–3 m; side view for CPR; hand close-up for sign/rehab).
-- Channel colours (accents only): Fall `#4FD1C5`, Rehab `#7AA7FF`, Sign `#C08BFF`, CPR `#FF6B6B`, Kids `#FFB547`.
+- Channel colours (accents only, never status): Fall `#5FC6FF` sky, Sign `#AE97FF` iris, Rehab `#5BD7D3`
+  lagoon, CPR `#F87BAA` rose, Kids `#F6D653` sun (7.5–13:1 on the canvas). Poster fallbacks fade the canvas into
+  a deep shade of the channel (`scripts/make-posters.mjs`, white type ≥ 6.4:1).
+
+### Illustration rules (lesson animations, posters, camera-placement drawings)
+
+Colours from `docs/brand/palette.json` (`illustration`, `skin`, `accents`); the sample scene is on the brand sheet.
+
+1. **Flat and outline-free.** No strokes around shapes; separate overlapping shapes by value (nearer = lighter).
+2. **Rounded, layered forms.** Bodies are capsules and rounded rectangles (corner radius ≥ 12 % of the shape);
+   build depth by layering 2–3 values of one hue, not with gradients.
+3. **Light from the upper left.** One highlight per form (`highlightHex` at `highlightOpacity`) on its upper-left
+   edge; long shadows fall 45° down-right in `longShadowHex` at `longShadowOpacity`, hard-edged, no blur;
+   figures stand on a soft contact-shadow ellipse (`illustration.shadow`, ~40 %).
+4. **The canvas is night indigo** (`skyTop` → `skyBottom` walls, `floor`, `wall`), with the sun or a lamp as the
+   warm accent.
+5. **People:** skin from `skin[]` (vary it across lessons), hair from `illustration.hair`; the teaching figure
+   wears the lesson's channel colour so the poster, card and video agree. Faces simple and friendly; no medical
+   props unless the lesson needs them (CPR manikin).
+6. **Keep feedback colours free.** No large areas of `ok` green, `near` amber or `far` red, and no green plants
+   next to the teaching figure (plants use the teal `illustration.leaf`), so the TV's skeleton feedback stays
+   unambiguous over the video.
+7. **Legible at 3 m:** the figure fills ≥ 60 % of the frame height, limbs are thick (≥ 3 % of frame height),
+   and nothing important sits outside the TV safe area (80 × 60 px at 1080p).
 
 ## 8. Copy guidelines
 
