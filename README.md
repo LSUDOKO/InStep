@@ -53,6 +53,11 @@ Every number above is listed with its source in [`docs/SOURCES.md`](docs/SOURCES
 
 ## How it works
 
+<p align="center"><img src="docs/architecture/architecture.png" width="960" alt="InStep architecture: the phone runs MediaPipe in the browser and sends only body points (JSON, about 1 KB a frame) over a WebSocket relay on Render to the Fire TV app, whose gate engine pauses and resumes the W3C media player; Creator Studio, lesson content, shared TypeScript packages and the switched-off Bedrock + Polly coach are shown around them, with a six-step panel for one gate" /></p>
+
+Step by step, with file paths: [`docs/02-architecture.md`](docs/02-architecture.md). The diagram is code
+([`docs/architecture/architecture.html`](docs/architecture/architecture.html)) and animates for the demo film.
+
 ```mermaid
 flowchart LR
   subgraph Phone["📱 Companion (browser)"]
