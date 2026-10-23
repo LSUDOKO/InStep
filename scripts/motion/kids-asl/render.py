@@ -10,7 +10,8 @@ labels and the duration come from each lesson's track.istep, colours from docs/b
   uv run --with playwright python scripts/motion/kids-asl/render.py --all
   uv run --with playwright python scripts/motion/kids-asl/render.py asl-i-love-you-v1 --stills 5,7.5 --out /tmp/x
 
-Output: content/lessons/<id>/video.mp4 (1280x720, 25 fps, H.264 main, yuv420p, +faststart, no audio track).
+Output: content/lessons/<id>/video.mp4 (1280x720, 25 fps, H.264 main, yuv420p, +faststart). The renderer adds no
+sound; if video.mp4 already carries narration from scripts/audio/mux.mjs, that audio track is kept as is.
 """
 import argparse
 import base64
@@ -78,6 +79,16 @@ def render(pg, lesson_id):
         ff.stdin.close()
         if ff.wait():
             sys.exit('ffmpeg failed')
+        # keep narration that scripts/audio/mux.mjs already put in (it copies the video stream and only owns audio)
+        has_audio = out.exists() and subprocess.run(
+            ['ffprobe', '-v', 'error', '-select_streams', 'a', '-show_entries', 'stream=index', '-of', 'csv=p=0', str(out)],
+            capture_output=True, text=True).stdout.strip()
+        if has_audio:
+            both = out.with_suffix('.av.mp4')
+            subprocess.run(['ffmpeg', '-loglevel', 'error', '-y', '-i', str(tmp), '-i', str(out), '-map', '0:v', '-map', '1:a',
+                            '-c', 'copy', '-movflags', '+faststart', str(both)], check=True)
+            os.replace(both, tmp)
+            print('[render] kept the existing audio track', file=sys.stderr)
         os.replace(tmp, out)
         print('wrote', out, f'{out.stat().st_size / 1e6:.2f} MB')
         if lesson_id in ASL:  # a real (illustrated) video now: posters come from its frames, the lesson is published
