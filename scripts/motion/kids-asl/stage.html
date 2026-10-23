@@ -1,0 +1,33 @@
+<!doctype html>
+<meta charset="utf-8" />
+<title>InStep illustrated lessons</title>
+<style>
+  html, body { margin: 0; background: #000; }
+  canvas { display: block; }
+</style>
+<canvas id="c" width="1280" height="720"></canvas>
+<script src="kit.js"></script>
+<script src="hand.js"></script>
+<script src="asl.js"></script>
+<script src="kids.js"></script>
+<script>
+  // render.py calls boot({track, palette, font}) once, then renderFrame(t) per frame. Drawing uses 1920x1080
+  // design coordinates on a 1280x720 canvas.
+  window.CANVAS = document.getElementById('c');
+  window.boot = async ({ track, palette, font }) => {
+    if (font) {
+      const f = new FontFace('Inter', `url(data:font/woff2;base64,${font})`, { weight: '100 900' });
+      document.fonts.add(await f.load());
+    }
+    await document.fonts.ready;
+    const draw = (track.channel === 'kids' ? KIDS : ASL)(track, palette);
+    const c = CANVAS.getContext('2d');
+    window.renderFrame = (t) => {
+      c.setTransform(1280 / 1920, 0, 0, 1280 / 1920, 0, 0);
+      c.clearRect(0, 0, 1920, 1080);
+      c.save();
+      draw(c, t);
+      c.restore();
+    };
+  };
+</script>
