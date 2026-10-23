@@ -8,11 +8,11 @@ import { navigate } from '../../lib/router';
 
 /** Channel accents, shared with the TV (apps/tv/src/theme/tokens.ts). */
 const CHANNEL_COLOR: Record<string, string> = {
-  fall_prevention: '#4FD1C5',
-  stroke_rehab: '#7AA7FF',
-  sign_language: '#C08BFF',
-  cpr: '#FF6B6B',
-  kids: '#FFB547',
+  fall_prevention: '#5FC6FF',
+  stroke_rehab: '#5BD7D3',
+  sign_language: '#AE97FF',
+  cpr: '#F87BAA',
+  kids: '#F6D653',
 };
 
 /** Demo-only PIN gate (CREATOR_PIN). Production would need real accounts. */

@@ -110,7 +110,7 @@ export function GateEditor(props: {
     c.height = c.clientHeight * devicePixelRatio;
     ctx.clearRect(0, 0, c.width, c.height);
     if (!pose) return;
-    ctx.strokeStyle = '#4FD1C5';
+    ctx.strokeStyle = '#5FC6FF';
     ctx.lineWidth = 4 * devicePixelRatio;
     ctx.setLineDash([12, 8]);
     for (const [a, b] of POSE_EDGES) {
