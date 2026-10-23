@@ -1,0 +1,784 @@
+<!doctype html>
+<!-- InStep architecture diagram (Blue Hour). 1920x1080, animatable for the demo film.
+     window.seek(seconds) renders the build-up deterministically (no wall clock, no CSS animation);
+     the diagram is fully settled at window.SETTLED (14 s) and packets loop after that.
+     Open with ?t=5 to freeze at 5 s, ?play to preview in real time. Rendered by: node docs/architecture/render.mjs
+     Every label describes what the code does; see docs/02-architecture.md for the file-by-file walk-through. -->
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>InStep architecture</title>
+    <style>
+      @font-face {
+        font-family: 'Inter';
+        src: url('../../apps/companion/node_modules/@fontsource-variable/inter/files/inter-latin-wght-normal.woff2')
+          format('woff2');
+        font-weight: 100 900;
+      }
+      :root {
+        --canvas: #0d0e2c;
+        --surface: #1a1c3f;
+        --surface2: #272a52;
+        --text: #f5f6fe;
+        --muted: #b8bcd5;
+        --faint: #a1a6c1;
+        --ink: #021630;
+        --sky: #5fc6ff;
+        --iris: #ae97ff;
+        --lagoon: #5bd7d3;
+        --rose: #f87bab;
+        --sun: #f6d653;
+        --peach: #f9bb99;
+        --neutral: #6f7389;
+        --shadow: 14px 14px 0 rgba(5, 6, 26, 0.45);
+      }
+      * {
+        box-sizing: border-box;
+        margin: 0;
+      }
+      html,
+      body {
+        width: 1920px;
+        height: 1080px;
+        overflow: hidden;
+      }
+      body {
+        position: relative;
+        background:
+          radial-gradient(900px 520px at 16% 22%, rgba(95, 198, 255, 0.07), transparent 70%),
+          radial-gradient(900px 560px at 86% 30%, rgba(174, 151, 255, 0.07), transparent 70%), var(--canvas);
+        color: var(--text);
+        font-family: Inter, sans-serif;
+        font-size: 19px;
+        line-height: 1.3;
+        letter-spacing: -0.01em;
+      }
+      .abs {
+        position: absolute;
+      }
+      svg#wires {
+        position: absolute;
+        inset: 0;
+        width: 1920px;
+        height: 1080px;
+        overflow: visible;
+      }
+      /* header */
+      .eyebrow {
+        font-size: 18px;
+        font-weight: 700;
+        letter-spacing: 0.08em;
+        color: var(--muted);
+      }
+      h1 {
+        font-size: 46px;
+        font-weight: 800;
+        letter-spacing: -0.035em;
+        margin-top: 6px;
+      }
+      .lede {
+        font-size: 22px;
+        color: var(--muted);
+        margin-top: 6px;
+      }
+      .legend {
+        display: grid;
+        grid-template-columns: auto auto;
+        gap: 12px 30px;
+        font-size: 18px;
+        color: var(--muted);
+      }
+      .legend i {
+        display: inline-block;
+        width: 34px;
+        height: 4px;
+        border-radius: 2px;
+        vertical-align: middle;
+        margin-right: 10px;
+      }
+      /* cards */
+      .card {
+        background: var(--surface);
+        border-radius: 24px;
+        box-shadow:
+          var(--shadow),
+          inset 2px 2px 0 rgba(255, 255, 255, 0.05);
+        padding: 22px 24px;
+      }
+      .card.off {
+        background: transparent;
+        box-shadow: none;
+        border: 2px dashed var(--neutral);
+      }
+      .head {
+        display: flex;
+        gap: 14px;
+        align-items: center;
+      }
+      .tile {
+        width: 54px;
+        height: 54px;
+        border-radius: 15px;
+        flex: none;
+        display: grid;
+        place-items: center;
+        box-shadow: 6px 6px 0 rgba(5, 6, 26, 0.45);
+      }
+      .tile svg {
+        width: 30px;
+        height: 30px;
+        fill: var(--ink);
+      }
+      .title {
+        font-size: 26px;
+        font-weight: 800;
+        letter-spacing: -0.025em;
+        line-height: 1.12;
+      }
+      .sub {
+        font-size: 18px;
+        color: var(--muted);
+        margin-top: 3px;
+      }
+      .chip {
+        display: inline-block;
+        font-size: 18px;
+        font-weight: 700;
+        padding: 2px 10px;
+        border-radius: 99px;
+        background: var(--surface2);
+        color: var(--muted);
+        vertical-align: 3px;
+        margin-left: 8px;
+        letter-spacing: 0;
+      }
+      .rows {
+        margin-top: 16px;
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+      }
+      .row {
+        background: var(--surface2);
+        border-radius: 14px;
+        padding: 9px 14px;
+        font-size: 19px;
+      }
+      .row b {
+        font-weight: 700;
+      }
+      .grid2 {
+        margin-top: 16px;
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 10px;
+      }
+      .blk {
+        background: var(--surface2);
+        border-radius: 14px;
+        padding: 11px 14px;
+        font-size: 18px;
+        color: var(--muted);
+      }
+      .blk b {
+        display: block;
+        color: var(--text);
+        font-size: 20px;
+        font-weight: 700;
+        margin-bottom: 2px;
+      }
+      .path {
+        position: absolute;
+        left: 24px;
+        bottom: 16px;
+        font-size: 18px;
+        font-weight: 600;
+        color: var(--faint);
+      }
+      .pill {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        border-radius: 99px;
+        padding: 8px 16px;
+        font-size: 19px;
+        font-weight: 700;
+        background: rgba(95, 198, 255, 0.12);
+        color: var(--sky);
+        margin-top: 12px;
+      }
+      .pill span {
+        color: var(--muted);
+        font-weight: 500;
+      }
+      .dot {
+        width: 12px;
+        height: 12px;
+        border-radius: 50%;
+        background: var(--sky);
+        flex: none;
+      }
+      /* edge labels */
+      .lbl {
+        position: absolute;
+        width: 212px;
+        text-align: center;
+        font-size: 18px;
+        color: var(--muted);
+        line-height: 1.25;
+      }
+      .lbl b {
+        font-size: 20px;
+        font-weight: 750;
+      }
+      .never {
+        position: absolute;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        padding: 7px 14px;
+        border-radius: 99px;
+        border: 2px solid var(--surface2);
+        background: var(--canvas);
+        font-size: 18px;
+        font-weight: 700;
+        color: var(--text);
+      }
+      .never svg {
+        width: 26px;
+        height: 26px;
+      }
+      /* creator steps + gate sequence */
+      .steps {
+        margin-top: 16px;
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+      }
+      .step {
+        display: flex;
+        gap: 12px;
+        align-items: flex-start;
+        border-radius: 14px;
+        padding: 7px 10px 7px 8px;
+      }
+      .num {
+        flex: none;
+        width: 32px;
+        height: 32px;
+        border-radius: 50%;
+        display: grid;
+        place-items: center;
+        font-size: 18px;
+        font-weight: 800;
+        color: var(--ink);
+        margin-top: 1px;
+      }
+      .step b {
+        display: block;
+        font-weight: 700;
+        font-size: 19px;
+      }
+      .step small {
+        display: block;
+        font-size: 18px;
+        color: var(--muted);
+      }
+      .files {
+        display: flex;
+        gap: 8px;
+        margin-top: 14px;
+      }
+      .file {
+        flex: 1;
+        text-align: center;
+        background: var(--surface2);
+        border-radius: 12px;
+        padding: 7px 4px;
+        font-size: 18px;
+        font-weight: 700;
+      }
+      .pkgs {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 12px;
+        margin-top: 14px;
+      }
+      .pkg {
+        background: var(--surface2);
+        border-radius: 16px;
+        padding: 12px 14px;
+        font-size: 18px;
+        color: var(--muted);
+        line-height: 1.25;
+      }
+      .pkg b {
+        display: block;
+        color: var(--sun);
+        font-size: 20px;
+        font-weight: 750;
+        margin-bottom: 4px;
+      }
+      .pkg em {
+        display: block;
+        font-style: normal;
+        color: var(--text);
+        font-weight: 600;
+        margin-top: 6px;
+      }
+    </style>
+  </head>
+  <body>
+    <!-- header -->
+    <div class="abs" style="left: 56px; top: 40px" data-at="0">
+      <div class="eyebrow">INSTEP · ARCHITECTURE</div>
+      <h1>How the video waits for you</h1>
+      <div class="lede">The phone sees, the TV waits — body points travel between them, never video.</div>
+    </div>
+    <div class="abs legend" style="left: 1296px; top: 58px" data-at="0.3">
+      <div><i style="background: var(--sky)"></i>body points (WebSocket)</div>
+      <div><i style="background: var(--iris)"></i>gate state · tips</div>
+      <div><i style="background: var(--lagoon)"></i>HTTPS: lessons, uploads</div>
+      <div>
+        <i
+          style="background: repeating-linear-gradient(90deg, var(--neutral) 0 8px, transparent 8px 13px)"
+        ></i
+        >switched off
+      </div>
+    </div>
+
+    <svg id="wires" viewBox="0 0 1920 1080"><defs></defs></svg>
+
+    <!-- PHONE -->
+    <div class="abs card" style="left: 40px; top: 176px; width: 440px; height: 360px" data-at="0.6">
+      <div class="head">
+        <div class="tile" style="background: var(--sky)">
+          <svg viewBox="0 0 30 30">
+            <path
+              d="M9 2h12a3 3 0 0 1 3 3v20a3 3 0 0 1-3 3H9a3 3 0 0 1-3-3V5a3 3 0 0 1 3-3zm6 21.5a1.6 1.6 0 1 0 0 3.2 1.6 1.6 0 0 0 0-3.2z"
+            />
+          </svg>
+        </div>
+        <div>
+          <div class="title">Phone or laptop</div>
+          <div class="sub">camera · MediaPipe in the browser</div>
+        </div>
+      </div>
+      <div class="rows">
+        <div class="row">Camera frames stay in this browser</div>
+        <div class="row">Pose + hand landmarkers, chair detector</div>
+        <div class="row">→ normalised body points, 3 decimals</div>
+      </div>
+      <div class="pill">
+        <div class="dot"></div>
+        Video sent 0.0 KB/s<span>· measured</span>
+      </div>
+      <div class="path">apps/companion</div>
+    </div>
+
+    <!-- SERVER -->
+    <div class="abs card" style="left: 700px; top: 160px; width: 520px; height: 400px" data-at="1.2">
+      <div class="head">
+        <div class="tile" style="background: var(--iris)">
+          <svg viewBox="0 0 30 30">
+            <path
+              d="M5 3h20a3 3 0 0 1 3 3v4a3 3 0 0 1-3 3H5a3 3 0 0 1-3-3V6a3 3 0 0 1 3-3zm2 4v2h3V7zM5 17h20a3 3 0 0 1 3 3v4a3 3 0 0 1-3 3H5a3 3 0 0 1-3-3v-4a3 3 0 0 1 3-3zm2 4v2h3v-2z"
+            />
+          </svg>
+        </div>
+        <div>
+          <div class="title">InStep server <span class="chip">on Render</span></div>
+          <div class="sub">Node 22 · Fastify · ws · node:sqlite</div>
+        </div>
+      </div>
+      <div class="grid2">
+        <div class="blk"><b>WebSocket relay</b>4-digit rooms; never logs body points</div>
+        <div class="blk"><b>REST API</b>lessons, .istep, media, profiles, reports</div>
+        <div class="blk"><b>Coach</b>templated tips now; cached, rate-limited</div>
+        <div class="blk"><b>MCP</b>read-only progress for caregivers</div>
+      </div>
+      <div class="blk" style="margin-top: 10px">One service: companion /c/ · relay /ws · API</div>
+      <div class="path">apps/server</div>
+    </div>
+
+    <!-- TV -->
+    <div class="abs card" style="left: 1440px; top: 176px; width: 440px; height: 360px" data-at="1.8">
+      <div class="head">
+        <div class="tile" style="background: var(--lagoon)">
+          <svg viewBox="0 0 30 30">
+            <path
+              d="M4 4h22a3 3 0 0 1 3 3v13a3 3 0 0 1-3 3H4a3 3 0 0 1-3-3V7a3 3 0 0 1 3-3zm6 21h10a1.5 1.5 0 0 1 0 3H10a1.5 1.5 0 0 1 0-3z"
+            />
+          </svg>
+        </div>
+        <div>
+          <div class="title">Fire TV app</div>
+          <div class="sub">React Native for Vega · Vega OS</div>
+        </div>
+      </div>
+      <div class="rows">
+        <div class="row">W3C media player plays the lesson</div>
+        <div class="row"><b>Gate engine</b> decides pause / resume</div>
+        <div class="row">HUD · skeleton · Delta Glow · captions</div>
+        <div class="row">D-pad focus: react-tv-space-navigation</div>
+      </div>
+      <div class="path">apps/tv</div>
+    </div>
+
+    <!-- edge labels: phone <-> server -->
+    <div class="lbl" style="left: 484px; top: 222px" data-at="2.85">
+      <b style="color: var(--sky)">body points</b>
+    </div>
+    <div class="lbl" style="left: 484px; top: 272px" data-at="2.95">
+      JSON, ≈1 KB a frame<br />up to 30 a second
+    </div>
+    <div class="lbl" style="left: 484px; top: 352px" data-at="5.25">
+      <b style="color: var(--iris)">gate state · tips</b>
+    </div>
+    <div class="lbl" style="left: 484px; top: 398px" data-at="5.35">phone shows feedback, speaks the tip</div>
+    <div class="never" style="left: 506px; top: 466px" data-at="4.2">
+      <svg viewBox="0 0 26 26">
+        <rect x="2" y="7" width="15" height="12" rx="3" fill="#6f7389" />
+        <path d="M17 11l6-3.5v11L17 15z" fill="#6f7389" />
+        <path d="M3 3l20 20" stroke="#f5f6fe" stroke-width="2.6" stroke-linecap="round" />
+      </svg>
+      never video
+    </div>
+
+    <!-- edge labels: server <-> TV -->
+    <div class="lbl" style="left: 1224px; top: 222px" data-at="3.45">
+      <b style="color: var(--sky)">body points</b>
+    </div>
+    <div class="lbl" style="left: 1224px; top: 272px" data-at="3.55">forwarded to the TV only</div>
+    <div class="lbl" style="left: 1224px; top: 324px" data-at="4.95">
+      <b style="color: var(--iris)">gate state · result</b>
+    </div>
+    <div class="lbl" style="left: 1224px; top: 370px" data-at="5.05">at most 5 a second</div>
+    <div class="lbl" style="left: 1224px; top: 406px" data-at="5.85">
+      <b style="color: var(--lagoon)">lesson + .istep</b>
+    </div>
+    <div class="lbl" style="left: 1224px; top: 450px" data-at="5.95">and video, over HTTPS</div>
+    <div class="lbl" style="left: 1224px; top: 486px" data-at="6.35">
+      <b style="color: var(--lagoon)">coach · session</b>
+    </div>
+    <div class="lbl" style="left: 1224px; top: 530px" data-at="6.45">numbers only</div>
+
+    <!-- CREATOR STUDIO -->
+    <div class="abs card" style="left: 40px; top: 640px; width: 440px; height: 400px" data-at="6.9">
+      <div class="head">
+        <div class="tile" style="background: var(--peach)">
+          <svg viewBox="0 0 30 30">
+            <path
+              d="M5 6h14a3 3 0 0 1 3 3v12a3 3 0 0 1-3 3H5a3 3 0 0 1-3-3V9a3 3 0 0 1 3-3zm18 5l6-3.5v15L23 19zM12 11.5a3.5 3.5 0 1 0 0 7 3.5 3.5 0 0 0 0-7z"
+            />
+          </svg>
+        </div>
+        <div>
+          <div class="title">Creator Studio</div>
+          <div class="sub">the instructor's phone · /c/creator</div>
+        </div>
+      </div>
+      <div class="steps">
+        <div class="step">
+          <div class="num" style="background: var(--peach)">1</div>
+          <div><b>Record demonstration</b><small>explicit action, visible REC</small></div>
+        </div>
+        <div class="step">
+          <div class="num" style="background: var(--peach)">2</div>
+          <div><b>Body points at 15 fps</b><small>saved as reference.json</small></div>
+        </div>
+        <div class="step">
+          <div class="num" style="background: var(--peach)">3</div>
+          <div><b>Server suggests gates</b><small>at the still moments (auto-gates)</small></div>
+        </div>
+        <div class="step">
+          <div class="num" style="background: var(--peach)">4</div>
+          <div><b>Edit, preview, publish</b><small>→ a validated .istep, on every TV</small></div>
+        </div>
+      </div>
+    </div>
+    <div class="lbl" style="left: 488px; top: 734px; width: 200px" data-at="7.95">
+      <b style="color: var(--lagoon)">demo video</b><br />+ reference.json<br />(instructor only)
+    </div>
+
+    <!-- AWS (off) -->
+    <div class="abs card off" style="left: 700px; top: 640px; width: 300px; height: 160px" data-at="9.0">
+      <div class="head">
+        <div class="tile" style="background: var(--neutral); box-shadow: none">
+          <svg viewBox="0 0 30 30">
+            <path d="M9 24a6 6 0 0 1-.8-11.95A8 8 0 0 1 23.6 11 6.5 6.5 0 0 1 23 24z" />
+          </svg>
+        </div>
+        <div>
+          <div class="title" style="font-size: 22px">Bedrock + Polly</div>
+          <div class="sub">code ready, switched off</div>
+        </div>
+      </div>
+      <div class="sub" style="margin-top: 12px; color: var(--faint)">
+        MOCK_AI=true: templated tips; the phone speaks them
+      </div>
+    </div>
+    <div
+      class="lbl"
+      style="left: 860px; top: 584px; width: 120px; text-align: left; color: var(--faint)"
+      data-at="9.4"
+    >
+      off
+    </div>
+
+    <!-- CONTENT -->
+    <div
+      class="abs card"
+      style="left: 1020px; top: 640px; width: 380px; height: 160px; padding: 20px 20px"
+      data-at="7.8"
+    >
+      <div class="title" style="font-size: 22px">
+        Lesson content <span class="chip" style="font-weight: 600">content/lessons</span>
+      </div>
+      <div class="files">
+        <div class="file" style="color: var(--rose)">video.mp4</div>
+        <div class="file" style="color: var(--sun)">.istep</div>
+        <div class="file" style="color: var(--sky)">reference</div>
+      </div>
+      <div class="sub" style="margin-top: 10px">narration pre-rendered offline (Kokoro)</div>
+    </div>
+    <div
+      class="lbl"
+      style="left: 1222px; top: 584px; width: 200px; text-align: left; color: var(--faint)"
+      data-at="8.25"
+    >
+      loaded at start
+    </div>
+
+    <!-- SHARED PACKAGES -->
+    <div
+      class="abs card"
+      style="left: 520px; top: 830px; width: 880px; height: 210px; padding: 18px 20px"
+      data-at="9.6"
+    >
+      <div class="head" style="gap: 12px">
+        <div class="title" style="font-size: 22px">Shared packages</div>
+        <div class="sub" style="margin-top: 0">pure TypeScript — no DOM, no React Native</div>
+      </div>
+      <div class="pkgs">
+        <div class="pkg" data-at="10.0">
+          <b>istep-format</b>zod schema, JSON Schema, validator<em>phone · server · TV</em>
+        </div>
+        <div class="pkg" data-at="10.3">
+          <b>gate-engine</b>7 gate types, <span style="white-space: nowrap">auto-gates</span
+          ><em>phone · server · TV</em>
+        </div>
+        <div class="pkg" data-at="10.6">
+          <b>protocol</b>WebSocket + REST messages (zod)<em>phone · server · TV</em>
+        </div>
+        <div class="pkg" data-at="10.9"><b>gated-player</b>timing controller, open source<em>TV</em></div>
+      </div>
+    </div>
+
+    <!-- GATE SEQUENCE -->
+    <div
+      id="seq"
+      class="abs card"
+      style="left: 1440px; top: 572px; width: 440px; height: 468px; padding: 20px 20px"
+      data-at="11.4"
+    >
+      <div class="head" style="gap: 12px">
+        <div class="tile" style="background: var(--sun); width: 44px; height: 44px; border-radius: 12px">
+          <svg viewBox="0 0 30 30" style="width: 24px; height: 24px">
+            <rect x="6" y="5" width="6" height="20" rx="2" />
+            <rect x="18" y="5" width="6" height="20" rx="2" />
+          </svg>
+        </div>
+        <div class="title" style="font-size: 24px">One gate, step by step</div>
+      </div>
+      <div class="steps" style="gap: 4px; margin-top: 12px">
+        <div class="step" data-at="11.8" data-hl="0">
+          <div class="num" style="background: var(--sun)">1</div>
+          <div><b>Video reaches the gate → pause</b><small>controller tick ≤ 100 ms</small></div>
+        </div>
+        <div class="step" data-at="12.2" data-hl="1">
+          <div class="num" style="background: var(--sky)">2</div>
+          <div><b>Phone streams body points</b><small>relay → TV, ≤ 30 a second</small></div>
+        </div>
+        <div class="step" data-at="12.6" data-hl="2">
+          <div class="num" style="background: var(--sky)">3</div>
+          <div><b>Engine scores every frame</b><small>HUD ring, skeleton, Delta Glow</small></div>
+        </div>
+        <div class="step" data-at="13.0" data-hl="3">
+          <div class="num" style="background: var(--iris)">4</div>
+          <div><b>Stuck? One short coach tip</b><small>after coachAfterSec, as a caption</small></div>
+        </div>
+        <div class="step" data-at="13.4" data-hl="4">
+          <div class="num" style="background: var(--iris)">5</div>
+          <div><b>Pass → the video resumes</b><small>gate_result: chime on the phone</small></div>
+        </div>
+        <div class="step" data-at="13.8" data-hl="5">
+          <div class="num" style="background: var(--neutral); color: var(--text)">6</div>
+          <div><b>No body points for 2 s → pause</b><small>"Camera disconnected"</small></div>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      // ---- timeline (seconds) -------------------------------------------------------------------
+      // 0.0 header · 0.6 phone · 1.2 server · 1.8 TV · 2.4 phone→server body points · 3.0 server→TV
+      // 3.6 packets start (loop forever) · 4.2 "never video" · 4.8 gate state back (TV→server→phone)
+      // 5.4 lesson + .istep (HTTPS) · 5.9 coach/session · 6.9 Creator Studio · 7.5 demo upload edge
+      // 7.8 content · 8.1 content edge · 9.0 Bedrock/Polly (off) · 9.3 its dashed edge
+      // 9.6 shared packages (chips 10.0–10.9) · 11.4 gate panel (steps 11.8–13.8) · 14.0 settled
+      // ≥ 16: the gate panel highlights steps 1→6 in turn (1.3 s each) while packets keep flowing.
+      const SETTLED = 14;
+      const HL_START = 16;
+      const HL_STEP = 1.3;
+      const C = {
+        sky: '#5FC6FF',
+        iris: '#AE97FF',
+        lagoon: '#5BD7D3',
+        faint: '#A1A6C1',
+        neutral: '#6F7389',
+      };
+      // id, path, colour, start time, dashed?
+      const EDGES = [
+        ['e1', 'M482 262 H698', C.sky, 2.4],
+        ['e3', 'M1222 262 H1438', C.sky, 3.0],
+        ['e4', 'M1438 360 H1222', C.iris, 4.8],
+        ['e2', 'M698 388 H482', C.iris, 5.1],
+        ['e5', 'M1222 440 H1438', C.lagoon, 5.4],
+        ['e6', 'M1438 520 H1222', C.lagoon, 5.9],
+        ['e7', 'M482 700 C 600 700 590 532 698 532', C.lagoon, 7.5],
+        ['e9', 'M1210 638 V562', C.faint, 8.1],
+        ['e8', 'M850 638 V562', C.neutral, 9.3, true],
+      ];
+      const NS = 'http://www.w3.org/2000/svg';
+      const svg = document.getElementById('wires');
+      const mk = (tag, attrs, parent = svg) => {
+        const el = document.createElementNS(NS, tag);
+        for (const [k, v] of Object.entries(attrs)) el.setAttribute(k, v);
+        parent.appendChild(el);
+        return el;
+      };
+      const defs = svg.querySelector('defs');
+      const edges = EDGES.map(([id, d, color, at, dashed]) => {
+        // the visible stroke is revealed by a solid mask stroke, so dashed edges draw on cleanly
+        const mask = mk('mask', { id: `m-${id}`, maskUnits: 'userSpaceOnUse' }, defs);
+        const reveal = mk('path', { d, stroke: '#fff', 'stroke-width': 24, fill: 'none' }, mask);
+        const g = mk('g', { mask: `url(#m-${id})` });
+        const path = mk(
+          'path',
+          {
+            d,
+            stroke: color,
+            'stroke-width': 5,
+            fill: 'none',
+            'stroke-linecap': 'round',
+            ...(dashed ? { 'stroke-dasharray': '10 9' } : {}),
+          },
+          g,
+        );
+        const len = path.getTotalLength();
+        reveal.setAttribute('stroke-dasharray', `${len} ${len + 40}`);
+        const end = path.getPointAtLength(len);
+        const pre = path.getPointAtLength(len - 1);
+        const a = (Math.atan2(end.y - pre.y, end.x - pre.x) * 180) / Math.PI;
+        const head = mk('path', {
+          d: 'M2 0 L-14 -9 L-14 9 Z',
+          fill: color,
+          transform: `translate(${end.x} ${end.y}) rotate(${a})`,
+        });
+        return { id, path, reveal, head, len, at };
+      });
+      const byId = Object.fromEntries(edges.map((e) => [e.id, e]));
+
+      // packets: body points phone → relay → TV (sky), gate state TV → relay → phone (iris)
+      const halo = (color) => {
+        const g = mk('g', {});
+        mk('circle', { r: 15, fill: color, opacity: 0.18 }, g);
+        mk('circle', { r: 7.5, fill: color }, g);
+        mk('circle', { r: 3, cx: -2, cy: -2, fill: '#fff', opacity: 0.7 }, g);
+        return g;
+      };
+      const FLOWS = [
+        { route: ['e1', 'e3'], color: C.sky, n: 5, period: 2.4, start: 3.6 },
+        { route: ['e4', 'e2'], color: C.iris, n: 2, period: 3.4, start: 5.6 },
+      ].map((f) => ({ ...f, dots: Array.from({ length: f.n }, () => halo(f.color)) }));
+
+      const clamp = (x) => Math.max(0, Math.min(1, x));
+      const ease = (x) => 1 - Math.pow(1 - clamp(x), 3);
+      const items = [...document.querySelectorAll('[data-at]')];
+      const hls = [...document.querySelectorAll('[data-hl]')];
+
+      function seek(t) {
+        for (const el of items) {
+          const e = ease((t - Number(el.dataset.at)) / 0.55);
+          el.style.opacity = e.toFixed(3);
+          el.style.transform = e < 1 ? `translateY(${((1 - e) * 18).toFixed(2)}px)` : '';
+        }
+        for (const ed of edges) {
+          const e = ease((t - ed.at) / 0.7);
+          ed.reveal.setAttribute('stroke-dashoffset', (ed.len * (1 - e)).toFixed(2));
+          ed.head.setAttribute('opacity', clamp((e - 0.85) / 0.15).toFixed(3));
+        }
+        for (const f of FLOWS) {
+          const on = ease((t - f.start) / 0.5);
+          // each dot runs the first edge (0–0.42), hides inside the relay (0.42–0.58), runs the second edge
+          f.dots.forEach((dot, i) => {
+            const u = ((((t - f.start) / f.period + i / f.n) % 1) + 1) % 1;
+            let ed, k;
+            if (u < 0.42) [ed, k] = [byId[f.route[0]], u / 0.42];
+            else if (u > 0.58) [ed, k] = [byId[f.route[1]], (u - 0.58) / 0.42];
+            const fade = ed ? clamp(Math.min(k / 0.12, (1 - k) / 0.12)) : 0;
+            dot.setAttribute('opacity', (t < f.start ? 0 : on * fade).toFixed(3));
+            if (ed) {
+              const p = ed.path.getPointAtLength(ed.len * k);
+              dot.setAttribute('transform', `translate(${p.x.toFixed(1)} ${p.y.toFixed(1)})`);
+            }
+          });
+        }
+        // after settling, walk through the gate sequence (loops every 6 steps)
+        hls.forEach((el, i) => {
+          let w = 0;
+          if (t >= HL_START) {
+            const x = (t - HL_START) / HL_STEP - i;
+            const xm = ((x % hls.length) + hls.length) % hls.length;
+            w = xm < 1 ? Math.min(clamp(xm / 0.2), clamp((1 - xm) / 0.2)) : 0;
+          }
+          el.style.background = w ? `rgba(246, 214, 83, ${(0.16 * w).toFixed(3)})` : '';
+        });
+      }
+
+      window.seek = seek;
+      window.SETTLED = SETTLED;
+      window.TIMELINE = {
+        header: 0,
+        phone: 0.6,
+        server: 1.2,
+        tv: 1.8,
+        bodyPoints: 2.4,
+        packets: 3.6,
+        neverVideo: 4.2,
+        gateState: 4.8,
+        lessonHttps: 5.4,
+        coach: 5.9,
+        creator: 6.9,
+        content: 7.8,
+        aws: 9.0,
+        packages: 9.6,
+        gatePanel: 11.4,
+        settled: SETTLED,
+        highlightLoop: HL_START,
+      };
+
+      const q = new URLSearchParams(location.search);
+      seek(q.has('t') ? Number(q.get('t')) : SETTLED + 1);
+      if (q.has('play')) {
+        let t0;
+        const frame = (now) => {
+          t0 ??= now;
+          seek((now - t0) / 1000);
+          requestAnimationFrame(frame);
+        };
+        requestAnimationFrame(frame);
+      }
+    </script>
+  </body>
+</html>
