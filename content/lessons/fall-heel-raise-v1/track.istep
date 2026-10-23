@@ -100,7 +100,8 @@
       "reps": 5,
       "rewindTo": 12,
       "then": "loop_segment",
-      "fallbackTip": "Rise up slowly onto the balls of your feet, then lower your heels gently."
+      "fallbackTip": "Rise up slowly onto the balls of your feet, then lower your heels gently.",
+      "coachAfterSec": 10
     },
     {
       "id": "final-hold",
