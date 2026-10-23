@@ -27,6 +27,13 @@ hand shape, rhythm or hold is right — using the phone or laptop you already ow
 
 ---
 
+<p align="center"><img src="docs/brand/brand-board.png" width="900" alt="InStep brand sheet: logo, tagline, core colours, channel colours, type scale, controls and voice" /></p>
+
+One brand on both screens: the TV follows tvOS (Amazon Ember, white focus platter), the phone follows iOS (SF Pro on
+Apple devices, Inter elsewhere, inset grouped lists), both on true black with the InStep teal. Tokens:
+[`apps/tv/src/theme/tokens.ts`](apps/tv/src/theme/tokens.ts), [`apps/companion/src/styles.css`](apps/companion/src/styles.css),
+notes in [`docs/09-design-system.md`](docs/09-design-system.md).
+
 ## Why
 
 Every how-to video has the same flaw: it doesn't wait for you. For people doing prescribed home exercises, parents
