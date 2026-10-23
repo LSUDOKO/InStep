@@ -4,6 +4,7 @@ schema-version = 1
 title = "InStep"
 version = "0.1.0"
 id = "com.instep.tv"
+icon = "@image/instep-icon.png"
 
 [os.version]
 min = "1.2"
