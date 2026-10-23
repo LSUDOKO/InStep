@@ -61,7 +61,7 @@ export function Preview(props: {
         }
       };
       if (r.pose) lines(r.pose, POSE_EDGES, '#3DDC97', 5);
-      for (const hand of r.hands ?? []) lines(hand.landmarks, HAND_EDGES, '#4FD1C5', 3);
+      for (const hand of r.hands ?? []) lines(hand.landmarks, HAND_EDGES, '#5FC6FF', 3);
       ctx.strokeStyle = '#FFB547';
       ctx.lineWidth = 3 * devicePixelRatio;
       for (const o of r.objects ?? []) {
