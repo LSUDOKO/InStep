@@ -1,5 +1,100 @@
 # 02 — Architecture
 
+<p align="center"><img src="architecture/architecture.png" width="960" alt="InStep architecture: the phone (camera node, MediaPipe in the browser, video sent 0.0 KB/s) sends body points over a WebSocket relay on the InStep server (Render: Fastify, ws, node:sqlite; relay, REST, coach, MCP) to the Fire TV app (React Native for Vega: W3C media player, gate engine, HUD). Creator Studio uploads a demo video and reference.json; lesson content (video, .istep, reference) is loaded at start; Bedrock and Polly are switched off; four shared TypeScript packages; and a six-step gate sequence." /></p>
+
+The diagram is [`architecture/architecture.html`](architecture/architecture.html) (1920×1080, Blue Hour). It is also the
+animated architecture shot in the demo film: `window.seek(seconds)` draws the build-up deterministically and the
+diagram settles at 14 s. `node docs/architecture/render.mjs` re-renders `architecture.png` and the close-up
+[`gate-sequence.png`](architecture/gate-sequence.png).
+
+## How it works, step by step (as built)
+
+**Pairing**
+
+1. The TV opens a WebSocket to the server's relay and says `hello` as `tv`; the relay creates a 4-digit room and
+   returns a join URL, which the TV shows as a QR code (`apps/tv/src/lib/tvRelay.ts`, `apps/tv/src/screens/Pair.tsx`,
+   `apps/server/src/relay.ts`, `apps/server/src/rooms.ts`). Rooms expire after 2 h idle.
+2. The phone (or laptop) opens `/c/?room=…`, joins as `host` (or `guest` in Together mode) and starts the camera
+   (`apps/companion/src/screens/CameraNode.tsx`, `apps/companion/src/lib/relay.ts`). The phone is the camera; the TV
+   has none.
+
+**Lesson start**
+
+3. The TV fetches the catalog, the lesson and its `.istep` track over HTTPS and plays `video.mp4` with the W3C media
+   player on a Kepler video surface (`apps/tv/src/lib/api.ts`, `apps/tv/src/video/VegaVideo.tsx`). The track is
+   validated with zod by `@instep/istep-format`.
+4. The TV sends `lesson_tracking` to the room so the phone loads only the models the lesson needs: MediaPipe Pose
+   Landmarker (lite), Hand Landmarker and the chair detector, all running in the phone's browser
+   (`apps/tv/src/lib/lessonSession.ts`, `apps/companion/src/lib/vision.ts`).
+
+**Body points, never video**
+
+5. For every camera frame the phone builds a `landmarks` message: normalised points quantised to 3 decimals, JSON
+   text, about 1 KB for a full pose, sent at most 30 times a second and never queued
+   (`apps/companion/src/lib/landmarks.ts`, `packages/protocol/src/wire.ts`). Camera frames are never uploaded,
+   recorded or relayed.
+6. Every byte the page sends passes through a byte meter; the privacy pill shows the measured rates. Video sent is
+   measured as 0.0 KB/s because the camera page has no upload path, not because the number is hard-coded
+   (`apps/companion/src/lib/meter.ts`, `apps/companion/src/components/PrivacyPill.tsx`). A strict CSP
+   (`connect-src 'self'`) lets the browser talk only to the InStep server (`apps/server/src/app.ts`). With a person
+   in view, body points run at up to about 30 KB/s. The 0.1 KB/s in `docs/screenshots/companion-privacy.png` was
+   captured with nobody in frame (`"pose": null`).
+7. The relay validates every message with zod, forwards `landmarks` only to the TV in the room, drops anything over
+   40 a second and never logs the payload (`apps/server/src/relay.ts`).
+
+**One gate**
+
+8. The Player screen calls the controller's `tick()` at least every 100 ms. When the video time reaches a gate's `t`,
+   the controller pauses the video (`apps/tv/src/screens/Player.tsx`, `packages/gated-player/src/controller.ts`).
+9. Each incoming frame becomes a gate-engine `Frame` (`toFrame`) and goes to the active gate's runner, which smooths
+   it, normalises mirroring and scores it with one of seven evaluators (`packages/gate-engine/src/runner.ts`,
+   `packages/gate-engine/src/gates/`). Adaptive tolerance (`tolerance.ts`, factor 0.85–1.3, deterministic) applies
+   to learning gates only. Safety gates and the sway stop keep the fixed values from the `.istep` file.
+10. The TV draws the HUD ring, the learner skeleton and Delta Glow (`apps/tv/src/components/Hud.tsx`, `Skeleton.tsx`,
+    `DeltaGlow.tsx`) and sends `gate_state` to the room at most 5 times a second, so the phone can show feedback too.
+11. Stuck for longer than `coachAfterSec`? The TV posts a compact summary of numbers (which joint, roughly how far
+    off, attempt count) to `POST /api/coach`. The coach checks its cache (lesson | gate | error bucket | language),
+    rate-limits to 1 call per learner per 8 s, then answers. The hosted server runs `MOCK_AI=true`, so the tip is
+    templated from the engine's own hint. Bedrock (Converse) and Polly are implemented but switched off
+    (`apps/server/src/coach/coach.ts`, `apps/server/src/ai/`). The TV shows the tip as a caption; with Polly off,
+    the TV relays a `speak` message and the phone says it with browser speech.
+12. Pass: the controller emits `gate_passed`, the TV sends `gate_result` (the phone plays a chime) and the video
+    resumes (`play()`).
+13. No body points for 2 s (`CAMERA_LOST_MS = 2000`): the lesson pauses and the TV shows "Camera disconnected". A
+    gated lesson never plays on without camera data.
+14. At the end the TV posts a session summary (`POST /api/sessions`): gates passed, reps,
+    best hold, sway stops, coach tips and per-gate attempts. No landmarks are
+    stored. Caregiver reports and the optional MCP endpoint (`apps/server/src/mcp.ts`) read only these aggregates.
+
+**Creator Studio**
+
+15. The instructor taps **Record demonstration** (visible REC indicator). The video is recorded with
+    `MediaRecorder` while MediaPipe samples body points at 15 fps into `reference.json`
+    (`apps/companion/src/screens/creator/RecordStep.tsx`, `apps/companion/src/lib/recorder.ts`). This is the only
+    place InStep records video, and only the instructor's.
+16. Both are uploaded (`POST /api/lessons/:id/assets`, Creator PIN); the server transcodes to H.264 with ffmpeg.
+    `POST /api/lessons/:id/autogates` runs `autoGates()` from the gate engine on the reference timeline to find the
+    still moments, and the labeler words them (templates in mock mode) (`apps/server/src/routes/lessons.ts`,
+    `packages/gate-engine/src/autogates.ts`, `apps/server/src/ai/labeler.ts`).
+17. The instructor edits and previews the gates in the browser, using the same gate engine. Publishing validates
+    the `.istep` and broadcasts `catalog_updated`, and every connected TV refreshes its catalog
+    (`apps/companion/src/screens/creator/GateEditor.tsx`, `GatePreview.tsx`, `apps/tv/src/lib/tvRelay.ts`).
+
+**Content and hosting**
+
+- Demo lessons live in `content/lessons/<id>/` (`lesson.json`, `track.istep`, `video.mp4`, `reference.json`) and
+  are loaded into SQLite at start (`apps/server/src/lessons.ts`). Narration is pre-rendered offline with a local
+  Kokoro voice and muxed into `video.mp4` (`scripts/audio/`). No cloud call at runtime.
+- One Docker service on Render serves the companion (`/c/`), the relay (`/ws`), the REST API, lesson media and
+  `/mcp`. The free plan has no persistent disk, so SQLite and uploads reset on each deploy.
+- Shared packages are pure TypeScript. `istep-format`, `gate-engine` and `protocol` are used by the phone, the
+  server and the TV. `gated-player` (the timing controller and `<GatedPlayer/>`) runs on the TV and is also
+  published as the open-source `vega-gated-video-player`.
+
+> Sections 1–8 below are the original design spec. Where they differ from the code, the code is right. SQLite is
+> Node's built-in `node:sqlite`, not `better-sqlite3`. The server runs on Node 22. Media is on the server's local
+> disk, not S3. The TV app is installed with npm, outside the pnpm workspace.
+
 ## 1. System overview
 
 ```
