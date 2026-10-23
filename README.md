@@ -377,10 +377,13 @@ terms), plus 5 for the MCP server:
 
 <p align="center"><img src="docs/screenshots/aws/ai-tests.png" width="760" alt="vitest output: 23 passing tests for the coach, labeler, safety filter and MCP server" /></p>
 
-**Not yet shown:** a successful AI-written tip end to end. The account's daily quota was exhausted on the test day
-and the project rule is to spend only existing credits; the probe will be re-run with `pnpm aws:check --probe`
-once the quota resets. A budget alert should be set before switching `MOCK_AI` off: AWS console → Billing and Cost
-Management → Budgets → Create budget → _Monthly cost budget_ → `$5` → your email.
+**Not shown, on purpose:** a successful AI-written tip end to end. On Oct 23 the free
+`freetier:GetAccountPlanState` call reported the account on the paid plan with **$0 credits left** (a $1 zero-spend
+budget is set), and the project rule is to spend only existing credits — so no metered Bedrock or Polly call is
+made. The hosted server stays in mock mode: templated tips, and lesson narration rendered offline with a free local
+voice model (see [Sound and voice](#sound-and-voice)). Switching on Bedrock/Polly is one setting (`MOCK_AI=false`)
+once credits exist; set a budget alert first: AWS console → Billing and Cost Management → Budgets → Create budget →
+_Monthly cost budget_ → `$5` → your email.
 
 ### Hosting (Render)
 
@@ -431,7 +434,7 @@ with a demo driven by a synthetic landmark stream. It is generated from this mon
 | Server (relay, REST, coach, labels, voice, MCP)             | ✅ built, tested (60 s relay soak: 1800/1800 msgs, p95 1.2 ms)                                                 |
 | Companion (camera node, Creator Studio, report, hands-free) | ✅ built, Playwright e2e in CI                                                                                 |
 | TV app (Vega)                                               | ✅ runs on the Vega Virtual Device: full lesson end to end against the hosted server                           |
-| Bedrock / Polly                                             | 🟡 code complete; account verified (models + voices listed), first tip blocked by daily quota                  |
+| Bedrock / Polly                                             | 🟡 code complete + tested with mocks; account verified; live calls off ($0 credits, no card spend)             |
 | Lesson videos                                               | ✅ animated demos (fall, rehab), real CPR footage, kids story; 🟡 ASL practice cards until Deaf signers record |
 
 ## Contributing
