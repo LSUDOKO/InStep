@@ -1,5 +1,6 @@
 <!doctype html>
-<!-- InStep brand sheet. Rendered to brand-board.png by docs/brand/render.mjs (Playwright, 1600×1000 @2x). -->
+<!-- InStep brand sheet ("Blue Hour"). Rendered to brand-board.png by: node docs/brand/render.mjs
+     Colours come from docs/brand/palette.json; contrast ratios are WCAG 2 against the canvas. -->
 <html>
   <head>
     <meta charset="utf-8" />
@@ -16,71 +17,73 @@
       }
       body {
         width: 1600px;
-        height: 880px;
-        background: #000;
-        color: #fff;
+        background: #0d0e2c;
+        color: #f5f6fe;
         font-family: Inter, sans-serif;
         letter-spacing: -0.01em;
-        padding: 72px 80px;
+        padding: 64px 72px;
         display: grid;
-        grid-template-columns: 1.05fr 1fr;
-        gap: 56px;
+        grid-template-columns: 1.08fr 1fr;
+        gap: 48px;
       }
       .eyebrow {
         font-size: 15px;
-        font-weight: 600;
-        letter-spacing: 0.08em;
-        text-transform: uppercase;
-        color: rgba(235, 235, 245, 0.6);
-        margin-bottom: 18px;
+        font-weight: 700;
+        color: #b8bcd5;
+        margin-bottom: 14px;
       }
       .mark {
         display: flex;
         align-items: center;
         gap: 28px;
       }
-      .mark img {
-        width: 132px;
-        height: 132px;
-        border-radius: 32px;
-        box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.12);
+      .mark > img {
+        width: 120px;
+        height: 120px;
+        filter: drop-shadow(10px 10px 0 rgba(5, 6, 26, 0.45));
+      }
+      .mark .small {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        align-items: center;
       }
       .word {
-        font-size: 96px;
+        font-size: 92px;
         font-weight: 800;
-        letter-spacing: -0.035em;
+        letter-spacing: -0.04em;
       }
       .tag {
-        font-size: 34px;
+        font-size: 32px;
         font-weight: 600;
-        color: rgba(235, 235, 245, 0.6);
-        margin-top: 28px;
+        color: #b8bcd5;
+        margin-top: 20px;
         letter-spacing: -0.02em;
       }
       .card {
-        background: #1c1c1e;
+        background: #1a1c3f;
         border-radius: 22px;
-        padding: 28px 30px;
+        padding: 24px 26px;
       }
       .swatches {
         display: grid;
         grid-template-columns: repeat(4, 1fr);
-        gap: 14px;
+        gap: 12px;
       }
       .sw {
         border-radius: 16px;
-        height: 104px;
-        padding: 14px;
+        height: 88px;
+        padding: 12px;
         display: flex;
         flex-direction: column;
         justify-content: flex-end;
         font-size: 14px;
-        font-weight: 600;
+        font-weight: 700;
       }
       .sw small {
         font-weight: 500;
-        opacity: 0.75;
-        font-size: 13px;
+        font-size: 12.5px;
+        opacity: 0.85;
       }
       .chan {
         display: grid;
@@ -89,52 +92,63 @@
       }
       .c {
         border-radius: 14px;
-        padding: 14px 12px;
+        padding: 12px;
         font-size: 14px;
-        font-weight: 600;
-        color: #000;
-        height: 84px;
+        font-weight: 700;
+        color: #0d0e2c;
+        height: 76px;
         display: flex;
-        align-items: flex-end;
+        flex-direction: column;
+        justify-content: flex-end;
+      }
+      .c small {
+        font-weight: 500;
+        font-size: 12.5px;
+      }
+      .skin {
+        display: flex;
+        gap: 10px;
+      }
+      .skin span {
+        width: 34px;
+        height: 34px;
+        border-radius: 50%;
       }
       .type div {
         display: flex;
         align-items: baseline;
         justify-content: space-between;
-        padding: 10px 0;
-        border-bottom: 1px solid rgba(84, 84, 88, 0.65);
+        padding: 9px 0;
+        border-bottom: 1px solid rgba(150, 156, 214, 0.26);
       }
       .type div:last-child {
         border: 0;
       }
       .type span {
         font-size: 14px;
-        color: rgba(235, 235, 245, 0.6);
+        color: #b8bcd5;
         font-weight: 500;
       }
       .btns {
         display: flex;
-        gap: 14px;
+        gap: 12px;
         align-items: center;
+        flex-wrap: wrap;
       }
       .b {
         height: 50px;
-        padding: 0 26px;
+        padding: 0 24px;
         border-radius: 14px;
         display: flex;
         align-items: center;
         font-size: 17px;
         font-weight: 600;
       }
-      .left {
-        display: flex;
-        flex-direction: column;
-        gap: 40px;
-      }
+      .left,
       .right {
         display: flex;
         flex-direction: column;
-        gap: 22px;
+        gap: 26px;
       }
       .pill {
         border-radius: 999px;
@@ -143,85 +157,142 @@
         font-weight: 600;
       }
       .rules {
-        font-size: 17px;
+        font-size: 16px;
         line-height: 1.5;
-        color: rgba(235, 235, 245, 0.78);
+        color: #d6d9ea;
       }
       .rules b {
-        color: #fff;
+        color: #f5f6fe;
+      }
+      .illo {
+        display: grid;
+        grid-template-columns: 300px 1fr;
+        gap: 20px;
+        align-items: center;
+      }
+      .illo svg {
+        width: 300px;
+        border-radius: 14px;
+        display: block;
+      }
+      .illo ul {
+        padding-left: 18px;
       }
     </style>
   </head>
   <body>
     <section class="left">
       <div>
-        <div class="eyebrow">InStep · brand</div>
         <div class="mark">
           <img src="../../apps/companion/public/logo.svg" alt="" /><span class="word">InStep</span>
+          <span class="small"
+            ><img src="../../apps/companion/public/logo.svg" width="32" alt="" /><img
+              src="../../apps/companion/public/logo.svg"
+              width="16"
+              alt=""
+          /></span>
         </div>
         <div class="tag">The video that waits for you.</div>
       </div>
       <div>
-        <div class="eyebrow">Core colours</div>
+        <div class="eyebrow">Blue Hour · core colours (contrast on canvas)</div>
         <div class="swatches">
-          <div class="sw" style="background: #4fd1c5; color: #04201d">Teal<small>#4FD1C5 · tint</small></div>
-          <div class="sw" style="background: #000; box-shadow: inset 0 0 0 1px #333">
-            Black<small>#000000 · canvas</small>
+          <div class="sw" style="background: #5fc6ff; color: #021630">Sky · brand<small>#5FC6FF · 9.9:1</small></div>
+          <div class="sw" style="background: #0d0e2c; box-shadow: inset 0 0 0 1px #3c3d69">
+            Night · canvas<small>#0D0E2C</small>
           </div>
-          <div class="sw" style="background: #1c1c1e">Surface<small>#1C1C1E</small></div>
-          <div class="sw" style="background: #f5f5f7; color: #0b0b0c">
-            Focus<small>#F5F5F7 · TV focus</small>
-          </div>
-          <div class="sw" style="background: #34d399; color: #04201d">Match<small>#34D399</small></div>
-          <div class="sw" style="background: #fbbf24; color: #2a1a00">Nearly<small>#FBBF24</small></div>
-          <div class="sw" style="background: #f87171; color: #2a0505">Stop<small>#F87171</small></div>
-          <div class="sw" style="background: #2c2c2e">Fill<small>#2C2C2E</small></div>
+          <div class="sw" style="background: #1a1c3f">Surface<small>#1A1C3F · #272A52</small></div>
+          <div class="sw" style="background: #f5f6fe; color: #0d0e2c">Text · focus<small>#F5F6FE · 17.5:1</small></div>
+          <div class="sw" style="background: #49de78; color: #0d0e2c">Match<small>#49DE78 · 10.8:1</small></div>
+          <div class="sw" style="background: #ffb439; color: #0d0e2c">Nearly<small>#FFB439 · 10.6:1</small></div>
+          <div class="sw" style="background: #ff6762; color: #0d0e2c">Stop<small>#FF6762 · 6.6:1</small></div>
+          <div class="sw" style="background: #272a52; color: #b8bcd5">Muted text<small>#B8BCD5 · 10.0:1</small></div>
         </div>
       </div>
       <div>
-        <div class="eyebrow">Channels</div>
+        <div class="eyebrow">Channels (accents, never status)</div>
         <div class="chan">
-          <div class="c" style="background: #4fd1c5">Fall Prevention</div>
-          <div class="c" style="background: #c08bff">Sign Language</div>
-          <div class="c" style="background: #7aa7ff">Hand Rehab</div>
-          <div class="c" style="background: #ff6b6b">CPR</div>
-          <div class="c" style="background: #ffb547">Kids</div>
+          <div class="c" style="background: #5fc6ff">Fall Prevention<small>#5FC6FF</small></div>
+          <div class="c" style="background: #ae97ff">Sign Language<small>#AE97FF</small></div>
+          <div class="c" style="background: #5bd7d3">Hand Rehab<small>#5BD7D3</small></div>
+          <div class="c" style="background: #f87baa">CPR<small>#F87BAA</small></div>
+          <div class="c" style="background: #f6d653">Kids<small>#F6D653</small></div>
+        </div>
+      </div>
+      <div class="card illo">
+        <svg viewBox="0 0 480 300" xmlns="http://www.w3.org/2000/svg">
+          <rect width="480" height="300" fill="#181844" />
+          <circle cx="96" cy="70" r="38" fill="#F6D653" />
+          <path d="M-10 230 Q120 170 260 216 T490 206 V300 H-10z" fill="#272950" />
+          <rect y="256" width="480" height="44" fill="#18263F" />
+          <path d="M412 216 L446 216 L486 256 L412 256z" fill="rgba(5,6,26,0.45)" />
+          <rect x="378" y="216" width="34" height="40" rx="8" fill="#694234" />
+          <ellipse cx="386" cy="198" rx="14" ry="26" fill="#38988D" />
+          <ellipse cx="406" cy="192" rx="13" ry="30" fill="#0C6C68" />
+          <ellipse cx="241" cy="262" rx="54" ry="6" fill="rgba(5,4,27,0.5)" />
+          <line x1="228" y1="188" x2="226" y2="244" stroke="#263454" stroke-width="22" stroke-linecap="round" />
+          <line x1="254" y1="188" x2="256" y2="244" stroke="#263454" stroke-width="22" stroke-linecap="round" />
+          <rect x="206" y="110" width="70" height="88" rx="26" fill="#5FC6FF" />
+          <rect x="206" y="110" width="22" height="88" rx="11" fill="rgba(255,255,255,0.22)" />
+          <line x1="212" y1="124" x2="180" y2="94" stroke="#D09673" stroke-width="16" stroke-linecap="round" />
+          <line x1="270" y1="124" x2="302" y2="94" stroke="#D09673" stroke-width="16" stroke-linecap="round" />
+          <rect x="234" y="96" width="14" height="20" rx="6" fill="#D09673" />
+          <circle cx="241" cy="78" r="24" fill="#D09673" />
+          <path d="M217 76a24 24 0 0 1 48 0c-8-8-22-12-36-6z" fill="#2D1D14" />
+          <ellipse cx="226" cy="252" rx="17" ry="8" fill="#F5F6FE" />
+          <ellipse cx="256" cy="252" rx="17" ry="8" fill="#F5F6FE" />
+        </svg>
+        <div class="rules">
+          <div class="eyebrow" style="margin-bottom: 8px">Illustration</div>
+          <ul>
+            <li>Flat, no outlines; shapes separate by value</li>
+            <li>Rounded forms, one highlight on the upper-left</li>
+            <li>45° long shadows, no blur; soft contact shadows</li>
+            <li>The teacher wears the channel colour</li>
+            <li>No large areas of match / nearly / stop</li>
+          </ul>
+          <div class="skin" style="margin-top: 12px">
+            <span style="background: #f5d8c1"></span><span style="background: #e9b999"></span
+            ><span style="background: #d09673"></span><span style="background: #aa7053"></span
+            ><span style="background: #814f39"></span><span style="background: #5b382c"></span>
+          </div>
         </div>
       </div>
     </section>
     <section class="right">
       <div class="card type">
-        <div class="eyebrow" style="margin: 0 0 6px">
-          Type · SF Pro on Apple, Inter elsewhere, Amazon Ember on TV
-        </div>
-        <div style="font-size: 34px; font-weight: 700">Large Title <span>34 / bold</span></div>
-        <div style="font-size: 22px; font-weight: 700">Title 2 <span>22 / bold</span></div>
-        <div style="font-size: 17px; font-weight: 600">Headline <span>17 / semibold</span></div>
-        <div style="font-size: 17px">Body — Stand tall, hand on the chair. <span>17</span></div>
-        <div style="font-size: 13px; color: rgba(235, 235, 245, 0.6)">Footnote <span>13</span></div>
+        <div class="eyebrow" style="margin: 0 0 4px">Type · SF Pro on Apple, Inter elsewhere, Amazon Ember on TV</div>
+        <div style="font-size: 34px; font-weight: 700">Large Title <span>34 / bold · TV 76</span></div>
+        <div style="font-size: 22px; font-weight: 700">Title 2 <span>22 / bold · TV 48</span></div>
+        <div style="font-size: 17px; font-weight: 600">Headline <span>17 / semibold · TV 38</span></div>
+        <div style="font-size: 17px">Body — Stand tall, hand on the chair. <span>17 · TV 31</span></div>
+        <div style="font-size: 13px; color: #b8bcd5">Footnote <span>13 · TV caption 28 minimum</span></div>
       </div>
       <div class="card">
         <div class="eyebrow">Controls</div>
         <div class="btns">
-          <div class="b" style="background: #4fd1c5; color: #04201d">Start camera</div>
-          <div class="b" style="background: rgba(120, 120, 128, 0.24)">Hide preview</div>
-          <div class="pill" style="background: rgba(52, 211, 153, 0.16); color: #34d399">
-            ● Connected to TV
-          </div>
+          <div class="b" style="background: #5fc6ff; color: #021630">Start camera</div>
+          <div class="b" style="background: rgba(140, 148, 230, 0.2); color: #5fc6ff">Hide preview</div>
+          <div class="b" style="background: #f5f6fe; color: #0d0e2c">TV focus</div>
         </div>
-        <div class="btns" style="margin-top: 16px">
-          <div class="pill" style="background: rgba(79, 209, 197, 0.16); color: #4fd1c5">On TV</div>
-          <div class="pill" style="background: rgba(251, 191, 36, 0.16); color: #fbbf24">Draft</div>
-          <div class="pill" style="background: #1c1c1e; box-shadow: inset 0 0 0 1px #333">
-            Video sent 0.0 KB/s
-          </div>
+        <div class="btns" style="margin-top: 14px">
+          <div class="pill" style="background: rgba(73, 222, 120, 0.16); color: #49de78">● Connected to TV</div>
+          <div class="pill" style="background: rgba(95, 198, 255, 0.16); color: #5fc6ff">On TV</div>
+          <div class="pill" style="background: rgba(255, 180, 57, 0.16); color: #ffb439">Draft</div>
+          <div class="pill" style="background: #272a52; color: #b8bcd5">Video sent 0 B/s</div>
         </div>
+      </div>
+      <div class="card rules">
+        <div class="eyebrow">Mark</div>
+        A foot sole that is also a pause bar, beside a play triangle: the lesson waits, then plays when you step.
+        Sky sole, sun play, indigo tile, short long-shadows. Keep the tile; never recolour the play triangle red,
+        amber or green. Reads at 16 px.
       </div>
       <div class="card rules">
         <div class="eyebrow">Voice</div>
         <b>Calm, short, kind.</b> One instruction at a time, verbs first ("Stand tall"). Coaching tips, never
-        diagnoses. Every demonstration says what it is: animated, stock, or a practice card. Safety notes
-        always on screen.
+        diagnoses. Every demonstration says what it is: animated, stock, or a practice card. Safety notes always on
+        screen.
       </div>
     </section>
   </body>
