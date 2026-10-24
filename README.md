@@ -466,7 +466,7 @@ AI assistant "Did Dad finish his balance exercises this week?". Aggregates only.
 **[github.com/LSUDOKO/vega-gated-video-player](https://github.com/LSUDOKO/vega-gated-video-player)** (MIT) is
 the standalone package: the `.istep` format, the gate engine, the timing controller and `<GatedPlayer>` for Vega,
 with a demo driven by a synthetic landmark stream. It is generated from this monorepo by
-`node scripts/export-oss.mjs`, type-checks and passes its own 125 tests.
+`node scripts/export-oss.mjs`, type-checks and passes its own 131 tests.
 
 ## Status
 
