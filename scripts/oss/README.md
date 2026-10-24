@@ -11,7 +11,8 @@ the body). Built for Fire TV (Vega OS), with a timing controller that runs on an
 
 **[Try the live demo →](https://lsudoko.github.io/vega-gated-video-player/)** It runs in the browser, with no
 camera. A simulated learner streams landmarks, and you switch it between _watching_ (the video waits) and
-_performing_ (the gate passes and the video goes on).
+_performing_ (the gate passes and the video goes on). (The demo link goes live once GitHub Pages is
+enabled with "GitHub Actions" as the source; until then, run it locally with `npm run demo:serve`.)
 
 Extracted from [InStep, the video that waits for you](https://github.com/LSUDOKO/InStep). MIT licensed.
 
@@ -21,8 +22,9 @@ Extracted from [InStep, the video that waits for you](https://github.com/LSUDOKO
 | ---------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------- |
 | ![Heel raises lesson pausing at gates on the Vega Virtual Device](docs/media/tv-fall-heel-raise.gif) | ![Fingerspelling lesson pausing at hand-sign gates on the Vega Virtual Device](docs/media/tv-asl-fingerspell-abc.gif) |
 
-Both GIFs are screen recordings of InStep's TV app on the Vega Virtual Device, which uses this package. The
-landmarks there come from a phone running pose tracking, not from a camera on the TV.
+Both GIFs are real screen recordings of InStep's TV app on the Vega Virtual Device, which uses this package,
+played 3× faster. The learner there is InStep's synthetic learner streaming landmarks over the network (the same
+one this repo's web demo uses); the gates, safety checks and rep counts are the real engine.
 
 The web demo, mid-lesson: the video loops the heel-raise segment while the gate counts reps.
 

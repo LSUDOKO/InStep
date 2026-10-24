@@ -1,5 +1,5 @@
 # Builds the web demo and deploys demo/ to GitHub Pages.
-# Needs Settings → Pages → Source: "GitHub Actions" (until then the deploy job fails).
+# Needs Settings → Pages → Source: "GitHub Actions" (until then the configure-pages step fails).
 name: Pages
 on:
   push:
