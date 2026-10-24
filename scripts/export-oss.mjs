@@ -34,6 +34,17 @@ copy(join(pkg('istep-format'), 'invalid'), 'test-fixtures/invalid');
 rmSync(join(out, 'src/istep/cli.ts'), { force: true });
 copy(join(root, 'LICENSE'), 'LICENSE');
 
+// Overlay: README, community files, CI, the web demo (scripts/oss is the source of truth for those).
+copy(join(root, 'scripts/oss'), '.');
+// Web demo: InStep's synthetic learner, and the two lesson videos (InStep's own animations, CC-BY-4.0).
+copy(join(root, 'scripts/lib/learnerBehaviour.ts'), 'demo/learner.ts');
+for (const id of ['fall-heel-raise', 'asl-fingerspell-abc'])
+  copy(join(root, 'content/lessons', `${id}-v1`, 'video.mp4'), `demo/media/${id}.mp4`);
+// README media: real Vega Virtual Device recordings and the gate sequence diagram.
+for (const id of ['fall-heel-raise', 'asl-fingerspell-abc'])
+  copy(join(root, 'docs/screenshots/tv/gif', `${id}.gif`), `docs/media/tv-${id}.gif`);
+copy(join(root, 'docs/architecture/gate-sequence.png'), 'docs/media/gate-sequence.png');
+
 // Rewrite workspace imports to relative paths.
 const walk = (d) =>
   readdirSync(d).flatMap((f) => (statSync(join(d, f)).isDirectory() ? walk(join(d, f)) : [join(d, f)]));
@@ -42,7 +53,7 @@ const target = {
   '@instep/gate-engine/fixtures': 'src/engine/fixtures',
   '@instep/gate-engine': 'src/engine/index',
 };
-for (const file of walk(join(out, 'src')).filter((f) => /\.tsx?$/.test(f))) {
+for (const file of [...walk(join(out, 'src')), ...walk(join(out, 'demo'))].filter((f) => /\.tsx?$/.test(f))) {
   let s = readFileSync(file, 'utf8');
   for (const [from, to] of Object.entries(target)) {
     let rel = relative(dirname(file), join(out, to));
@@ -69,7 +80,8 @@ writeFileSync(
   `export * from './index';\nexport { GatedPlayer, createFrameStream, type GatedPlayerProps, type FrameStream } from './player/GatedPlayer';\n`,
 );
 
-const version = JSON.parse(readFileSync(join(root, 'packages/gated-player/package.json'), 'utf8')).version;
+// The OSS release line is versioned on its own (the monorepo packages stay at their versions).
+const version = '0.2.0';
 writeFileSync(
   join(out, 'package.json'),
   JSON.stringify(
@@ -79,6 +91,9 @@ writeFileSync(
       description:
         'Body-aware video for Vega OS: a player that pauses at .istep gates and resumes when live pose or hand landmarks pass them.',
       license: 'MIT',
+      author: 'LSUDOKO',
+      homepage: 'https://lsudoko.github.io/vega-gated-video-player/',
+      bugs: { url: 'https://github.com/LSUDOKO/vega-gated-video-player/issues' },
       repository: 'github:LSUDOKO/vega-gated-video-player',
       keywords: ['vega', 'fire-tv', 'react-native', 'mediapipe', 'pose', 'video', 'istep', 'accessibility'],
       type: 'module',
@@ -86,7 +101,14 @@ writeFileSync(
       'react-native': './src/react-native.ts',
       types: './src/index.ts',
       files: ['src', 'schema', 'examples', '!src/**/*.test.ts'],
-      scripts: { test: 'vitest run', typecheck: 'tsc --noEmit' },
+      engines: { node: '>=20' },
+      scripts: {
+        test: 'vitest run',
+        typecheck: 'tsc --noEmit && tsc --noEmit -p demo',
+        'demo:build':
+          'esbuild demo/main.ts --bundle --format=esm --minify --target=es2020 --loader:.istep=json --outfile=demo/dist/main.js',
+        'demo:serve': 'npm run demo:build && node demo/serve.mjs 8080',
+      },
       dependencies: { zod: '^4.6.7' },
       peerDependencies: { react: '*', 'react-native': '*', '@amazon-devices/react-native-w3cmedia': '*' },
       peerDependenciesMeta: {
@@ -94,7 +116,12 @@ writeFileSync(
         'react-native': { optional: true },
         '@amazon-devices/react-native-w3cmedia': { optional: true },
       },
-      devDependencies: { typescript: '~5.9.3', vitest: '^5.0.5', '@types/node': '^22.10.0' },
+      devDependencies: {
+        esbuild: '^0.28.2',
+        typescript: '~5.9.3',
+        vitest: '^5.0.5',
+        '@types/node': '^22.10.0',
+      },
     },
     null,
     2,
@@ -123,7 +150,6 @@ writeFileSync(
     2,
   ) + '\n',
 );
-writeFileSync(join(out, '.gitignore'), 'node_modules/\ncoverage/\n');
-copy(join(root, 'scripts/oss'), '.');
+writeFileSync(join(out, '.gitignore'), 'node_modules/\ncoverage/\ndemo/dist/\n');
 console.log(`exported to ${relative(root, out)} (${walk(join(out, 'src')).length} source files)`);
 if (!existsSync(join(out, 'README.md'))) throw new Error('README missing');
