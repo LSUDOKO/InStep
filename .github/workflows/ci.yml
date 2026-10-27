@@ -55,7 +55,7 @@ jobs:
         run: command -v ffmpeg || (sudo apt-get update && sudo apt-get install -y ffmpeg)
       - run: pnpm install --frozen-lockfile
       - name: Cache MediaPipe models
-        uses: actions/cache@v4
+        uses: actions/cache@v6
         with:
           path: apps/companion/public/models
           key: mediapipe-models-${{ hashFiles('apps/companion/scripts/fetch-models.mjs') }}
