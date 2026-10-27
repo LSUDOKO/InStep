@@ -30,7 +30,7 @@
     "dryrun-lessons": "tsx scripts/dryrun-lessons.ts"
   },
   "devDependencies": {
-    "@aws-sdk/client-bedrock": "^3.1153.0",
+    "@aws-sdk/client-bedrock": "^3.1156.0",
     "@aws-sdk/client-bedrock-runtime": "^3.1153.0",
     "@aws-sdk/client-polly": "^3.1153.0",
     "@aws-sdk/client-sts": "^3.1153.0",
