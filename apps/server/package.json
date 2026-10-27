@@ -13,7 +13,7 @@
   "dependencies": {
     "@aws-sdk/client-bedrock-runtime": "^3.1153.0",
     "@aws-sdk/client-polly": "^3.1153.0",
-    "@fastify/multipart": "^10.1.4",
+    "@fastify/multipart": "^10.1.6",
     "@fastify/static": "^10.1.6",
     "@instep/gate-engine": "workspace:*",
     "@instep/istep-format": "workspace:*",
